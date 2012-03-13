@@ -10,22 +10,21 @@ parser.add_argument('--rotdir', '-rd',     dest='rotdir',      help='normal vect
 parser.add_argument('--res', '-r',         dest='res',         help='image resolution', default=512, type=int)
 parser.add_argument('--min',               dest='min',         help='minimum value to plot', type=float)
 parser.add_argument('--max',               dest='max',         help='maximum value to plot', type=float)
-parser.add_argument('--center', '-c',      dest='center',      help='which point to center on', choices=('min', 'max', 'geometric', 'custom'), default='geometric')
+parser.add_argument('--center', '-c',      dest='center',      help='which point to center on', choices=('min', 'max', 'geometric', 'custom', 'pttrack'), default='geometric')
 parser.add_argument('--centervar', '-cv',  dest='centervar',   help='variable to use when centering', type=str, default='var')
 parser.add_argument('--width', '-w',       dest='width',       help='width of region to plot', type=float)
 parser.add_argument('--sub_samples', '-s', dest='sub_samples', help='sub_samples parameter for camera', type=int, default=5)
-parser.add_argument('--no_ghost', '-ng',   dest='no_ghost',    help='include ghost cells (slower)', action='store_true', default=False)
+parser.add_argument('--no_ghost', '-ng',   dest='no_ghost',    help='exclude ghost cells (faster)', action='store_true', default=False)
 parser.add_argument('--colormap', '-cm',   dest='colormap',    help='colormap used for plot', type=str, default='jet')
 parser.add_argument('--ncontours', '-n',   dest='ncontours',   help='number of contours to draw', type=int, default=6)
 parser.add_argument('--negative',          dest='negative',    help='plots -1.0*value', action='store_true', default=False)
-parser.add_argument('--fileprefix', '-fp', dest='fileprefix',  help='prefix for output filename', type=str, default='')
 args = parser.parse_args()
 
 from yt.mods import *
 from yt.visualization.volume_rendering.camera import PerspectiveCamera
 
-up = [0.,1.,0.]
-L = na.array([0.,0.,1.])
+up = [0.,-1.,0.]
+L = na.array([0.,1.,1.])
 
 if (args.negative) :
 	sign = -1.0
@@ -94,6 +93,15 @@ for f in args.filename:
 	elif args.center == 'min' :
 		v,cmin = pf.h.find_min(args.centervar)
 		c = na.array(cmin)
+	elif args.center == 'pttrack' :
+		odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
+		ptvec = odata[:,1:7]
+		obvec = odata[:,7:13]
+		totvec = odata[:,19:25]
+		ptvec += totvec - obvec
+		time = odata[:,0]
+		tindex = abs(time - pf.current_time).argmin()
+		c = na.array([ptvec[tindex,0],ptvec[tindex,1]+8e12,ptvec[tindex,2]])
 
 	sp = pf.h.sphere(c, W)
 	mi, ma = sp.quantities['Extrema']('var')[0]
@@ -118,7 +126,7 @@ for f in args.filename:
 	
 	# Sample transfer function with several gaussians.  Use col_bounds keyword
 	# to restrict color mapping to true data range.
-	tf.add_layers(args.ncontours, w=0.001, alpha=na.logspace(-0.5,0,args.ncontours), col_bounds = (mi,ma), colormap=args.colormap)
+	tf.add_layers(args.ncontours, w=0.002, alpha=na.logspace(-0.5,0,args.ncontours), col_bounds = (mi,ma), colormap=args.colormap)
 	
 	# Create the camera object
 	#cam = Camera(c, L, W, (args.res,args.res), fields=[fieldname], log_fields=[True],
@@ -127,15 +135,10 @@ for f in args.filename:
 		transfer_function=tf, pf=pf, no_ghost=args.no_ghost, north_vector=up, sub_samples=args.sub_samples)
 	
 	# Take a "snapshot".  This is where the rendering actually occurs.  
-	if args.fileprefix == '':
-		fn = f
-	else :
-		fn = args.fileprefix+'_'+f
-
-	image = cam.snapshot(fn+'_'+args.var+'.png')
+	image = cam.snapshot(f+'_'+args.var+'.png')
 	
 	if args.rotstep != 0.:
 		for i, snapshot in enumerate(cam.rotation(2.*na.pi, int(360./args.rotstep), args.rotdir)):
 			if cam.comm.rank == 0:
-				write_bitmap(snapshot, fn+'_'+args.var+('_rot_%04i' % i) + '.png')
+				write_bitmap(snapshot, f+'_'+args.var+('_rot_%04i' % i) + '.png')
 
