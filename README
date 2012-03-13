@@ -5,7 +5,7 @@ Brief instructions on installation:
 * This package requires that YT is properly set up and enabled. Please read the
   YT installation guide for instructions on how to do this.
 
-* It also requires that the "SciPy" package and the "argparse" package are
+* It also requires that the "SciPy" package and the "progressbar" packages are
   installed. If the YT Python environment is enabled, these can be installed via
   the pip command. For SciPy, which depends on BLAS and LAPACK, you need to
   specify the location of the BLAS and LAPACK libraries before the pip command
