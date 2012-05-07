@@ -31,6 +31,9 @@ import string
 from jYT import congrid
 from progressbar import Bar, ETA, Percentage, ProgressBar
 
+g = 6.67428e-8
+msun = 1.9889225e33
+
 if (args.negative) :
 	sign = -1.0
 else :
@@ -43,16 +46,7 @@ if (len(args.excludevars) > 0):
 		print 'ERROR: Exclude variable names, threshold values, and types must all be the same length.'
 		sys.exit()
 
-if (args.var == 'kine') :
-	def _var(field, data):
-		return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
-elif (args.var == 'vel2') :
-	def _var(field, data):
-		return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
-elif (args.var == 'bhbound') :
-	g = 6.67428e-8
-	msun = 1.9889225e33
-
+if (set(['bhbound','selfbound']) & set([args.var] + args.excludevars)):
 	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
 	ptvec = odata[:,1:7]
 	obvec = odata[:,7:13]
@@ -66,43 +60,51 @@ elif (args.var == 'bhbound') :
 	gmpt = g*edata[6]
 	peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
 
-	def _var(field, data):
-		pos = na.zeros(data['x'].shape, dtype='float64')
-		vel2 = pos.copy()
-		for i, ax in enumerate(['x','y','z']) :
-			pos += (data[ax] - ptvec[tindex,i])**2.
-		for i, ax in enumerate(['velx', 'vely', 'velz']) :
-			vel2 += (data[ax] - ptvec[tindex,i+3])**2.
-		na.sqrt(pos, pos)	
-		#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
-		arr = sign*(gmpt/pos - 0.5*vel2)
-		#arr[pos < args.minradius*peridist] = float("nan")
-		return arr
-else :
-	def _var(field, data):
-		return sign*data[args.var]
-
-
-for e, ev in enumerate(args.excludevars):
-	if (ev == 'selfbound'):
-		def _excludevar(field, data):
+def loadvar(name, fieldname):
+	if (name == 'kine') :
+		def _var(field, data):
+			return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+	elif (name == 'vel2') :
+		def _var(field, data):
+			return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+	elif (name == 'selfbound'):
+		def _var(field, data):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax] - peakvec[tindex,i+3])**2.
-			arr = -data['gpot'] - 0.5*vel2
+			arr = 0.5*data['gpot'] + 0.5*vel2
+			return arr
+	elif (name == 'bhbound') :
+
+		def _var(field, data):
+			pos = na.zeros(data['x'].shape, dtype='float64')
+			vel2 = pos.copy()
+			for i, ax in enumerate(['x','y','z']) :
+				pos += (data[ax] - ptvec[tindex,i])**2.
+			for i, ax in enumerate(['velx', 'vely', 'velz']) :
+				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
+			na.sqrt(pos, pos)	
+			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
+			arr = sign*(gmpt/pos - 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
 			return arr
-	else:
-		def _excludevar(field, data):
-			return data[ev]
-	add_field("excludevar"+str(e), function=_excludevar, take_log=args.log)
+	else :
+		def _var(field, data):
+			return sign*data[name]
+	add_field(fieldname, function=_var, take_log=args.log)
 
-add_field("var", function=_var, take_log=args.log)
+loadvar(args.var, "var")
+
+for e, ev in enumerate(args.excludevars):
+	loadvar(ev, "excludevar"+str(e))
 
 #my_storage = {}
 for f in args.filename:
 #for sto, f in parallel_objects(args.filename, 8, storage = my_storage):
 	pf = load(f)
+
+	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
+	time = odata[:,0]
 
 	tindex = abs(time - pf.current_time).argmin()
 
@@ -151,6 +153,7 @@ for f in args.filename:
 	pbar.finish()
 
 	histbins = na.arange(minval, maxval, (maxval-minval)/(args.nbins + 1))
+	print minval, maxval, histbins
 
 	hist = na.zeros(len(histbins) - 1)
 	if len(vals) > 0:
