@@ -31,6 +31,35 @@ import string
 from jYT import congrid
 from progressbar import Bar, ETA, Percentage, ProgressBar
 
+class var(object):
+	def __init__(self, name):
+		self.name = name
+	def mesh(self, field, data):
+		if (self.name == 'kine') :
+			return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+		elif (self.name == 'vel2') :
+			return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+		elif (self.name == 'selfbound'):
+			vel2 = na.zeros(data['x'].shape, dtype='float64')
+			for i, ax in enumerate(['velx', 'vely', 'velz']) :
+				vel2 += (data[ax] - peakvec[tindex,i+3])**2.
+			arr = 0.5*data['gpot'] + 0.5*vel2
+			return arr
+		elif (self.name == 'bhbound') :
+			pos = na.zeros(data['x'].shape, dtype='float64')
+			vel2 = pos.copy()
+			for i, ax in enumerate(['x','y','z']) :
+				pos += (data[ax] - ptvec[tindex,i])**2.
+			for i, ax in enumerate(['velx', 'vely', 'velz']) :
+				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
+			na.sqrt(pos, pos)	
+			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
+			arr = sign*(gmpt/pos - 0.5*vel2)
+			#arr[pos < args.minradius*peridist] = float("nan")
+			return arr
+		else :
+			return sign*data[self.name]
+
 g = 6.67428e-8
 msun = 1.9889225e33
 
@@ -60,43 +89,10 @@ if (set(['bhbound','selfbound']) & set([args.var] + args.excludevars)):
 	gmpt = g*edata[6]
 	peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
 
-def loadvar(name, fieldname):
-	if (name == 'kine') :
-		def _var(field, data):
-			return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
-	elif (name == 'vel2') :
-		def _var(field, data):
-			return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
-	elif (name == 'selfbound'):
-		def _var(field, data):
-			vel2 = na.zeros(data['x'].shape, dtype='float64')
-			for i, ax in enumerate(['velx', 'vely', 'velz']) :
-				vel2 += (data[ax] - peakvec[tindex,i+3])**2.
-			arr = 0.5*data['gpot'] + 0.5*vel2
-			return arr
-	elif (name == 'bhbound') :
-
-		def _var(field, data):
-			pos = na.zeros(data['x'].shape, dtype='float64')
-			vel2 = pos.copy()
-			for i, ax in enumerate(['x','y','z']) :
-				pos += (data[ax] - ptvec[tindex,i])**2.
-			for i, ax in enumerate(['velx', 'vely', 'velz']) :
-				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
-			na.sqrt(pos, pos)	
-			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
-			arr = sign*(gmpt/pos - 0.5*vel2)
-			#arr[pos < args.minradius*peridist] = float("nan")
-			return arr
-	else :
-		def _var(field, data):
-			return sign*data[name]
-	add_field(fieldname, function=_var, take_log=args.log)
-
-loadvar(args.var, "var")
-
-for e, ev in enumerate(args.excludevars):
-	loadvar(ev, "excludevar"+str(e))
+myvars = []
+for e, ev in enumerate(list(set([args.var]) | set(args.excludevars))):
+	myvars += [var(ev)]
+	add_field(ev, function=myvars[e].mesh, take_log=args.log)
 
 #my_storage = {}
 for f in args.filename:
@@ -121,10 +117,10 @@ for f in args.filename:
 		if len(g.Children) != 0 and g.Level != pf.h.max_level - args.undersample: continue
 
 		evals = list()
-		vvals = g.get_data("var").ravel()
+		vvals = g.get_data(args.var).ravel()
 		dvals = g.get_data("dens").ravel()
-		for e in range(len(args.excludevars)):
-			evals.append(g.get_data("excludevar"+str(e)).ravel())
+		for e, ev in enumerate(args.excludevars):
+			evals.append(g.get_data(ev).ravel())
 		for e in range(len(evals)):
 			if len(evals[e]) == 0: continue
 			if args.excludetype[e] == 'min':
@@ -177,17 +173,17 @@ for f in args.filename:
 		evals = list()
 		if (ss != 0):
 			excludelist = list()
-			for e in range(len(args.excludevars)):
-				excludelist.append("excludevar"+str(e))
-			varstrings = ["var", "dens"] + excludelist
+			for e, ev in enumerate(args.excludevars):
+				excludelist.append(ev)
+			varstrings = [args.var, "dens"] + excludelist
 			gz = g.retrieve_ghost_zones(nghost, varstrings, smoothed=False)
 			ssg = 2**(ss - 1)*nghost
-			cgshape = 2**ss*(na.array(na.shape(gz["var"])) - 1) + 1
+			cgshape = 2**ss*(na.array(na.shape(gz[args.var])) - 1) + 1
 			ofs = 2.**(-ss-1)
-			vvals = congrid(gz["var"], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel()
+			vvals = congrid(gz[args.var], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel()
 			dvals = congrid(gz["dens"], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel()
-			for e in range(len(args.excludevars)):
-				evals.append(congrid(gz["excludevar"+str(e)], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel())
+			for e, ev in enumerate(args.excludevars):
+				evals.append(congrid(gz[ev], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel())
 		for e in range(len(evals)):
 			if len(evals[e]) == 0: continue
 			if args.excludetype[e] == 'min':
