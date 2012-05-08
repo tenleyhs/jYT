@@ -153,7 +153,6 @@ for f in args.filename:
 	pbar.finish()
 
 	histbins = na.arange(minval, maxval, (maxval-minval)/(args.nbins + 1))
-	print minval, maxval, histbins
 
 	hist = na.zeros(len(histbins) - 1)
 	if len(vals) > 0:
