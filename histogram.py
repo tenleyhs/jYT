@@ -54,7 +54,7 @@ class var(object):
 				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
 			na.sqrt(pos, pos)	
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
-			arr = sign*(gmpt/pos - 0.5*vel2)
+			arr = sign*(-gmpt/pos + 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
 			return arr
 		else :
