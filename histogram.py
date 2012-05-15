@@ -152,7 +152,7 @@ for f in args.filename:
 	histbins = na.arange(minval, maxval, (maxval-minval)/(args.nbins + 1))
 
 	hist = na.zeros(len(histbins) - 1)
-	if args.oversample > 0:
+	if args.oversample == 0:
 		if len(vals) > 0:
 			pbar = ProgressBar(widgets=['Binning raw data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(vals)).start()
 			for cnt, val in enumerate(vals):
