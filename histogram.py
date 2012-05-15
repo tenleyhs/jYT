@@ -42,7 +42,7 @@ class var(object):
 		elif (self.name == 'selfbound'):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
-				vel2 += (data[ax] - peakvec[tindex,i+3])**2.
+				vel2 += (data[ax] - boundvec[tindex,i+3])**2.
 			arr = 0.5*data['gpot'] + 0.5*vel2
 			return arr
 		elif (self.name == 'bhbound') :
@@ -79,6 +79,7 @@ if (set(['bhbound','selfbound']) & set([args.var] + args.excludevars)):
 	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
 	ptvec = odata[:,1:7]
 	obvec = odata[:,7:13]
+	boundvec = odata[:,13:19]
 	totvec = odata[:,19:25]
 	peakvec = odata[:,25:31]
 	time = odata[:,0]
