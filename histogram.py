@@ -138,7 +138,7 @@ for f in args.filename:
 			if args.subsample < 0:
 				ss = max(pf.h.max_level + args.subsample - g.Level, 0)
 			else:
-				ss = min(pf.h.max_level - g.Level, args.subsample) + args.oversample
+				ss = min(pf.h.max_level - g.Level, args.subsample)
 
 			lmax = na.nanmax(vvals)
 			lmin = na.nanmin(vvals)
@@ -152,14 +152,15 @@ for f in args.filename:
 	histbins = na.arange(minval, maxval, (maxval-minval)/(args.nbins + 1))
 
 	hist = na.zeros(len(histbins) - 1)
-	if len(vals) > 0:
-		pbar = ProgressBar(widgets=['Binning raw data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(vals)).start()
-		for cnt, val in enumerate(vals):
-			hist += val[2]*na.histogram(val[0], bins=histbins, weights=val[1])[0]
-			pbar.update(cnt+1)
-		pbar.finish()
-	else:
-		print 'No cells satisfy cuts in initial pass!'
+	if args.oversample > 0:
+		if len(vals) > 0:
+			pbar = ProgressBar(widgets=['Binning raw data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(vals)).start()
+			for cnt, val in enumerate(vals):
+				hist += val[2]*na.histogram(val[0], bins=histbins, weights=val[1])[0]
+				pbar.update(cnt+1)
+			pbar.finish()
+		else:
+			print 'No cells satisfy cuts in initial pass!'
 
 	pbar = ProgressBar(widgets=['Secondary pass of data with sub-sampling: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.h.grids)).start()
 	for cnt, g in enumerate(pf.h.grids):
