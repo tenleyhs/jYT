@@ -63,6 +63,22 @@ class var(object):
 			a = -0.5*gmpt/ener
 			ecc = na.sqrt(-angmom2/(gmpt*a) + 1.0)
 			return sign*(-ecc + 1.0)*a
+		elif (self.name == 'argperi'):
+			posx = data['x'] - ptvec[tindex,0]
+			posy = data['y'] - ptvec[tindex,1]
+			posz = data['z'] - ptvec[tindex,2]
+			velx = data['velx'] - ptvec[tindex,3]
+			vely = data['vely'] - ptvec[tindex,4]
+			velz = data['velz'] - ptvec[tindex,5]
+			angmomx = posy*velz - posz*vely
+			angmomy = posz*velx - posx*velz
+			angmomz = posx*vely - posy*velx
+			pos = na.sqrt(posx**2 + posy**2 + posz**2)
+			eccx = (vely*angmomz - velz*angmomy)/gmpt - posx/pos
+			eccy = (velz*angmomx - velx*angmomz)/gmpt - posy/pos
+			eccz = (velx*angmomy - vely*angmomx)/gmpt - posz/pos
+			ecc = na.sqrt(eccx**2 + eccy**2 + eccz**2)
+			return sign*np.arccos(eccx/ecc)
 		elif (self.name == 'selfbound'):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
