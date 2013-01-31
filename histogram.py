@@ -3,7 +3,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Generate a histogram plot of FLASH data.')
 parser.add_argument('filename',                                 help='filename', metavar='filename', nargs='+')
 parser.add_argument('--parallel',           dest='parallel',    help='run in parallel', default=False, action='store_true')
-parser.add_argument('--var', '-v',          dest='var',         help='variable', default='Density', type=str)
+parser.add_argument('--vars', '-v',         dest='vars',        help='variables to bin over', default=['Density'], type=str, nargs='+')
 parser.add_argument('--excludevars', '-ev', dest='excludevars', help='exclude where these variables is greater than some threshold', default=[], type=str, nargs='+')
 parser.add_argument('--excludethr', '-et',  dest='excludethr',  help='Threshold values for exclusions', default=[0.], type=float, nargs='+')
 parser.add_argument('--excludetype', '-ey', dest='excludetype', help='Threshold type for exclusions', default=['max'], type=str, nargs='+')
@@ -39,6 +39,30 @@ class var(object):
 			return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
 		elif (self.name == 'vel2') :
 			return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+		elif (self.name == 'angmom') :
+			posx = data['x'] - ptvec[tindex,0]
+			posy = data['y'] - ptvec[tindex,1]
+			posz = data['z'] - ptvec[tindex,2]
+			velx = data['velx'] - ptvec[tindex,3]
+			vely = data['vely'] - ptvec[tindex,4]
+			velz = data['velz'] - ptvec[tindex,5]
+			return sign*na.sqrt((posy*velz - posz*vely)**2 + (posz*velx - posx*velz)**2 + (posx*vely - posy*velx)**2)
+		elif (self.name == 'rp') :
+			posx = data['x'] - ptvec[tindex,0]
+			posy = data['y'] - ptvec[tindex,1]
+			posz = data['z'] - ptvec[tindex,2]
+			velx = data['velx'] - ptvec[tindex,3]
+			vely = data['vely'] - ptvec[tindex,4]
+			velz = data['velz'] - ptvec[tindex,5]
+			angmom2 = (posy*velz - posz*vely)**2 + (posz*velx - posx*velz)**2 + (posx*vely - posy*velx)**2
+
+			pos = na.sqrt(posx**2 + posy**2 + posz**2)
+			vel2 = velx**2 + vely**2 + velz**2
+			ener = (-gmpt/pos + 0.5*vel2)
+
+			a = -0.5*gmpt/ener
+			ecc = na.sqrt(-angmom2/(gmpt*a) + 1.0)
+			return sign*(-ecc + 1.0)*a
 		elif (self.name == 'selfbound'):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
@@ -75,7 +99,7 @@ if (len(args.excludevars) > 0):
 		print 'ERROR: Exclude variable names, threshold values, and types must all be the same length.'
 		sys.exit()
 
-if (set(['bhbound','selfbound']) & set([args.var] + args.excludevars)):
+if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
 	ptvec = odata[:,1:7]
 	obvec = odata[:,7:13]
@@ -91,7 +115,7 @@ if (set(['bhbound','selfbound']) & set([args.var] + args.excludevars)):
 	peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
 
 myvars = []
-for e, ev in enumerate(list(set([args.var]) | set(args.excludevars))):
+for e, ev in enumerate(list(set(args.vars) | set(args.excludevars))):
 	myvars += [var(ev)]
 	add_field(ev, function=myvars[e].mesh, take_log=args.log)
 
@@ -109,8 +133,10 @@ for f in args.filename:
 		print 'ERROR: Subsample must be less than max refine level - undersample.'
 		sys.exit()
 
-	maxval = -float("inf")
-	minval = float("inf")
+	maxval = na.empty(len(args.vars))
+	minval = na.empty(len(args.vars))
+	maxval.fill(-float("inf"))
+	minval.fill(float("inf"))
 	vals = list()
 	pbar = ProgressBar(widgets=['Determining histogram bounds and initial pass of data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.h.grids)).start()
 	for cnt, g in enumerate(pf.h.grids):
@@ -118,7 +144,10 @@ for f in args.filename:
 		if len(g.Children) != 0 and g.Level != pf.h.max_level - args.undersample: continue
 
 		evals = list()
-		vvals = g.get_data(args.var).ravel()
+		vvals = list()
+#vvals = g.get_data(args.var).ravel()
+		for e, ev in enumerate(args.vars):
+			vvals.append(g.get_data(ev).ravel())
 		dvals = g.get_data("dens").ravel()
 		for e, ev in enumerate(args.excludevars):
 			evals.append(g.get_data(ev).ravel())
@@ -126,37 +155,56 @@ for f in args.filename:
 			if len(evals[e]) == 0: continue
 			if args.excludetype[e] == 'min':
 				dvals = dvals[evals[e] > args.excludethr[e]]
-				vvals = vvals[evals[e] > args.excludethr[e]]
+				for e2, ev in enumerate(args.vars):
+					vvalstemp = vvals[e2]
+					vvals[e2] = vvalstemp[evals[e] > args.excludethr[e]]
 				for e2, eval2 in enumerate(evals[e+1:]):
 					evals[e+e2+1] = eval2[evals[e] > args.excludethr[e]]
 			else:
 				dvals = dvals[evals[e] < args.excludethr[e]]
-				vvals = vvals[evals[e] < args.excludethr[e]]
+				for e2, ev in enumerate(args.vars):
+					vvalstemp = vvals[e2]
+					vvals[e2] = vvalstemp[evals[e] < args.excludethr[e]]
 				for e2, eval2 in enumerate(evals[e+1:]):
 					evals[e+e2+1] = eval2[evals[e] < args.excludethr[e]]
-		if len(vvals) > 0:
-			if args.subsample < 0:
-				ss = max(pf.h.max_level + args.subsample - g.Level, 0)
-			else:
-				ss = min(pf.h.max_level - g.Level, args.subsample)
 
-			lmax = na.nanmax(vvals)
-			lmin = na.nanmin(vvals)
-			if lmax > maxval: maxval = lmax
-			if lmin < minval: minval = lmin
-			if ss == 0:
-				vals.append([vvals,dvals,na.product(g.dds)])
+		if args.subsample < 0:
+			ss = max(pf.h.max_level + args.subsample - g.Level, 0)
+		else:
+			ss = min(pf.h.max_level - g.Level, args.subsample)
+
+		for e in range(len(vvals)):
+			if len(vvals[e]) > 0:
+				lmax = na.nanmax(vvals[e])
+				lmin = na.nanmin(vvals[e])
+				if lmax > maxval[e]: maxval[e] = lmax
+				if lmin < minval[e]: minval[e] = lmin
+
+		if ss == 0:
+			vals.append([vvals,dvals,na.product(g.dds)])
+
 		pbar.update(cnt+1)
 	pbar.finish()
 
-	histbins = na.arange(minval, maxval, (maxval-minval)/(args.nbins + 1))
+	histbins = list()
+	for e in range(len(args.vars)):
+		histbins.append(na.linspace(minval[e], maxval[e], args.nbins+1))
 
-	hist = na.zeros(len(histbins) - 1)
+	histdims = na.empty(len(args.vars))
+	histdims.fill(args.nbins)
+	hist = na.zeros(histdims)
+
+	print minval
+	print maxval
+
+#Oversampling needs to account for multiple variables
 	if args.oversample == 0:
 		if len(vals) > 0:
 			pbar = ProgressBar(widgets=['Binning raw data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(vals)).start()
 			for cnt, val in enumerate(vals):
-				hist += val[2]*na.histogram(val[0], bins=histbins, weights=val[1])[0]
+				if len(val[1]) == 0: continue
+				lhist = na.histogramdd(na.transpose(val[0]), bins=histbins, weights=val[1])[0]
+				hist += val[2]*lhist
 				pbar.update(cnt+1)
 			pbar.finish()
 		else:
@@ -173,16 +221,18 @@ for f in args.filename:
 			ss = min(pf.h.max_level - g.Level, args.subsample) + args.oversample
 
 		evals = list()
+		vvals = list()
 		if (ss != 0):
 			excludelist = list()
 			for e, ev in enumerate(args.excludevars):
 				excludelist.append(ev)
-			varstrings = [args.var, "dens"] + excludelist
+			varstrings = args.vars + ["dens"] + excludelist
 			gz = g.retrieve_ghost_zones(nghost, varstrings, smoothed=False)
 			ssg = 2**(ss - 1)*nghost
-			cgshape = 2**ss*(na.array(na.shape(gz[args.var])) - 1) + 1
+			cgshape = 2**ss*(na.array(na.shape(gz['x'])) - 1) + 1
 			ofs = 2.**(-ss-1)
-			vvals = congrid(gz[args.var], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel()
+			for e, ev in enumerate(args.vars):
+				vvals.append(congrid(gz[ev], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel())
 			dvals = congrid(gz["dens"], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel()
 			for e, ev in enumerate(args.excludevars):
 				evals.append(congrid(gz[ev], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel())
@@ -190,36 +240,48 @@ for f in args.filename:
 			if len(evals[e]) == 0: continue
 			if args.excludetype[e] == 'min':
 				dvals = dvals[evals[e] > args.excludethr[e]]
-				vvals = vvals[evals[e] > args.excludethr[e]]
+				for e2, ev in enumerate(args.vars):
+					vvalstemp = vvals[e2]
+					vvals[e2] = vvalstemp[evals[e] > args.excludethr[e]]
 				for e2, eval2 in enumerate(evals[e+1:]):
 					evals[e+e2+1] = eval2[evals[e] > args.excludethr[e]]
 			else:
 				dvals = dvals[evals[e] < args.excludethr[e]]
-				vvals = vvals[evals[e] < args.excludethr[e]]
+				for e2, ev in enumerate(args.vars):
+					vvalstemp = vvals[e2]
+					vvals[e2] = vvalstemp[evals[e] < args.excludethr[e]]
 				for e2, eval2 in enumerate(evals[e+1:]):
 					evals[e+e2+1] = eval2[evals[e] < args.excludethr[e]]
 		if len(vvals) > 0:
-			vol = na.product(g.dds)/2**(3*ss)
-			hist += vol*na.histogram(vvals, bins=histbins, weights=dvals)[0]
+			if len(vvals[0]) > 0:
+				vol = na.product(g.dds)/2**(3*ss)
+				hist += vol*na.histogramdd(na.transpose(vvals), bins=histbins, weights=dvals)[0]
 		pbar.update(cnt+1)
 	pbar.finish()
 
-	histbins = histbins[0:-1] + (histbins[1:] - histbins[0:-1])/2.
+	for e in range(len(args.vars)):
+		histbinstemp = histbins[e]
+		histbins[e] = histbinstemp[0:-1] + (histbinstemp[1:] - histbinstemp[0:-1])/2.
 
 	if args.outputfile != '':
 		fn = args.outputfile
 	else:
-		fn = args.var+'_histogram_'+f+'.dat'
+		fn = ('_'.join(args.vars))+'_histogram_'+f+'.dat'
 		if args.fileprefix != '':
 			fn = args.fileprefix+'_'+fn
 
 	#output histogram here
 	f = open(fn, 'w')
+	f.write(str(len(args.vars))+'\n')
 	f.write(str(args.nbins)+'\n')
 	f.write(str(na.sum(hist))+'\n')	
 	f.write(str(time[tindex])+'\n')
-	f.write(string.join(["% 15.10E" % x for x in -histbins])+'\n')
-	f.write(string.join(["% 15.10E" % x for x in hist])+'\n')
+	if len(args.vars) == 1:
+		f.write(string.join(["% 15.10E" % x for x in histbins[0]])+'\n')
+		f.write(string.join(["% 15.10E" % x for x in hist])+'\n')
+	else:
+		f.write(string.join(["% 15.10E" % x for x in [item for sublist in histbins for item in sublist]])+'\n')
+		f.write(string.join(["% 15.10E" % x for x in [item for sublist in hist for item in sublist]])+'\n')
 	f.close()
 
 	if not args.silent:
