@@ -78,7 +78,7 @@ class var(object):
 			eccy = (velz*angmomx - velx*angmomz)/gmpt - posy/pos
 			eccz = (velx*angmomy - vely*angmomx)/gmpt - posz/pos
 			ecc = na.sqrt(eccx**2 + eccy**2 + eccz**2)
-			return sign*np.arccos(eccx/ecc)
+			return sign*na.arccos(eccx/ecc)
 		elif (self.name == 'selfbound'):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
