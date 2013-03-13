@@ -97,6 +97,24 @@ class var(object):
 			arr = sign*(-gmpt/pos + 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
 			return arr
+		elif (self.name == 'allenergies') :
+			pos = na.zeros(data['x'].shape, dtype='float64')
+			vel2 = pos.copy()
+			for i, ax in enumerate(['x','y','z']) :
+				pos += (data[ax] - ptvec[tindex,i])**2.
+			for i, ax in enumerate(['velx', 'vely', 'velz']) :
+				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
+			na.sqrt(pos, pos)	
+			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
+
+			vel2s = na.zeros(data['x'].shape, dtype='float64')
+			for i, ax in enumerate(['velx', 'vely', 'velz']) :
+				vel2s += (data[ax] - boundvec[tindex,i+3])**2.
+			selfbound = 0.5*data['gpot'] + 0.5*vel2s
+
+			arr = sign*(-gmpt/pos + 0.5*vel2 + selfbound + data['eint'])
+			#arr[pos < args.minradius*peridist] = float("nan")
+			return arr
 		else :
 			return sign*data[self.name]
 
