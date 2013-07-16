@@ -18,7 +18,7 @@ parser.add_argument('--no_ghost', '-ng',   dest='no_ghost',    help='exclude gho
 parser.add_argument('--colormap', '-cm',   dest='colormap',    help='colormap used for plot', type=str, default='jet')
 parser.add_argument('--ncontours', '-n',   dest='ncontours',   help='number of contours to draw', type=int, default=6)
 parser.add_argument('--negative',          dest='negative',    help='plots -1.0*value', action='store_true', default=False)
-parser.add_argument('--axis', '-a',	   dest='axis',	       help='set axis x,y,z', type=str)
+parser.add_argument('--axis', '-a',        dest='axis',        help='set sliceplane axis [x,y,z]', type=str, default='x')
 args = parser.parse_args()
 
 from yt.mods import *
@@ -89,4 +89,5 @@ for f in args.filename:
 			mi = 0
 		else :
 			mi = na.log10(mi)
+
 	SlicePlot(pf, args.axis, 'var', center = c, width = W).save()
