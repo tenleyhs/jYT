@@ -1,0 +1,92 @@
+import argparse
+
+parser = argparse.ArgumentParser(description='Generate a volumetric plot of FLASH data.')
+parser.add_argument('filename',                                help='filename', metavar='filename', nargs='+')
+parser.add_argument('--parallel',          dest='parallel',    help='run in parallel', default=False, action='store_true')
+parser.add_argument('--var', '-v',         dest='var',         help='variable', default='Density', type=str)
+parser.add_argument('--log', '-l',         dest='log',         help='take the log of the variable', action='store_true', default=False)
+parser.add_argument('--rotstep', '-rs',    dest='rotstep',     help='angle in degrees between rotations', default=0., type=float)
+parser.add_argument('--rotdir', '-rd',     dest='rotdir',      help='normal vector of axis to rotate about', nargs='+', default=[1.,0.,0.], type=float)
+parser.add_argument('--res', '-r',         dest='res',         help='image resolution', default=512, type=int)
+parser.add_argument('--min',               dest='min',         help='minimum value to plot', type=float)
+parser.add_argument('--max',               dest='max',         help='maximum value to plot', type=float)
+parser.add_argument('--center', '-c',      dest='center',      help='which point to center on', choices=('min', 'max', 'geometric', 'custom', 'pttrack'), default='geometric')
+parser.add_argument('--centervar', '-cv',  dest='centervar',   help='variable to use when centering', type=str, default='var')
+parser.add_argument('--width', '-w',       dest='width',       help='width of region to plot', type=float)
+parser.add_argument('--sub_samples', '-s', dest='sub_samples', help='sub_samples parameter for camera', type=int, default=5)
+parser.add_argument('--no_ghost', '-ng',   dest='no_ghost',    help='exclude ghost cells (faster)', action='store_true', default=False)
+parser.add_argument('--colormap', '-cm',   dest='colormap',    help='colormap used for plot', type=str, default='jet')
+parser.add_argument('--ncontours', '-n',   dest='ncontours',   help='number of contours to draw', type=int, default=6)
+parser.add_argument('--negative',          dest='negative',    help='plots -1.0*value', action='store_true', default=False)
+parser.add_argument('--axis', '-a',	   dest='axis',	       help='set axis x,y,z', type=str)
+args = parser.parse_args()
+
+from yt.mods import *
+from math import *
+from yt.visualization.volume_rendering.camera import PerspectiveCamera
+
+up = [0.,-1.,0.]
+L = na.array([0.,1.,1.])
+
+if (args.negative) :
+	sign = -1.0
+else :
+	sign = 1.0
+
+fieldname = "var"
+if (args.var == 'kine') :
+	def _var(field, data):
+		return sign*0.5*data['dens']*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+elif (args.var == 'vel2') :
+	def _var(field, data):
+		return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)
+else :
+	def _var(field, data):
+		return sign*data[args.var]
+
+add_field(fieldname, function=_var, take_log=args.log)
+
+# Load up your dataset (CHANGE THIS)
+for f in args.filename:
+	pf = load(f)
+
+	if (args.width == None) :
+		W = sqrt(sum((pf.domain_right_edge - pf.domain_left_edge)**2))
+	else :
+		W = args.width
+		
+	if args.center == 'geometric' :
+		c = na.array((pf.domain_right_edge - pf.domain_left_edge) / 2.)
+	elif args.center == 'max' :
+		v,cmax = pf.h.find_max(args.centervar)
+		c = na.array(cmax)
+	elif args.center == 'min' :
+		v,cmin = pf.h.find_min(args.centervar)
+		c = na.array(cmin)
+	elif args.center == 'pttrack' :
+		odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
+		ptvec = odata[:,1:7]
+		obvec = odata[:,7:13]
+		totvec = odata[:,19:25]
+		ptvec += totvec - obvec
+		time = odata[:,0]
+		tindex = abs(time - pf.current_time).argmin()
+		c = na.array([ptvec[tindex,0],ptvec[tindex,1]+8e12,ptvec[tindex,2]])
+
+	sp = pf.h.sphere(c, W)
+	mi, ma = sp.quantities['Extrema']('var')[0]
+	print mi, ma
+
+	if (args.min != None) :
+		mi = args.min
+	if (args.max != None) :
+		ma = args.max
+
+	if (args.log) : ma = na.log10(ma)
+	if (args.log) :
+		if mi < 0. :
+			print 'Warning: Minimum less than 0 for log variable! Setting minimum to 0.'
+			mi = 0
+		else :
+			mi = na.log10(mi)
+	SlicePlot(pf, args.axis, 'var', center = c, width = W).save()
