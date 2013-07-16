@@ -82,12 +82,6 @@ for f in args.filename:
 	if (args.max != None) :
 		ma = args.max
 
-	if (args.log) : ma = na.log10(ma)
-	if (args.log) :
-		if mi < 0. :
-			print 'Warning: Minimum less than 0 for log variable! Setting minimum to 0.'
-			mi = 0
-		else :
-			mi = na.log10(mi)
-
-	SlicePlot(pf, args.axis, 'var', center = c, width = W).save()
+	sp = SlicePlot(pf, args.axis, 'var', center = c, width = W)
+	sp.set_zlim('all', mi, ma)
+	sp.save()
