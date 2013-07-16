@@ -1,5 +1,8 @@
 import argparse
 
+def csv(value):
+	return map(float, value.split(","))
+
 parser = argparse.ArgumentParser(description='Generate a histogram plot of FLASH data.')
 parser.add_argument('filename',                                 help='filename', metavar='filename', nargs='+')
 parser.add_argument('--parallel',           dest='parallel',    help='run in parallel', default=False, action='store_true')
@@ -22,6 +25,8 @@ parser.add_argument('--minradius',  '-mr',  dest='minradius',   help='minimum di
 parser.add_argument('--undersample', '-u',  dest='undersample', help='do not include blocks this many level away from maximum or less', type=int, default=0)
 parser.add_argument('--oversample', '-ov',  dest='oversample',  help='interpolate maximally refined blocks by this many levels', type=int, default=0)
 parser.add_argument('--subsample', '-s',    dest='subsample',   help='sample lower res blocks within this number of levels of maximum refinement', type=int, default=0)
+parser.add_argument('--extras', '-ex',      dest='extras',      help='input extras array when extras.dat does not exist', default='1.,1.e6,1.', type=csv)
+parser.add_argument('--version', '-ve',     dest='version',     help='version of the MTP software', default=2, type=int)
 args = parser.parse_args()
 
 from yt.config import ytcfg; ytcfg["yt","serialize"] = "False"
@@ -120,6 +125,7 @@ class var(object):
 
 g = 6.67428e-8
 msun = 1.9889225e33
+rsun = 6.955e10
 
 if (args.negative) :
 	sign = -1.0
@@ -139,14 +145,22 @@ if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 	obvec = odata[:,7:13]
 	boundvec = odata[:,13:19]
 	totvec = odata[:,19:25]
-	peakvec = odata[:,25:31]
 	time = odata[:,0]
+	if args.version == 2 :
+		ptvec += totvec - obvec
+	else :
+		mpolevec = odata[:,25:31]
+		ptvec += totvec - mpolevec
 
-	ptvec += totvec - obvec
-
-	edata = na.loadtxt('extras.dat', dtype='float64')
-	gmpt = g*edata[6]
-	peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
+	import os.path
+	if os.path.isfile('extras.dat') :
+		edata = na.loadtxt('extras.dat', dtype='float64')
+		gmpt = g*edata[6]
+		peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
+	else :
+		extras = na.array(args.extras)
+		gmpt = g*msun*extras[1]
+		peridist = extras[0]*rsun*na.power(extras[1]/extras[2], 1./3.)
 
 myvars = []
 for e, ev in enumerate(list(set(args.vars) | set(args.excludevars))):
