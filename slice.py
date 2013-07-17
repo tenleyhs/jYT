@@ -5,8 +5,6 @@ parser.add_argument('filename',                                help='filename', 
 parser.add_argument('--parallel',          dest='parallel',    help='run in parallel', default=False, action='store_true')
 parser.add_argument('--var', '-v',         dest='var',         help='variable', default='Density', type=str)
 parser.add_argument('--log', '-l',         dest='log',         help='take the log of the variable', action='store_true', default=False)
-parser.add_argument('--rotstep', '-rs',    dest='rotstep',     help='angle in degrees between rotations', default=0., type=float)
-parser.add_argument('--rotdir', '-rd',     dest='rotdir',      help='normal vector of axis to rotate about', nargs='+', default=[1.,0.,0.], type=float)
 parser.add_argument('--res', '-r',         dest='res',         help='image resolution', default=512, type=int)
 parser.add_argument('--min',               dest='min',         help='minimum value to plot', type=float)
 parser.add_argument('--max',               dest='max',         help='maximum value to plot', type=float)
