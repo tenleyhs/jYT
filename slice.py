@@ -12,7 +12,6 @@ parser.add_argument('--center', '-c',      dest='center',      help='which point
 parser.add_argument('--centervar', '-cv',  dest='centervar',   help='variable to use when centering', type=str, default='var')
 parser.add_argument('--width', '-w',       dest='width',       help='width of region to plot', type=float)
 parser.add_argument('--sub_samples', '-s', dest='sub_samples', help='sub_samples parameter for camera', type=int, default=5)
-parser.add_argument('--no_ghost', '-ng',   dest='no_ghost',    help='exclude ghost cells (faster)', action='store_true', default=False)
 parser.add_argument('--colormap', '-cm',   dest='colormap',    help='colormap used for plot', type=str, default='jet')
 parser.add_argument('--ncontours', '-n',   dest='ncontours',   help='number of contours to draw', type=int, default=6)
 parser.add_argument('--negative',          dest='negative',    help='plots -1.0*value', action='store_true', default=False)
