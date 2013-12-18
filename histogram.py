@@ -102,6 +102,8 @@ class var(object):
 			arr = sign*(-gmpt/pos + 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
 			return arr
+		elif (self.name == 'ni56dens') :
+			return sign*data['ni56']*data['dens']
 		elif (self.name == 'allenergies') :
 			pos = na.zeros(data['x'].shape, dtype='float64')
 			vel2 = pos.copy()
@@ -172,10 +174,10 @@ for f in args.filename:
 #for sto, f in parallel_objects(args.filename, 8, storage = my_storage):
 	pf = load(f)
 
-	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
-	time = odata[:,0]
-
-	tindex = abs(time - pf.current_time).argmin()
+	if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
+		odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
+		time = odata[:,0]
+		tindex = abs(time - pf.current_time).argmin()
 
 	if args.subsample >= 0 and pf.h.max_level - args.undersample < args.subsample:
 		print 'ERROR: Subsample must be less than max refine level - undersample.'

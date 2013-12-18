@@ -1,6 +1,6 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='Generate a volumetric plot of FLASH data.')
+parser = argparse.ArgumentParser(description='Generate a 2D slice plot of FLASH data.')
 parser.add_argument('filename',                                help='filename', metavar='filename', nargs='+')
 parser.add_argument('--parallel',          dest='parallel',    help='run in parallel', default=False, action='store_true')
 parser.add_argument('--var', '-v',         dest='var',         help='variable', default='Density', type=str)
@@ -43,6 +43,8 @@ elif (args.var == 'eratio') :
 else :
 	def _var(field, data):
 		return sign*data[args.var]
+
+fieldname = fieldname.strip()
 
 add_field(fieldname, function=_var, take_log=args.log)
 
