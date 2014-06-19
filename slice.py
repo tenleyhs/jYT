@@ -40,6 +40,9 @@ elif (args.var == 'vel2') :
 elif (args.var == 'eratio') :
 	def _var(field, data):
 		return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)/data['eint']
+if (args.var == 'ni56dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['ni56']**2
 else :
 	def _var(field, data):
 		return sign*data[args.var]
