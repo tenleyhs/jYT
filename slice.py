@@ -40,9 +40,42 @@ elif (args.var == 'vel2') :
 elif (args.var == 'eratio') :
 	def _var(field, data):
 		return sign*(data['velx']**2 + data['vely']**2 + data['velz']**2)/data['eint']
+if (args.var == 'c12dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['c12']
+if (args.var == 'o16dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['o16']
+if (args.var == 'ne20dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['ne20']
+if (args.var == 'mg24dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['mg24']
+if (args.var == 'si28dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['si28']
+if (args.var == 's32dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['s32']
+if (args.var == 'ar36dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['ar36']
+if (args.var == 'ca40dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['ca40']
+if (args.var == 'ti44dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['ti44']
+if (args.var == 'cr48dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['cr48']
+if (args.var == 'fe52dens') :
+	def _var(field, data):
+		return sign*data['dens']*data['fe52']
 if (args.var == 'ni56dens') :
 	def _var(field, data):
-		return sign*data['dens']*data['ni56']**2
+		return sign*data['dens']*data['ni56']
 else :
 	def _var(field, data):
 		return sign*data[args.var]
