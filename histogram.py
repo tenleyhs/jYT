@@ -31,8 +31,9 @@ args = parser.parse_args()
 
 from yt.config import ytcfg; ytcfg["yt","serialize"] = "False"
 from yt.mods import *
-import pylab as pl
+import matplotlib.pyplot as plt
 import string
+import numpy as na
 from jYT import congrid
 from progressbar import Bar, ETA, Percentage, ProgressBar
 
@@ -103,9 +104,9 @@ class var(object):
 			pos = na.zeros(data['x'].shape, dtype='float64')
 			vel2 = pos.copy()
 			for i, ax in enumerate(['x','y','z']) :
-				pos += (data[ax] - ptvec[tindex,i])**2.
+				pos += (data[ax].v - ptvec[tindex,i])**2.
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
-				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
+				vel2 += (data[ax].v - ptvec[tindex,i+3])**2.
 			na.sqrt(pos, pos)	
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
 			arr = sign*(-gmpt/pos + 0.5*vel2)
@@ -186,7 +187,7 @@ for f in args.filename:
 	if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 		odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
 		time = odata[:,0]
-		tindex = abs(time - pf.current_time).argmin()
+		tindex = abs(time - pf.current_time.v).argmin()
 
 	if args.subsample >= 0 and pf.h.max_level - args.undersample < args.subsample:
 		print 'ERROR: Subsample must be less than max refine level - undersample.'
@@ -197,8 +198,8 @@ for f in args.filename:
 	maxval.fill(-float("inf"))
 	minval.fill(float("inf"))
 	vals = list()
-	pbar = ProgressBar(widgets=['Determining histogram bounds and initial pass of data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.h.grids)).start()
-	for cnt, g in enumerate(pf.h.grids):
+	pbar = ProgressBar(widgets=['Determining histogram bounds and initial pass of data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.index.grids)).start()
+	for cnt, g in enumerate(pf.index.grids):
 		if g.Level > pf.h.max_level - args.undersample: continue
 		if len(g.Children) != 0 and g.Level != pf.h.max_level - args.undersample: continue
 
@@ -206,10 +207,10 @@ for f in args.filename:
 		vvals = list()
 #vvals = g.get_data(args.var).ravel()
 		for e, ev in enumerate(args.vars):
-			vvals.append(g.get_data(ev).ravel())
-		dvals = g.get_data("dens").ravel()
+			vvals.append(g[ev].ravel())
+		dvals = g["dens"].ravel()
 		for e, ev in enumerate(args.excludevars):
-			evals.append(g.get_data(ev).ravel())
+			evals.append(g[ev].ravel())
 		for e in range(len(evals)):
 			if len(evals[e]) == 0: continue
 			if args.excludetype[e] == 'min':
@@ -269,8 +270,8 @@ for f in args.filename:
 		else:
 			print 'No cells satisfy cuts in initial pass!'
 
-	pbar = ProgressBar(widgets=['Secondary pass of data with sub-sampling: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.h.grids)).start()
-	for cnt, g in enumerate(pf.h.grids):
+	pbar = ProgressBar(widgets=['Secondary pass of data with sub-sampling: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.index.grids)).start()
+	for cnt, g in enumerate(pf.index.grids):
 		if g.Level > pf.h.max_level - args.undersample: continue
 		if len(g.Children) != 0 and g.Level != pf.h.max_level - args.undersample: continue
 
@@ -345,7 +346,10 @@ for f in args.filename:
 
 	if not args.silent:
 		lhist = na.log10(hist)
-		pl.plot(histbins, lhist)
-		pl.draw()
-		pl.show()
+		
+		fig = plt.figure()
+		ax = fig.add_subplot(111)
+		ax.plot(histbins[0], lhist)
+		fig.savefig("test.png")
+
 
