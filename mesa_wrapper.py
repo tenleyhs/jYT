@@ -7,6 +7,8 @@ parser.add_argument('--elements', '-e', dest='els', help='elements we wish to tr
 parser.add_argument('--plot', '-p', dest='plot', help='whether to save a plot or not', action='store_true', default=False)
 args = parser.parse_args()
 
+if not (args.indata):
+	parser.error('No indata supplied. Add "-i mesadata.dat", for example.')
 
 import matplotlib.pyplot as plt
 from astropy.io import ascii
