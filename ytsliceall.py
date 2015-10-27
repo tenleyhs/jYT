@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 # pick appropriate filenames, and range that you want... eg:
 #filenames = glob.glob('multibipoly_hdf5_chk_[0-9][0-9][0-9][0-9][0-9]')
-filenames = glob.glob('multibipoly_hdf5_plt_cnt_00[2-3][0-9][0-9]')
+#filenames = glob.glob('multibipoly_hdf5_plt_cnt_00[2-3][0-9][0-9]')
+filenames = glob.glob('multitidal_hdf5_plt_cnt_00[0-1][0-9][0]')
 filenames = sorted(filenames)
 
 

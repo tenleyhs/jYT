@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import argparse
 
 def csv(value):
@@ -97,8 +99,8 @@ class var(object):
 		elif (self.name == 'selfbound'):
 			vel2 = na.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
-				vel2 += (data[ax] - boundvec[tindex,i+3])**2.
-			arr = 0.5*data['gpot'] + 0.5*vel2
+				vel2 += (data[ax].v - boundvec[tindex,i+3])**2.
+			arr = 0.5*data['gpot'].v + 0.5*vel2
 			return arr
 		elif (self.name == 'bhbound') :
 			pos = na.zeros(data['x'].shape, dtype='float64')
@@ -350,6 +352,6 @@ for f in args.filename:
 		fig = plt.figure()
 		ax = fig.add_subplot(111)
 		ax.plot(histbins[0], lhist)
-		fig.savefig("test.png")
+		fig.savefig(('_'.join(args.vars))+'_histogram_'+str(f)+'.png')
 
 
