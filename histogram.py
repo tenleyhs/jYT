@@ -154,7 +154,7 @@ if (len(args.excludevars) > 0):
 		sys.exit()
 
 if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
-	odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
+	odata = na.loadtxt('pruned_sinks_evol.dat', dtype='float64')
 	ptvec = odata[:,1:7]
 	obvec = odata[:,7:13]
 	boundvec = odata[:,13:19]
