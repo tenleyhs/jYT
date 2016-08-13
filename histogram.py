@@ -35,7 +35,7 @@ from yt.config import ytcfg; ytcfg["yt","serialize"] = "False"
 from yt.mods import *
 import matplotlib.pyplot as plt
 import string
-import numpy as na
+import numpy as np
 from jYT import congrid
 from progressbar import Bar, ETA, Percentage, ProgressBar
 
@@ -54,7 +54,7 @@ class var(object):
 			velx = data['velx'] - ptvec[tindex,3]
 			vely = data['vely'] - ptvec[tindex,4]
 			velz = data['velz'] - ptvec[tindex,5]
-			return sign*na.sqrt((posy*velz - posz*vely)**2 + (posz*velx - posx*velz)**2 + (posx*vely - posy*velx)**2)
+			return sign*np.sqrt((posy*velz - posz*vely)**2 + (posz*velx - posx*velz)**2 + (posx*vely - posy*velx)**2)
 		elif (self.name == 'rp') :
 			posx = data['x'] - ptvec[tindex,0]
 			posy = data['y'] - ptvec[tindex,1]
@@ -64,12 +64,12 @@ class var(object):
 			velz = data['velz'] - ptvec[tindex,5]
 			angmom2 = (posy*velz - posz*vely)**2 + (posz*velx - posx*velz)**2 + (posx*vely - posy*velx)**2
 
-			pos = na.sqrt(posx**2 + posy**2 + posz**2)
+			pos = np.sqrt(posx**2 + posy**2 + posz**2)
 			vel2 = velx**2 + vely**2 + velz**2
 			ener = (-gmpt/pos + 0.5*vel2)
 
 			a = -0.5*gmpt/ener
-			ecc = na.sqrt(-angmom2/(gmpt*a) + 1.0)
+			ecc = np.sqrt(-angmom2/(gmpt*a) + 1.0)
 			return sign*(-ecc + 1.0)*a
 		elif (self.name == 'argperi'):
 			posx = data['x'] - ptvec[tindex,0]
@@ -78,38 +78,38 @@ class var(object):
 			velx = data['velx'] - ptvec[tindex,3]
 			vely = data['vely'] - ptvec[tindex,4]
 			velz = data['velz'] - ptvec[tindex,5]
-			pos = na.sqrt(posx**2 + posy**2 + posz**2)
+			pos = np.sqrt(posx**2 + posy**2 + posz**2)
 			#angmomx = posy*velz - posz*vely
 			#angmomy = posz*velx - posx*velz
 			#angmomz = posx*vely - posy*velx
 			#eccx = (vely*angmomz - velz*angmomy)/gmpt - posx/pos
 			#eccy = (velz*angmomx - velx*angmomz)/gmpt - posy/pos
 			#eccz = (velx*angmomy - vely*angmomx)/gmpt - posz/pos
-			#ecc = na.sqrt(eccx**2 + eccy**2 + eccz**2)
-			#return sign*na.arccos(eccx/ecc)
+			#ecc = np.sqrt(eccx**2 + eccy**2 + eccz**2)
+			#return sign*np.arccos(eccx/ecc)
 
 			vel2 = velx**2 + vely**2 + velz**2
 			rv = posx*velx + posy*vely + posz*velz
 			eccx = (vel2*posx - rv*velx)/gmpt - posx/pos
 			eccy = (vel2*posy - rv*vely)/gmpt - posy/pos
 			eccz = (vel2*posz - rv*velz)/gmpt - posz/pos
-			ecc = na.sqrt(eccx**2 + eccy**2 + eccz**2)
+			ecc = np.sqrt(eccx**2 + eccy**2 + eccz**2)
 			#return sign*np.arctan2(eccy/ecc, eccx/ecc)
-			return sign*na.arccos(eccx/ecc)
+			return sign*np.arccos(eccx/ecc)
 		elif (self.name == 'selfbound'):
-			vel2 = na.zeros(data['x'].shape, dtype='float64')
+			vel2 = np.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax].v - boundvec[tindex,i+3])**2.
 			arr = 0.5*data['gpot'].v + 0.5*vel2
 			return arr
 		elif (self.name == 'bhbound') :
-			pos = na.zeros(data['x'].shape, dtype='float64')
+			pos = np.zeros(data['x'].shape, dtype='float64')
 			vel2 = pos.copy()
 			for i, ax in enumerate(['x','y','z']) :
 				pos += (data[ax].v - ptvec[tindex,i])**2.
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax].v - ptvec[tindex,i+3])**2.
-			na.sqrt(pos, pos)	
+			np.sqrt(pos, pos)	
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
 			arr = sign*(-gmpt/pos + 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
@@ -117,16 +117,16 @@ class var(object):
 		elif (self.name == 'ni56dens') :
 			return sign*data['ni56']*data['dens']
 		elif (self.name == 'allenergies') :
-			pos = na.zeros(data['x'].shape, dtype='float64')
+			pos = np.zeros(data['x'].shape, dtype='float64')
 			vel2 = pos.copy()
 			for i, ax in enumerate(['x','y','z']) :
 				pos += (data[ax] - ptvec[tindex,i])**2.
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
-			na.sqrt(pos, pos)	
+			np.sqrt(pos, pos)	
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
 
-			vel2s = na.zeros(data['x'].shape, dtype='float64')
+			vel2s = np.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2s += (data[ax] - boundvec[tindex,i+3])**2.
 			selfbound = 0.5*data['gpot'] + 0.5*vel2s
@@ -154,27 +154,32 @@ if (len(args.excludevars) > 0):
 		sys.exit()
 
 if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
-	odata = na.loadtxt('pruned_sinks_evol.dat', dtype='float64')
-	ptvec = odata[:,1:7]
-	obvec = odata[:,7:13]
-	boundvec = odata[:,13:19]
-	totvec = odata[:,19:25]
-	time = odata[:,0]
-	if args.version == 2 :
-		ptvec += totvec - obvec
-	else :
-		mpolevec = odata[:,25:31]
-		ptvec += totvec - mpolevec
+	odata = np.loadtxt('pruned_sinks_evol.dat', dtype='float64')
+	
+	# are the part_tags always the same? or can just sort by mass
+	# pt is black hole, ob is star
+	if odata[0,14] > odata[1,14]:
+		part_tag_pt = odata[0,0]
+	else:
+		part_tag_pt = odata[1,0]
+	odata_pt = odata[np.where(odata[:,0]==part_tag_pt)[0]]
+	odata_ob = odata[np.where(odata[:,0]!=part_tag_pt)[0]]
+	
+	ptvec = odata_pt[:,2:8]
+	obvec = odata_ob[:,2:8]
+	# just setting self-bound mass vector to object vector. should be very similar
+	boundvec = obvec
+	time = odata_pt[:,1]
 
 	import os.path
 	if os.path.isfile('extras.dat') :
-		edata = na.loadtxt('extras.dat', dtype='float64')
+		edata = np.loadtxt('extras.dat', dtype='float64')
 		gmpt = g*edata[6]
-		peridist = edata[3]*na.power(edata[6]/edata[4]/msun, 1./3.)
+		peridist = edata[3]*np.power(edata[6]/edata[4]/msun, 1./3.)
 	else :
-		extras = na.array(args.extras)
+		extras = np.array(args.extras)
 		gmpt = g*msun*extras[1]
-		peridist = extras[0]*rsun*na.power(extras[1]/extras[2], 1./3.)
+		peridist = extras[0]*rsun*np.power(extras[1]/extras[2], 1./3.)
 
 myvars = []
 for e, ev in enumerate(list(set(args.vars) | set(args.excludevars))):
@@ -187,16 +192,21 @@ for f in args.filename:
 	pf = load(f)
 
 	if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
-		odata = na.loadtxt('pruned_orbit.dat', dtype='float64')
-		time = odata[:,0]
+		odata = np.loadtxt('pruned_sinks_evol.dat', dtype='float64')
+		if odata[0,14] > odata[1,14]:
+			part_tag_pt = odata[0,0]
+		else:
+			part_tag_pt = odata[1,0]
+		odata_pt = odata[np.where(odata[:,0]==part_tag_pt)[0]]
+		time = odata_pt[:,1]
 		tindex = abs(time - pf.current_time.v).argmin()
 
 	if args.subsample >= 0 and pf.h.max_level - args.undersample < args.subsample:
 		print 'ERROR: Subsample must be less than max refine level - undersample.'
 		sys.exit()
 
-	maxval = na.empty(len(args.vars))
-	minval = na.empty(len(args.vars))
+	maxval = np.empty(len(args.vars))
+	minval = np.empty(len(args.vars))
 	maxval.fill(-float("inf"))
 	minval.fill(float("inf"))
 	vals = list()
@@ -237,24 +247,24 @@ for f in args.filename:
 
 		for e in range(len(vvals)):
 			if len(vvals[e]) > 0:
-				lmax = na.nanmax(vvals[e])
-				lmin = na.nanmin(vvals[e])
+				lmax = np.nanmax(vvals[e])
+				lmin = np.nanmin(vvals[e])
 				if lmax > maxval[e]: maxval[e] = lmax
 				if lmin < minval[e]: minval[e] = lmin
 
 		if ss == 0:
-			vals.append([vvals,dvals,na.product(g.dds)])
+			vals.append([vvals,dvals,np.product(g.dds)])
 
 		pbar.update(cnt+1)
 	pbar.finish()
 
 	histbins = list()
 	for e in range(len(args.vars)):
-		histbins.append(na.linspace(minval[e], maxval[e], args.nbins+1))
+		histbins.append(np.linspace(minval[e], maxval[e], args.nbins+1))
 
-	histdims = na.empty(len(args.vars))
+	histdims = np.empty(len(args.vars))
 	histdims.fill(args.nbins)
-	hist = na.zeros(histdims)
+	hist = np.zeros(histdims)
 
 	print minval
 	print maxval
@@ -265,7 +275,7 @@ for f in args.filename:
 			pbar = ProgressBar(widgets=['Binning raw data: ', Percentage(), Bar(), ' ', ETA()], maxval=len(vals)).start()
 			for cnt, val in enumerate(vals):
 				if len(val[1]) == 0: continue
-				lhist = na.histogramdd(na.transpose(val[0]), bins=histbins, weights=val[1])[0]
+				lhist = np.histogramdd(np.transpose(val[0]), bins=histbins, weights=val[1])[0]
 				hist += val[2]*lhist
 				pbar.update(cnt+1)
 			pbar.finish()
@@ -291,7 +301,7 @@ for f in args.filename:
 			varstrings = args.vars + ["dens"] + excludelist
 			gz = g.retrieve_ghost_zones(nghost, varstrings, smoothed=False)
 			ssg = 2**(ss - 1)*nghost
-			cgshape = 2**ss*(na.array(na.shape(gz['x'])) - 1) + 1
+			cgshape = 2**ss*(np.array(np.shape(gz['x'])) - 1) + 1
 			ofs = 2.**(-ss-1)
 			for e, ev in enumerate(args.vars):
 				vvals.append(congrid(gz[ev], cgshape, minusone=True, offset=ofs, buffer=ssg).ravel())
@@ -316,8 +326,8 @@ for f in args.filename:
 					evals[e+e2+1] = eval2[evals[e] < args.excludethr[e]]
 		if len(vvals) > 0:
 			if len(vvals[0]) > 0:
-				vol = na.product(g.dds)/2**(3*ss)
-				hist += vol*na.histogramdd(na.transpose(vvals), bins=histbins, weights=dvals)[0]
+				vol = np.product(g.dds)/2**(3*ss)
+				hist += vol*np.histogramdd(np.transpose(vvals), bins=histbins, weights=dvals)[0]
 		pbar.update(cnt+1)
 	pbar.finish()
 
@@ -336,7 +346,7 @@ for f in args.filename:
 	f = open(fn, 'w')
 	f.write(str(len(args.vars))+'\n')
 	f.write(str(args.nbins)+'\n')
-	f.write(str(na.sum(hist))+'\n')	
+	f.write(str(np.sum(hist))+'\n')	
 	f.write(str(time[tindex])+'\n')
 	if len(args.vars) == 1:
 		f.write(string.join(["% 15.10E" % x for x in histbins[0]])+'\n')
@@ -347,7 +357,7 @@ for f in args.filename:
 	f.close()
 
 	if not args.silent:
-		lhist = na.log10(hist)
+		lhist = np.log10(hist)
 		
 		fig = plt.figure()
 		ax = fig.add_subplot(111)
