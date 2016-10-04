@@ -2,7 +2,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='generate a file to input directly into FLASH from a MESA profile')
 parser.add_argument('--indata', '-i', dest='indata', help='path and filename of MESA profile we want to prune', type=str)
-parser.add_argument('--outdata', '-o', dest='outdata', help='path and filename of the output file we will feed to FLASH', type=str, default='mesa_wrapper_out.dat')
+parser.add_argument('--outdata', '-o', dest='outdata', help='path and filename of the output file we will feed to FLASH', type=str, default='sm.dat')
 parser.add_argument('--elements', '-e', dest='els', help='elements we wish to track', type=str, default=['h1', 'he4', 'c12', 'o16'], nargs='+')
 parser.add_argument('--plot', '-p', dest='plot', help='whether to save a plot or not', action='store_true', default=False)
 args = parser.parse_args()
@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 from astropy.io import ascii
 from astropy.table import Table
 import numpy as np
+
+R_sun = 6.96E10
 
 
 prof = ascii.read(args.indata, header_start=4, data_start=5, format='basic', guess=False)
@@ -44,13 +46,14 @@ if diff_max > 0.0:
 	print "WARNING: mass fractions of the elements do not always sum to unity. Greatest deviation is %f" % diff_max
 
 
-# TODO return log or not?
-arrays = np.append([10**prof['logR'], 10**prof['logRho'], 10**prof['logP']], mf_els, axis=0)
+# convert from log and into [cgs]
+arrays = np.append([R_sun*10**prof['logR'], 10**prof['logRho'], 10**prof['logT'], 10**prof['logP']], mf_els, axis=0)
 # reverse of the order of each of the columns so that we're going from small R to big R
 arrays = np.fliplr(arrays)
-names = np.append(['logR', 'logRho', 'logP'], args.els, axis=0)
+names = np.append(['R', 'Rho', 'T', 'P'], args.els, axis=0)
 data = Table(list(arrays), names=names)
-ascii.write(data, args.outdata)
+# don't write col headers
+ascii.write(data, args.outdata, format='no_header')
 
 # want two integers in the first line listing the number of rows followed by 
 # the number of columns in the table. Then, output the table just below that.
