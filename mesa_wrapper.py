@@ -43,7 +43,8 @@ for row in np.arange(0,len(prof)):
 	if diff > diff_max:
 		diff_max = diff
 if diff_max > 0.0:
-	print "WARNING: mass fractions of the elements do not always sum to unity. Greatest deviation is %f" % diff_max
+	pass
+	#print "WARNING: mass fractions of the elements do not always sum to unity. Greatest deviation is %f" % diff_max
 
 
 # convert from log and into [cgs]
@@ -55,7 +56,7 @@ data = Table(list(arrays), names=names)
 # don't write col headers
 ascii.write(data, args.outdata, format='no_header')
 
-# want two integers in the first line listing the number of rows followed by 
+# want two integers in the first line listing the number of rows followed by
 # the number of columns in the table. Then, output the table just below that.
 new_first_line = str(len(prof['logR'])) + ' ' + str(len(names)) + '\n'
 with open(args.outdata, 'r') as original: data = original.read()
