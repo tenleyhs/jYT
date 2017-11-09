@@ -27,17 +27,17 @@ bins = '50000'
 
 hists = [
 	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0030.dat',
-	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
+	'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
 labels = [
 	'total',
-	#'h1'
+	'h1'
 ]
 
 colors = [
 	'black',
-	#red
+	red
 ]
 
 # smoothing
@@ -128,8 +128,8 @@ else:
 
 
 # plot Guillochon 2013
-ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
-ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+#ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
+#ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
 #ax2.axhline(0., c='k', ls='--')
 ax2.set_xlim(-3, 3)
