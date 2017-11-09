@@ -17,18 +17,16 @@ lw = 1.5
 # dir
 #d = '/Users/lawsmith/Dropbox/temp/m1.0_p1_b1.0/'
 #d = '/Users/lawsmith/Dropbox/temp/m1.0_p10_b2.0/'
-d = '/nobackup/jlawsmit/m1.0_p10_b2.0/'
+d = '/nobackup/jlawsmit/m1.0_p1_b1.5/'
 
-#beta = '1.000'
-beta = '2.000'
+beta = '1.500'
 
-#title = 'm=1.0, p=1, b=1.0'
-title = 'm=1.0, p=10, b=2.0'
+title = 'm=1.0, p=1, b=1.5'
 
 bins = '50000'
 
 hists = [
-	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0030.dat',
+	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0097.dat',
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
@@ -126,9 +124,9 @@ ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
 fig.tight_layout()
 if do_smoothing:
-	fig.savefig(d+'dmde_' + bins + '_sm.pdf')
+	fig.savefig(d+'dmde_' + bins + '_sm.png')
 else:
-	fig.savefig(d+'dmde_' + bins + '.pdf')
+	fig.savefig(d+'dmde_' + bins + '.png')
 
 
 # plot Guillochon 2013
@@ -144,6 +142,6 @@ ax2.legend()
 ax2.set_title(title)
 fig2.tight_layout()
 if do_smoothing:
-	fig2.savefig(d+'mdot_' + bins + '_sm.pdf')
+	fig2.savefig(d+'mdot_' + bins + '_sm.png')
 else:
-	fig2.savefig(d+'mdot_' + bins + '.pdf')
+	fig2.savefig(d+'mdot_' + bins + '.png')
