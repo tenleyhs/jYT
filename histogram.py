@@ -109,7 +109,7 @@ class var(object):
 				pos += (data[ax].v - ptvec[tindex,i])**2.
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax].v - ptvec[tindex,i+3])**2.
-			np.sqrt(pos, pos)	
+			np.sqrt(pos, pos)
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
 			arr = sign*(-gmpt/pos + 0.5*vel2)
 			#arr[pos < args.minradius*peridist] = float("nan")
@@ -123,7 +123,7 @@ class var(object):
 				pos += (data[ax] - ptvec[tindex,i])**2.
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax] - ptvec[tindex,i+3])**2.
-			np.sqrt(pos, pos)	
+			np.sqrt(pos, pos)
 			#arr = sign*data['dens']*(gmpt/pos - 0.5*vel2)
 
 			vel2s = np.zeros(data['x'].shape, dtype='float64')
@@ -155,7 +155,7 @@ if (len(args.excludevars) > 0):
 
 if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 	odata = np.loadtxt('pruned_sinks_evol.dat', dtype='float64')
-	
+
 	# are the part_tags always the same? or can just sort by mass
 	# pt is black hole, ob is star
 	if odata[0,14] > odata[1,14]:
@@ -164,7 +164,7 @@ if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 		part_tag_pt = odata[1,0]
 	odata_pt = odata[np.where(odata[:,0]==part_tag_pt)[0]]
 	odata_ob = odata[np.where(odata[:,0]!=part_tag_pt)[0]]
-	
+
 	ptvec = odata_pt[:,2:8]
 	obvec = odata_ob[:,2:8]
 	# just setting self-bound mass vector to object vector. should be very similar
@@ -264,7 +264,7 @@ for f in args.filename:
 
 	histdims = np.empty(len(args.vars))
 	histdims.fill(args.nbins)
-	hist = np.zeros(histdims)
+	hist = np.zeros(int(histdims))
 
 	print minval
 	print maxval
@@ -346,7 +346,7 @@ for f in args.filename:
 	f = open(fn, 'w')
 	f.write(str(len(args.vars))+'\n')
 	f.write(str(args.nbins)+'\n')
-	f.write(str(np.sum(hist))+'\n')	
+	f.write(str(np.sum(hist))+'\n')
 	f.write(str(time[tindex])+'\n')
 	if len(args.vars) == 1:
 		f.write(string.join(["% 15.10E" % x for x in histbins[0]])+'\n')
@@ -358,10 +358,8 @@ for f in args.filename:
 
 	if not args.silent:
 		lhist = np.log10(hist)
-		
+
 		fig = plt.figure()
 		ax = fig.add_subplot(111)
 		ax.plot(histbins[0], lhist)
 		fig.savefig(('_'.join(args.vars))+'_histogram_'+str(f)+'.png')
-
-
