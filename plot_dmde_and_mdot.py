@@ -4,7 +4,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy.interpolate import UnivariateSpline
-execfile('/Users/lawsmith/Dropbox/helpers/my_settings.py')
+#execfile('/Users/lawsmith/Dropbox/helpers/my_settings.py')
+execfile('/nobackup/jlawsmit/jYT/my_settings.py')
 
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
@@ -15,7 +16,8 @@ lw = 1.5
 
 # dir
 #d = '/Users/lawsmith/Dropbox/temp/m1.0_p1_b1.0/'
-d = '/Users/lawsmith/Dropbox/temp/m1.0_p10_b2.0/'
+#d = '/Users/lawsmith/Dropbox/temp/m1.0_p10_b2.0/'
+d = '/nobackup/jlawsmit/m1.0_p10_b2.0/'
 
 #beta = '1.000'
 beta = '2.000'
@@ -52,8 +54,10 @@ min_log_t = 6.5
 max_log_t = 9.0
 
 # load Guillochon 2013 dmdts
-g13_43 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/4-3/' + beta + '.dat')
-g13_53 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/5-3/' + beta + '.dat')
+#g13_43 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/4-3/' + beta + '.dat')
+#g13_53 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/5-3/' + beta + '.dat')
+g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + beta + '.dat')
+g13_53 = np.loadtxt('/nobackup/jlawsmit/dmdts/5-3/' + beta + '.dat')
 
 
 
