@@ -5,15 +5,16 @@ ffmpeg -r 24 -f image2 -i multitidal_hdf5_plt_cnt_%04d_Slice_z_dens.png -b:v 4M 
 or can use quicktime 7 like James suggested
 '''
 
-dir = 'm1.0_p1_b1.0'
+dir = 'm1.0_p16_b3.0'
 var = 'dens'
 log_tf = True
 width = (10, 'rsun')
-zmax = 80.78   # p1:80.78, p16:500   # max density of this profile
+zmax = 500  # p1:80.78, p10:169.88, p16:500   # max density of this profile
 zmin = 1e-5 * zmax
 set_zlim_tf = True
 
 LOAD_FILES = '/nobackup/jlawsmit/' + dir + '/multitidal_hdf5_plt_cnt_*'
+#LOAD_FILES = '/nobackup/jlawsmit/' + dir + '/multitidal_hdf5_plt_cnt_[0-1][2-9][0-9][0-9]'
 SAVE_PATH = '/nobackup/jlawsmit/' + dir + '/plots/'
 
 import yt

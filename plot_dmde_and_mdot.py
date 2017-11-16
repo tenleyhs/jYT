@@ -15,29 +15,27 @@ M_bh = 1e6*M_sun
 lw = 1.5
 
 # dir
-#d = '/Users/lawsmith/Dropbox/temp/m1.0_p1_b1.0/'
-#d = '/Users/lawsmith/Dropbox/temp/m1.0_p10_b2.0/'
-d = '/nobackup/jlawsmit/m1.0_p1_b1.5/'
+d = '/nobackup/jlawsmit/m1.0_p10_b2.0/'
 
-beta = '1.500'
+beta = '2.000'
 
-title = 'm=1.0, p=1, b=1.5'
+title = 'm=1.0, p=10, b=2.0'
 
 bins = '50000'
 
 hists = [
-	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0030.dat',
-	'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
+	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0040.dat',
+	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
 labels = [
 	'total',
-	'h1'
+	#'h1'
 ]
 
 colors = [
 	'black',
-	red
+	#red
 ]
 
 # smoothing
@@ -118,7 +116,7 @@ for h, l, c in zip(hists, labels, colors):
 		ax2.plot(log_t_yr, log_mdot_moyr, color=c, lw=lw, rasterized=True, label=l)
 
 
-#ax.set_xlim(-5, 5)
+ax.set_xlim(-10, 10)
 #ax.set_ylim(9, 15)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
@@ -130,8 +128,8 @@ else:
 
 
 # plot Guillochon 2013
-#ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
-#ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
+ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
 #ax2.axhline(0., c='k', ls='--')
 ax2.set_xlim(-3, 3)
