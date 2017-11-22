@@ -4,7 +4,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy.interpolate import UnivariateSpline
-#execfile('/Users/lawsmith/Dropbox/helpers/my_settings.py')
 execfile('/nobackup/jlawsmit/jYT/my_settings.py')
 
 plt.rcParams['legend.fontsize'] = 16
@@ -14,17 +13,17 @@ plt.rcParams['font.size'] = 18
 M_bh = 1e6*M_sun
 lw = 1.5
 
-# dir
-d = '/nobackup/jlawsmit/m1.0_p10_b2.0/'
-
-beta = '2.000'
-
-title = 'm=1.0, p=10, b=2.0'
-
-bins = '50000'
+# CHANGE EACH TIME
+d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
+beta = '1.000'
+title = 'm=1.0, p=1, b=1.0'
+bins = '100'
+fname = ''
+do_smoothing = False
+wl = 10
 
 hists = [
-	'b50000_ev_bhbound_histogram_multitidal_hdf5_chk_0040.dat',
+	'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
@@ -38,9 +37,6 @@ colors = [
 	#red
 ]
 
-# smoothing
-do_smoothing = False
-wl = 10
 
 # limits by eye for e in dmde plot
 elim = 2e17
@@ -49,11 +45,6 @@ elim = 2e17
 min_log_t = 6.5
 max_log_t = 9.0
 
-# load Guillochon 2013 dmdts
-#g13_43 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/4-3/' + beta + '.dat')
-#g13_53 = np.loadtxt('/Users/lawsmith/Dropbox/temp/dmdts/5-3/' + beta + '.dat')
-g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + beta + '.dat')
-g13_53 = np.loadtxt('/nobackup/jlawsmit/dmdts/5-3/' + beta + '.dat')
 
 
 
@@ -116,30 +107,66 @@ for h, l, c in zip(hists, labels, colors):
 		ax2.plot(log_t_yr, log_mdot_moyr, color=c, lw=lw, rasterized=True, label=l)
 
 
+
+# load Guillochon 2013 dmdts
+#g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + beta + '.dat')
+#g13_53 = np.loadtxt('/nobackup/jlawsmit/dmdts/5-3/' + beta + '.dat')
+
+bs = [
+    '0.600',
+    '0.650',
+    '0.700',
+    '0.750',
+    '0.800',
+    '0.850',
+    '0.900',
+    '1.000',
+    '1.100',
+    '1.200',
+    '1.300',
+    '1.400',
+    '1.500',
+    '1.600',
+    '1.700',
+    '1.800',
+    '1.850',
+    '1.900',
+    '2.000',
+    '2.500',
+    '3.000',
+    '3.500',
+    '4.000'
+    ]
+
+for b in bs:
+    g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + b + '.dat') 
+
+    if b == '1.000':
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color=orange, label='4/3')
+    else:
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color=orange)
+
+    #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+
 ax.set_xlim(-10, 10)
 #ax.set_ylim(9, 15)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
 fig.tight_layout()
-if do_smoothing:
-	fig.savefig(d+'dmde_' + bins + '_sm.png')
-else:
-	fig.savefig(d+'dmde_' + bins + '.png')
-
+fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
 
 # plot Guillochon 2013
-ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
-ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+#ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
+#ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
 #ax2.axhline(0., c='k', ls='--')
-ax2.set_xlim(-3, 3)
-ax2.set_ylim(-6, 2)
+#ax2.set_xlim(-3, 3)
+ax2.set_xlim(-2, 2)
+#ax2.set_ylim(-6, 2)
+ax2.set_ylim(-5, 1)
 ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
 ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax2.legend()
 ax2.set_title(title)
 fig2.tight_layout()
-if do_smoothing:
-	fig2.savefig(d+'mdot_' + bins + '_sm.png')
-else:
-	fig2.savefig(d+'mdot_' + bins + '.png')
+fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
