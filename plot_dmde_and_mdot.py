@@ -5,7 +5,18 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy.interpolate import UnivariateSpline
 #execfile('/nobackup/jlawsmit/jYT/my_settings.py')
-execfile('/pfs/lawsmith/jYT/my_settings.py')
+#execfile('/pfs/lawsmith/jYT/my_settings.py')
+day = 86400. 
+yr = 3.154e7 
+c = 2.993e10 
+G = 6.674e-8 
+pc = 3.086e18 
+AU =  1.496e13 
+M_sun = 1.988435e33 
+R_sun = 6.955e10 
+M_jup = 1.898e30 
+R_jup = 6.9173e9 
+L_sun = 3.828e33
 
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
@@ -141,9 +152,9 @@ for b in bs:
     g13_43 = np.loadtxt('/pfs/lawsmith/dmdts/4-3/' + b + '.dat') 
 
     if b == beta:
-        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color=orange, label='4/3')
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color='orange', label='4/3')
     else:
-        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color=orange)
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color='orange')
 
     #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
@@ -152,7 +163,8 @@ ax.set_xlim(-10, 10)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
 fig.tight_layout()
-fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
+#fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
+fig.savefig('/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/dmde.png')
 
 # plot Guillochon 2013
 #ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
@@ -168,4 +180,5 @@ ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax2.legend()
 ax2.set_title(title)
 fig2.tight_layout()
-fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
+#fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
+fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/mdot.png')
