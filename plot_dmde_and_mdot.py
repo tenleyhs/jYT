@@ -4,7 +4,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy.interpolate import UnivariateSpline
-execfile('/nobackup/jlawsmit/jYT/my_settings.py')
+#execfile('/nobackup/jlawsmit/jYT/my_settings.py')
+execfile('/pfs/lawsmith/jYT/my_settings.py')
 
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
@@ -14,16 +15,17 @@ M_bh = 1e6*M_sun
 lw = 1.5
 
 # CHANGE EACH TIME
-d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
-beta = '1.000'
-title = 'm=1.0, p=1, b=1.0'
+#d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
+d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/'
+beta = '3.000'
+title = 'm=1.0, p=10, b=3.0'
 bins = '100'
 fname = ''
 do_smoothing = False
 wl = 10
 
 hists = [
-	'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',
+	'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
@@ -37,16 +39,12 @@ colors = [
 	#red
 ]
 
-
 # limits by eye for e in dmde plot
 elim = 2e17
 
 # limits by eye for t in dmdt plot. from jupyter
 min_log_t = 6.5
 max_log_t = 9.0
-
-
-
 
 # for dmde's
 def smooth(x,window_len=11,window='hanning'):
@@ -139,9 +137,10 @@ bs = [
     ]
 
 for b in bs:
-    g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + b + '.dat') 
+    #g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + b + '.dat') 
+    g13_43 = np.loadtxt('/pfs/lawsmith/dmdts/4-3/' + b + '.dat') 
 
-    if b == '1.000':
+    if b == beta:
         ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color=orange, label='4/3')
     else:
         ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color=orange)
