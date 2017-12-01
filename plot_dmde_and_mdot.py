@@ -30,7 +30,7 @@ lw = 1.5
 d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/'
 beta = '3.000'
 title = 'm=1.0, p=10, b=3.0'
-bins = '100'
+bins = '500'
 fname = ''
 do_smoothing = False
 wl = 10
@@ -163,8 +163,7 @@ ax.set_xlim(-10, 10)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
 fig.tight_layout()
-#fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
-fig.savefig('/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/dmde.png')
+fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
 
 # plot Guillochon 2013
 #ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
@@ -180,5 +179,4 @@ ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax2.legend()
 ax2.set_title(title)
 fig2.tight_layout()
-#fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
-fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/mdot.png')
+fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
