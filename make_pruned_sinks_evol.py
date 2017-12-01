@@ -17,13 +17,13 @@ for i, t in enumerate(df['[00]part_tag']):
 		restart_time = str(df['[01]time'][i+1])
 
 		# count how many rows back we have to delete
-		# hopefully you don't ever have to go back more than 100 rows?
+		# might have to increase this from 10000
 		j = 0
-		for j in range(100):
+		for j in range(10000):
 			if str(df['[01]time'][i-j]) == restart_time:
 				break
 			j += 1
-			if j==100:
+			if j==10000:
 				print 'Error: found restart but no matching time'
 
 		# j+2 because we want to delete back to row j and j-1,
