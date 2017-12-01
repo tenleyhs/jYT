@@ -157,8 +157,10 @@ for b in bs:
 
     if b == beta:
         #ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color='orange', label='4/3')
+		pass
     else:
         #ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color='orange')
+		pass
 
     #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
