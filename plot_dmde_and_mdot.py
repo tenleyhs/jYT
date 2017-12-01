@@ -38,7 +38,7 @@ wl = 10
 
 hists = [
 	#'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
-	'b100_chk0028_128','b100_chk0028_256'
+	'b100_chk0028_128.dat','b100_chk0028_256.dat'
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
