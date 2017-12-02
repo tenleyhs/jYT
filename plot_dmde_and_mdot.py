@@ -31,14 +31,14 @@ lw = 1.5
 d = '/pfs/lawsmith/FLASH4.3/runs/temp/'
 beta = '3.000'
 title = 'm=1.0, p=10, b=2.0'
-bins = '100'
+bins = '10000'
 fname = ''
 do_smoothing = False
 wl = 10
 
 hists = [
 	#'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
-	'b1000_chk0028_128.dat','b1000_chk0028_256.dat'
+	'b10000_chk0028_128.dat','b10000_chk0028_256.dat'
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
