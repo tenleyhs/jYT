@@ -29,7 +29,7 @@ lw = 1.5
 #d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
 #d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/'
 d = '/pfs/lawsmith/FLASH4.3/runs/temp/'
-beta = '3.000'
+beta = '2.000'
 title = 'm=1.0, p=10, b=2.0'
 bins = '10000'
 fname = ''
@@ -38,7 +38,7 @@ wl = 10
 
 hists = [
 	#'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
-	'b10000_chk0028_128.dat','b10000_chk0028_256.dat'
+	'b10000_chk0080_128.dat','b10000_chk0080_256.dat'
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
@@ -164,7 +164,7 @@ for b in bs:
 
     #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
-ax.set_xlim(-10, 10)
+ax.set_xlim(-20, 20)
 #ax.set_ylim(9, 15)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
@@ -177,7 +177,7 @@ fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
 
 #ax2.axhline(0., c='k', ls='--')
 #ax2.set_xlim(-3, 3)
-ax2.set_xlim(-2, 2)
+ax2.set_xlim(-4, 2)
 #ax2.set_ylim(-6, 2)
 ax2.set_ylim(-5, 1)
 ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
