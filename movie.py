@@ -5,10 +5,10 @@ ffmpeg -r 24 -f image2 -i multitidal_hdf5_plt_cnt_%04d_Slice_z_dens.png -b:v 4M 
 or can use quicktime 7 like James suggested
 '''
 
-dir = 'm1.0_p10_b3.0'
+dir = 'm1.0_p10_b2.0_256'
 var = 'dens'
 log_tf = True
-width = (100, 'rsun')
+width = (10, 'rsun')
 zmax = 169.88  # p1:80.78, p10:169.88, p16:500   # max density of this profile
 zmin = 1e-5 * zmax
 set_zlim_tf = True
@@ -17,9 +17,9 @@ set_zlim_tf = True
 #LOAD_FILES = '/nobackup/jlawsmit/' + dir + '/multitidal_hdf5_plt_cnt_[0-1][2-9][0-9][0-9]'
 #SAVE_PATH = '/nobackup/jlawsmit/' + dir + '/plots/'
 
-LOAD_FILES = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/multitidal_hdf5_plt_cnt_*'
-#LOAD_FILES = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/multitidal_hdf5_plt_cnt_0[1-9][0-9][0-9]'
-SAVE_PATH = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/plots_100rsun/'
+#LOAD_FILES = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/multitidal_hdf5_plt_cnt_*'
+LOAD_FILES = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/multitidal_hdf5_plt_cnt_0[2-9][0-9][0-9]'
+SAVE_PATH = '/pfs/lawsmith/FLASH4.3/runs/' + dir + '/plots/'
 
 import yt
 import colormaps as cmaps

@@ -27,30 +27,33 @@ lw = 1.5
 
 # CHANGE EACH TIME
 #d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
-#d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b3.0/'
-d = '/pfs/lawsmith/FLASH4.3/runs/temp/'
+d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b2.0_256/'
 beta = '2.000'
 title = 'm=1.0, p=10, b=2.0'
 bins = '10000'
-fname = ''
+fname = '607080comparison'
 do_smoothing = False
 wl = 10
 
 hists = [
 	#'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
-	'b10000_chk0080_128.dat','b10000_chk0080_256.dat'
+	#'b10000_chk0080_128.dat','b10000_chk0080_256.dat'
+	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',
+	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0070.dat',
+	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat'
 	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
 	]
 
 labels = [
 	#'total',
-	'128','256'
+	#'128','256'
+	'60','70','80'
 	#'h1'
 ]
 
 colors = [
 	#'black',
-	'blue','orange'
+	'blue','orange','black'
 	#red
 ]
 
