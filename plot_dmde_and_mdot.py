@@ -5,19 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy.interpolate import UnivariateSpline
 #execfile('/nobackup/jlawsmit/jYT/my_settings.py')
-#execfile('/pfs/lawsmith/jYT/my_settings.py')
-day = 86400.
-yr = 3.154e7
-c = 2.993e10
-G = 6.674e-8
-pc = 3.086e18
-AU =  1.496e13
-M_sun = 1.988435e33
-R_sun = 6.955e10
-M_jup = 1.898e30
-R_jup = 6.9173e9
-L_sun = 3.828e33
-
+execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
@@ -26,36 +14,28 @@ M_bh = 1e6*M_sun
 lw = 1.5
 
 # CHANGE EACH TIME
-#d = '/nobackup/jlawsmit/m1.0_p1_b1.0/'
-d = '/pfs/lawsmith/FLASH4.3/runs/m1.0_p10_b2.0_256/'
 beta = '2.000'
-title = 'm=1.0, p=10, b=2.0'
-bins = '10000'
-fname = '607080comparison'
-do_smoothing = False
-wl = 10
+#title = 'm=1.0, p=10, b=2.0'
+fname = 'p16_sm'
+#text = 'age=0Gyr'
+#text = 'age=4.8Gyr'
+text = 'age=8.4Gyr'
+#text = r'$\beta=2.0$'
+do_smoothing = True
 
-hists = [
-	#'b'+bins+'_ev_bhbound_histogram_multitidal_hdf5_chk_0049.dat',
-	#'b10000_chk0080_128.dat','b10000_chk0080_256.dat'
-	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',
-	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0070.dat',
-	'b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat'
-	#'h1_bhbound_histogram_multitidal_hdf5_chk_0030.dat'
+ds = [
+	#['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',300,0.],
+	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat',r'$\beta=2.0$',250,-0.1],
+	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat','age=0Gyr',250,-0.1],
+	#['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',400,-0.4],
+	#['m1.0_p10_b1.5/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0090.dat',r'$\beta=1.5$',200,-0.15],
+	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',200,0.25],
+	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=4.8Gyr',200,0.25],
+	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',200,0.5],
+	['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
+	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=8.4Gyr',300,3],
+	['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0]
 	]
-
-labels = [
-	#'total',
-	#'128','256'
-	'60','70','80'
-	#'h1'
-]
-
-colors = [
-	#'black',
-	'blue','orange','black'
-	#red
-]
 
 # limits by eye for e in dmde plot
 elim = 2e17
@@ -86,42 +66,41 @@ def smooth(x,window_len=11,window='hanning'):
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
 
-for h, l, c in zip(hists, labels, colors):
+for d in ds:
+    e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0], skiprows=4)
+    de = e[1]-e[0]
+    dm_de = dm/de
 
-	e, dm = np.loadtxt(d+h, skiprows=4)
-	de = e[1]-e[0]
-	dm_de = dm/de
+    # calculate mdot
+    e_bound = e[np.where(e<0.)]
+    t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
+    de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
+    dm_de_bound = dm_de[np.where(e<0)]
+    mdot = dm_de_bound*de_dt
 
-	# calculate mdot
-	e_bound = e[np.where(e<0.)]
-	t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
-	de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
-	dm_de_bound = dm_de[np.where(e<0)]
-	mdot = dm_de_bound*de_dt
+    # take logs. better to smooth what I'm actually plotting (log-linear or log-log)
+    log_t = np.log10(t)
+    log_t_yr = np.log10(t/yr)
+    log_mdot = np.log10(mdot)
+    log_mdot_moyr = np.log10(mdot*yr/M_sun)
+    log_dm_de = np.log10(dm_de)
 
-	# take logs. better to smooth what I'm actually plotting (log-linear or log-log)
-	log_t = np.log10(t)
-	log_t_yr = np.log10(t/yr)
-	log_mdot = np.log10(mdot)
-	log_mdot_moyr = np.log10(mdot*yr/M_sun)
-	log_dm_de = np.log10(dm_de)
+    # mdot eddington
+    eta = 0.1
+    mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
+    log_mdot_edd = np.log10(mdot_edd)
+    
+    if do_smoothing:
+        # smooth hanning dmde
+        slog_dm_de = smooth(log_dm_de, window_len=d[2])
+        slog_mdot_moyr = smooth(log_mdot_moyr, window_len=d[2])
+        ax.plot(e/1e17, slog_dm_de, lw=lw, label=d[1])
+        sel = np.where(log_t_yr<d[3])[0]
+        ax2.plot(log_t_yr[sel], slog_mdot_moyr[sel], lw=lw, label=d[1])
 
-	# mdot eddington
-	eta = 0.1
-	mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
-	log_mdot_edd = np.log10(mdot_edd)
-
-	if do_smoothing:
-		# smooth hanning dmde
-		slog_dm_de = smooth(log_dm_de, window_len=wl)
-		slog_mdot_moyr = smooth(log_mdot_moyr, window_len=wl)
-		ax.plot(e/1e17, slog_dm_de, color=c, lw=lw)
-		ax2.plot(log_t_yr, slog_mdot_moyr, color=c, lw=lw, label=l)
-
-	else:
-		ax.plot(e/1e17, log_dm_de, color=c, lw=lw, rasterized=True)
-		ax2.plot(log_t_yr, log_mdot_moyr, color=c, lw=lw, rasterized=True, label=l)
-
+    else:
+        ax.plot(e/1e17, log_dm_de, lw=lw, rasterized=True, label=d[1])
+        ax2.plot(log_t_yr, log_mdot_moyr, lw=lw, rasterized=True, label=d[1])
 
 
 # load Guillochon 2013 dmdts
@@ -153,39 +132,39 @@ bs = [
     '3.500',
     '4.000'
     ]
-
+"""
 for b in bs:
     #g13_43 = np.loadtxt('/nobackup/jlawsmit/dmdts/4-3/' + b + '.dat')
     g13_43 = np.loadtxt('/pfs/lawsmith/dmdts/4-3/' + b + '.dat')
 
     if b == beta:
-        #ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color='orange', label='4/3')
-		pass
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=1.5, color='orange', label='4/3')
     else:
-        #ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color='orange')
-		pass
+        ax2.plot(g13_43[:,0], g13_43[:,1], ls='-', lw=0.5, color='orange')
 
-    #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+    ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
+"""
 
-ax.set_xlim(-20, 20)
+ax.set_xlim(-10, 10)
 #ax.set_ylim(9, 15)
 ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
 ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
+ax.legend()
 fig.tight_layout()
-fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
+#fig.savefig(d+'dmde_'+bins+'_'+fname+'.png')
+fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/dmde_'+fname+'.png')
 
 # plot Guillochon 2013
 #ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
 #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
-#ax2.axhline(0., c='k', ls='--')
-#ax2.set_xlim(-3, 3)
-ax2.set_xlim(-4, 2)
-#ax2.set_ylim(-6, 2)
-ax2.set_ylim(-5, 1)
+ax2.set_xlim(-2.5, 1)
+ax2.set_ylim(-3, 1)
 ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
 ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax2.legend()
-ax2.set_title(title)
+ax2.text(-2.4,0.7,text)
+#ax2.set_title(title)
 fig2.tight_layout()
-fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
+#fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
+fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_'+fname+'.png')

@@ -10,9 +10,9 @@ plt.rcParams['legend.fontsize'] = 14
 plt.rcParams['legend.borderpad'] = 0.1
 plt.rcParams['legend.labelspacing'] = 0.1
 plt.rcParams['legend.handletextpad'] = 0.1
-plt.rcParams['text.usetex'] = True
-plt.rcParams['font.family'] = 'stixgeneral'
-plt.rcParams['font.size'] = 16
+#plt.rcParams['text.usetex'] = True
+#plt.rcParams['font.family'] = 'stixgeneral'
+#plt.rcParams['font.size'] = 16
 
 plt.rcParams['xtick.major.size'] = 6.0
 plt.rcParams['ytick.major.size'] = 6.0
@@ -30,7 +30,7 @@ plt.rcParams['xtick.minor.top'] = True
 plt.rcParams['ytick.major.right'] = True
 plt.rcParams['ytick.minor.right'] = True
 
-
+"""
 # http://oobrien.com/2012/01/tube-colours/
 brown = '#B36305'
 red = '#E32017'
@@ -47,6 +47,7 @@ orange = '#EE7C0E'
 softgreen = '#84B817'
 brightred = '#E21836'
 purple = '#7156A5'
+"""
 
 # CONSTANTS [cgs]
 # todo should just use astropy probably
