@@ -13,7 +13,7 @@ plt.rcParams['legend.handletextpad'] = 0.1
 #plt.rcParams['text.usetex'] = True
 #plt.rcParams['font.family'] = 'stixgeneral'
 #plt.rcParams['font.size'] = 16
-
+"""
 plt.rcParams['xtick.major.size'] = 6.0
 plt.rcParams['ytick.major.size'] = 6.0
 plt.rcParams['xtick.minor.size'] = 2.0
@@ -24,11 +24,11 @@ plt.rcParams['xtick.minor.width'] = 0.6
 plt.rcParams['ytick.minor.width'] = 0.6
 plt.rcParams['xtick.minor.visible'] = True
 plt.rcParams['ytick.minor.visible'] = True
-
 plt.rcParams['xtick.major.top'] = True
 plt.rcParams['xtick.minor.top'] = True
 plt.rcParams['ytick.major.right'] = True
 plt.rcParams['ytick.minor.right'] = True
+"""
 
 """
 # http://oobrien.com/2012/01/tube-colours/

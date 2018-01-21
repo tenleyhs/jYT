@@ -20,24 +20,25 @@ f_n14_ZAMS = 7.509e-4
 f_o16_ZAMS = 6.072e-3
 f_ne20_ZAMS = 1.232e-3
 
-# CHANGE EACH TIME
-fname = 'p16_b3.0'
-#text = 'age=0Gyr, '+r'$\beta=2.0$'
-#text = 'age=4.8Gyr, '+r'$\beta=3.0$'
-text = 'age=8.4Gyr, '+r'$\beta=3.0$'
 do_smoothing = True
 
-ds = [
-	#['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0.],
-	#['m1.0_p1_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 250, -0.1],
-	#['m1.0_p10_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 400, -0.4],
-	#['m1.0_p10_b1.5/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0090.dat', 200, -0.15],
-	#['m1.0_p10_b2.0_128/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 200, 0.25],
-	#['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.25],
-	#['m1.0_p10_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 200, 0.5],
-	#['m1.0_p16_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 300, 3],
-	['m1.0_p16_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 500, 0]
-	]
+ds = [ 
+    ['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0., 'p1_b1.0', 'age=0Gyr, '+r'$\beta=1.0$'],
+    ['m1.0_p1_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 250, -0.15, 'p1_b2.0', 'age=0Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p1_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 250, 0.25, 'p1_b3.0', 'age=0Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p10_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 500, 0.2, 'p10_b1.0', 'age=4.8Gyr, '+r'$\beta=1.0$'],
+    ['m1.0_p10_b1.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 500, 0.45, 'p10_b1.0_256', 'age=4.8Gyr, '+r'$\beta=1.0$'+' (256)'],
+    ['m1.0_p10_b1.5/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0090.dat', 200, -0.2, 'p10_b1.5', 'age=4.8Gyr, '+r'$\beta=1.5$'],
+    ['m1.0_p10_b2.0_128/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 200, 0.15, 'p10_b2.0', 'age=4.8Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.8, 'p10_b2.0_256', 'age=4.8Gyr, '+r'$\beta=2.0$'+' (256)'],
+    ['m1.0_p10_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 200, 0.45, 'p10_b3.0', 'age=4.8Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p10_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 200, 0.3, 'p10_b4.0', 'age=4.8Gyr, '+r'$\beta=4.0$'],
+    ['m1.0_p10_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0055.dat', 200, 0.35, 'p10_b5.0', 'age=4.8Gyr, '+r'$\beta=5.0$'],
+    ['m1.0_p16_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 300, 0.6, 'p16_b2.0', 'age=8.4Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p16_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 500, 0., 'p16_b3.0', 'age=8.4Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p16_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b4.0', 'age=8.4Gyr, '+r'$\beta=4.0$'],
+    ['m1.0_p16_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b5.0', 'age=8.4Gyr, '+r'$\beta=5.0$']
+]  
 
 #els = ['ev','h1', 'he4', 'c12', 'n14', 'o16', 'ne20']
 # monica order
@@ -62,10 +63,10 @@ def smooth(x,window_len=11,window='hanning'):
 	return y[window_len:-window_len+1]
 
 
-fig, ax = plt.subplots()
-fig2, ax2 = plt.subplots()
 
 for d in ds:
+    fig, ax = plt.subplots()
+    fig2, ax2 = plt.subplots()
     for el in els:
         e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+el+d[1], skiprows=4)
         de = e[1]-e[0]
@@ -113,11 +114,12 @@ for d in ds:
             ax2.plot(log_t_yr, log_mdot_moyr, lw=lw, rasterized=True, label=el)
 
 
-ax2.set_xlim(-2.25, 1)
-ax2.set_ylim(0, 8)
-ax2.set_ylabel(r'$X/X_\odot$')
-ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-ax2.legend()
-ax2.text(-2.2,7,text)
-fig2.tight_layout()
-fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar_'+fname+'.png')
+    ax2.set_xlim(-2., 0.5)
+    ax2.set_ylim(0, 4)
+    ax2.axhline(1, ls=':', lw=1.5, c='k', alpha=0.5)
+    ax2.set_ylabel(r'$X/X_\odot$')
+    ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+    ax2.legend()
+    ax2.text(-1.95,3.75,d[5])
+    fig2.tight_layout()
+    fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar/mdot_comp_solar_'+d[4]+'.png')

@@ -12,24 +12,24 @@ plt.rcParams['font.size'] = 18
 # PARAMS
 M_bh = 1e6*M_sun
 lw = 1.5
-
-# CHANGE EACH TIME
-fname = 'p1_b1.0'
-text = 'age=0Gyr, '+r'$\beta=1.0$'
-#text = 'age=4.8Gyr, '+r'$\beta=1.0$'
-#text = 'age=8.4Gyr, '+r'$\beta=3.0$'
 do_smoothing = True
 
 ds = [
-	['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0.],
-	#['m1.0_p1_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 250, -0.1],
-	#['m1.0_p10_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 400, -0.4],
-	#['m1.0_p10_b1.5/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0090.dat', 200, -0.15],
-	#['m1.0_p10_b2.0_128/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 200, 0.25],
-	#['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.25],
-	#['m1.0_p10_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 200, 0.5],
-	#['m1.0_p16_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 300, 3],
-	#['m1.0_p16_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 500, 0]
+    ['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0., 'p1_b1.0', 'age=0Gyr, '+r'$\beta=1.0$'],
+    ['m1.0_p1_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 250, -0.15, 'p1_b2.0', 'age=0Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p1_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 250, 0.25, 'p1_b3.0', 'age=0Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p10_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 500, 0.2, 'p10_b1.0', 'age=4.8Gyr, '+r'$\beta=1.0$'],
+    ['m1.0_p10_b1.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 500, 0.45, 'p10_b1.0_256', 'age=4.8Gyr, '+r'$\beta=1.0$'+' (256)'],
+    ['m1.0_p10_b1.5/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0090.dat', 200, -0.2, 'p10_b1.5', 'age=4.8Gyr, '+r'$\beta=1.5$'],
+    ['m1.0_p10_b2.0_128/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 200, 0.25, 'p10_b2.0', 'age=4.8Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.8, 'p10_b2.0_256', 'age=4.8Gyr, '+r'$\beta=2.0$'+' (256)'],
+    ['m1.0_p10_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 200, 0.45, 'p10_b3.0', 'age=4.8Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p10_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 200, 0.3, 'p10_b4.0', 'age=4.8Gyr, '+r'$\beta=4.0$'],
+    ['m1.0_p10_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0055.dat', 200, 0.35, 'p10_b5.0', 'age=4.8Gyr, '+r'$\beta=5.0$'],
+    ['m1.0_p16_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 300, 0.6, 'p16_b2.0', 'age=8.4Gyr, '+r'$\beta=2.0$'],
+    ['m1.0_p16_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 500, 0., 'p16_b3.0', 'age=8.4Gyr, '+r'$\beta=3.0$'],
+    ['m1.0_p16_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b4.0', 'age=8.4Gyr, '+r'$\beta=4.0$'],
+    ['m1.0_p16_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b5.0', 'age=8.4Gyr, '+r'$\beta=5.0$']
 	]
 
 #els = ['ev','h1', 'he4', 'c12', 'n14', 'o16', 'ne20']
@@ -55,12 +55,12 @@ def smooth(x,window_len=11,window='hanning'):
 	return y[window_len:-window_len+1]
 
 
-fig, ax = plt.subplots()
-fig2, ax2 = plt.subplots()
-
-last_mdot = 0.
-cum_mdot = 0.
 for d in ds:
+    fig, ax = plt.subplots()
+    fig2, ax2 = plt.subplots()
+
+    last_mdot = 0.
+    cum_mdot = 0.
     for el in els:
         e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+el+d[1], skiprows=4)
         de = e[1]-e[0]
@@ -81,13 +81,13 @@ for d in ds:
         log_dm_de = np.log10(dm_de)
 
         # mdot eddington
-        eta = 0.1
-        mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
-        log_mdot_edd = np.log10(mdot_edd)
+        #eta = 0.1
+        #mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
+        #log_mdot_edd = np.log10(mdot_edd)
         
         if do_smoothing:
             # smooth hanning dmde
-            slog_dm_de = smooth(log_dm_de, window_len=d[2])
+            #slog_dm_de = smooth(log_dm_de, window_len=d[2])
             slog_mdot_moyr = smooth(log_mdot_moyr, window_len=d[2])
             sel = np.where(log_t_yr<d[3])[0]
             if el == 'ev':
@@ -107,11 +107,13 @@ for d in ds:
             ax2.plot(log_t_yr, log_mdot_moyr, lw=lw, rasterized=True, label=el)
 
 
-ax2.set_xlim(-2.25, 1)
-ax2.set_ylim(-2.5, 0)
-ax2.set_ylabel(r'$\log\ \dot M_x/\dot M_{\rm total}$')
-ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-ax2.legend()
-ax2.text(-2.2,-0.25,text)
-fig2.tight_layout()
-fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack_'+fname+'.png')
+    ax2.fill_between(log_t_yr[sel], np.log10(1.-cum_mdot/total_mdot), 
+            np.log10(0.00001), label='other', color='gray', alpha=0.5)
+    ax2.set_xlim(-2, 0.5)
+    ax2.set_ylim(-2.5, 0)
+    ax2.set_ylabel(r'$\log\ \dot M_x/\dot M_{\rm total}$')
+    ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+    ax2.legend()
+    ax2.text(-1.95,-0.2, d[5])
+    fig2.tight_layout()
+    fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack/mdot_comp_stack_'+ d[4] +'.png')

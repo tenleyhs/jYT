@@ -16,25 +16,35 @@ lw = 1.5
 # CHANGE EACH TIME
 beta = '2.000'
 #title = 'm=1.0, p=10, b=2.0'
-fname = 'p16_sm'
+fname = 'b10_p11016_sm'
 #text = 'age=0Gyr'
 #text = 'age=4.8Gyr'
-text = 'age=8.4Gyr'
+#text = 'age=8.4Gyr'
 #text = r'$\beta=2.0$'
+text = r'$\beta=1.0$'
 do_smoothing = True
 
 ds = [
 	#['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',300,0.],
 	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat',r'$\beta=2.0$',250,-0.1],
-	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat','age=0Gyr',250,-0.1],
+	#['m1.0_p1_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',250,0.3],
 	#['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',400,-0.4],
 	#['m1.0_p10_b1.5/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0090.dat',r'$\beta=1.5$',200,-0.15],
 	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',200,0.25],
+	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',200,0.4],
+	#['m1.0_p10_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',200,0.25],
+	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
+	#['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0],
+	#['m1.0_p16_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',300,0.1],
+	#['m1.0_p16_b5.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=5.0$',300,0.1],
+	['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=0Gyr',300,0.],
+	['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',400,-0.4],
+	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat','age=0Gyr',250,-0.1],
 	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=4.8Gyr',200,0.25],
-	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',200,0.5],
-	['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
 	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=8.4Gyr',300,3],
-	['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0]
+	#['m1.0_p1_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat','age=0Gyr',250,0.3],
+	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat','age=4.8Gyr',200,0.4],
+	#['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat','age=8.4Gyr',500,0],
 	]
 
 # limits by eye for e in dmde plot
