@@ -13,6 +13,7 @@ plt.rcParams['font.size'] = 18
 M_bh = 1e6*M_sun
 lw = 1.5
 do_smoothing = True
+plot_ttpeak = False
 
 ds = [
     ['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0., 'p1_b1.0', 'age=0Gyr, '+r'$\beta=1.0$'],
@@ -22,7 +23,7 @@ ds = [
     ['m1.0_p10_b1.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 500, 0.45, 'p10_b1.0_256', 'age=4.8Gyr, '+r'$\beta=1.0$'+' (256)'],
     ['m1.0_p10_b1.5/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0090.dat', 200, -0.2, 'p10_b1.5', 'age=4.8Gyr, '+r'$\beta=1.5$'],
     ['m1.0_p10_b2.0_128/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0075.dat', 200, 0.25, 'p10_b2.0', 'age=4.8Gyr, '+r'$\beta=2.0$'],
-    ['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.8, 'p10_b2.0_256', 'age=4.8Gyr, '+r'$\beta=2.0$'+' (256)'],
+    ['m1.0_p10_b2.0_256/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 200, 0.8, 'p10_b2.0_256', 'age=4.8Gyr, '+r'$\beta=2.0$'],
     ['m1.0_p10_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 200, 0.45, 'p10_b3.0', 'age=4.8Gyr, '+r'$\beta=3.0$'],
     ['m1.0_p10_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 200, 0.3, 'p10_b4.0', 'age=4.8Gyr, '+r'$\beta=4.0$'],
     ['m1.0_p10_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0055.dat', 200, 0.35, 'p10_b5.0', 'age=4.8Gyr, '+r'$\beta=5.0$'],
@@ -59,6 +60,7 @@ for d in ds:
     fig, ax = plt.subplots()
     fig2, ax2 = plt.subplots()
 
+    tpeak = 0.
     last_mdot = 0.
     cum_mdot = 0.
     for el in els:
@@ -80,22 +82,20 @@ for d in ds:
         log_mdot_moyr = np.log10(mdot*yr/M_sun)
         log_dm_de = np.log10(dm_de)
 
-        # mdot eddington
-        #eta = 0.1
-        #mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
-        #log_mdot_edd = np.log10(mdot_edd)
-        
         if do_smoothing:
             # smooth hanning dmde
             #slog_dm_de = smooth(log_dm_de, window_len=d[2])
             slog_mdot_moyr = smooth(log_mdot_moyr, window_len=d[2])
-            sel = np.where(log_t_yr<d[3])[0]
+            sel = np.where((log_t_yr<d[3]) & (np.isfinite(slog_mdot_moyr)))[0]
             if el == 'ev':
                 total_mdot = 10**slog_mdot_moyr[sel]
+                tpeak = 10**log_t_yr[sel][np.argmax(total_mdot)]
             else:
-                #ax2.plot(log_t_yr[sel], np.log10(slog_mdot_moyr[sel]/total_mdot), label=el)
-                #ax2.plot(log_t_yr[sel], (slog_mdot_moyr[sel]+cum_mdot)/total_mdot, label=el)
-                ax2.fill_between(log_t_yr[sel], np.log10(1.-cum_mdot/total_mdot), 
+                if plot_ttpeak:
+                    ax2.fill_between(np.log10(10**log_t_yr[sel]/tpeak), np.log10(1.-cum_mdot/total_mdot), 
+                        np.log10(1.-(10**slog_mdot_moyr[sel]+cum_mdot)/total_mdot), label=el, alpha=0.75)
+                else:
+                    ax2.fill_between(log_t_yr[sel], np.log10(1.-cum_mdot/total_mdot), 
                         np.log10(1.-(10**slog_mdot_moyr[sel]+cum_mdot)/total_mdot), label=el, alpha=0.75)
                 last_mdot = 10**slog_mdot_moyr[sel]
                 if el == 'h1':
@@ -107,13 +107,24 @@ for d in ds:
             ax2.plot(log_t_yr, log_mdot_moyr, lw=lw, rasterized=True, label=el)
 
 
-    ax2.fill_between(log_t_yr[sel], np.log10(1.-cum_mdot/total_mdot), 
-            np.log10(0.00001), label='other', color='gray', alpha=0.5)
-    ax2.set_xlim(-2, 0.5)
     ax2.set_ylim(-2.5, 0)
     ax2.set_ylabel(r'$\log\ \dot M_x/\dot M_{\rm total}$')
-    ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+    if plot_ttpeak:
+        ax2.fill_between(np.log10(10**log_t_yr[sel]/tpeak), np.log10(1.-cum_mdot/total_mdot), 
+            np.log10(0.00001), label='other', color='gray', alpha=0.5)
+        ax2.set_xlabel(r'$\log\ t/t_{\rm peak}$')
+        ax2.text(-0.95,-0.2, d[5])
+        ax2.set_xlim(-1, 1.7)
+    else:
+        ax2.fill_between(log_t_yr[sel], np.log10(1.-cum_mdot/total_mdot), 
+            np.log10(0.00001), label='other', color='gray', alpha=0.5)
+        ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+        #ax2.text(-1.95,-0.2, d[5])
+        ax2.text(-1.45,-0.2, d[5])
+        ax2.set_xlim(-1.5, 0)
     ax2.legend()
-    ax2.text(-1.95,-0.2, d[5])
     fig2.tight_layout()
-    fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack/mdot_comp_stack_'+ d[4] +'.png')
+    if plot_ttpeak:
+        fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack/mdot_comp_stack_'+ d[4] +'_ttpeak.png')
+    else:
+        fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack/mdot_comp_stack_'+ d[4] +'.png')

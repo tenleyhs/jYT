@@ -135,11 +135,11 @@ for b in bs:
     ax.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 """
 
-ax.set_xlim(-2, 1)
-ax.set_ylim(-3, 1)
+ax.set_xlim(-2, 0)
+ax.set_ylim(-2, 1)
 ax.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
 ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-ax.legend()
-ax.text(-1.9,0.7,text)
+ax.legend(loc=1)
+ax.text(-1.9,0.8,text)
 fig.tight_layout()
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/compare_poly/mdot_'+fname+'.png')

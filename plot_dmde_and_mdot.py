@@ -14,14 +14,12 @@ M_bh = 1e6*M_sun
 lw = 1.5
 
 # CHANGE EACH TIME
-beta = '2.000'
-#title = 'm=1.0, p=10, b=2.0'
-fname = 'b10_p11016_sm'
+beta = '1.000'
+fname = 'p16_sm'
 #text = 'age=0Gyr'
 #text = 'age=4.8Gyr'
-#text = 'age=8.4Gyr'
-#text = r'$\beta=2.0$'
-text = r'$\beta=1.0$'
+text = 'age=8.4Gyr'
+#text = r'$\beta=1.0$'
 do_smoothing = True
 
 ds = [
@@ -33,12 +31,14 @@ ds = [
 	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',200,0.25],
 	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',200,0.4],
 	#['m1.0_p10_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',200,0.25],
-	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
-	#['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0],
-	#['m1.0_p16_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',300,0.1],
-	#['m1.0_p16_b5.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=5.0$',300,0.1],
-	['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=0Gyr',300,0.],
-	['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',400,-0.4],
+	['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
+	['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0],
+	['m1.0_p16_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',300,0.1],
+	['m1.0_p16_b5.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=5.0$',300,0.1],
+	#['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=0Gyr',300,0.],
+	#['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',400,-0.4],
+	#['m1.0_p10_b1.0_256/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',300,-0.4],
+	#['m1.0_p16_b1.0_pfe/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0052.dat','age=8.4Gyr',500,1],
 	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat','age=0Gyr',250,-0.1],
 	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=4.8Gyr',200,0.25],
 	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat','age=8.4Gyr',300,3],
@@ -168,13 +168,12 @@ fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/dmde_'+fname+'.png')
 #ax2.plot(g13_43[:,0], g13_43[:,1], ls=':', lw=2, color=orange, label='4/3')
 #ax2.plot(g13_53[:,0], g13_53[:,1], ls=':', lw=2, color=blue, label='5/3')
 
-ax2.set_xlim(-2.5, 1)
-ax2.set_ylim(-3, 1)
+ax2.set_xlim(-2, 0.25)
+ax2.set_ylim(-2, 1)
 ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
 ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax2.legend()
-ax2.text(-2.4,0.7,text)
-#ax2.set_title(title)
+ax2.text(-1.95,0.8,text)
+#ax2.text(-1.45,-0.25,text)
 fig2.tight_layout()
-#fig2.savefig(d+'mdot_'+bins+'_'+fname+'.png')
 fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_'+fname+'.png')
