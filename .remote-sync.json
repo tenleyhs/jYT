@@ -1,0 +1,18 @@
+{
+  "logger": {
+    "title": "Remote Sync"
+  },
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "hyades.ucsc.edu",
+  "target": "/pfs/lawsmith/jYT",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "lawsmith",
+  "password": "Brahyeh4$",
+  "watch": [],
+  "transport": "scp"
+}

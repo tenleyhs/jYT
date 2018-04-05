@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from astropy.io import ascii
 from scipy.interpolate import UnivariateSpline
 #execfile('/nobackup/jlawsmit/jYT/my_settings.py')
 execfile('/pfs/lawsmith/jYT/my_settings.py')
@@ -23,7 +24,7 @@ f_ne20_ZAMS = 1.232e-3
 do_smoothing = True
 plot_ttpeak = True
 
-ds = [ 
+ds = [
     ['m1.0_p1_b1.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0100.dat', 300, 0., 'p1_b1.0', 'age=0Gyr, '+r'$\beta=1.0$'],
     ['m1.0_p1_b2.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0080.dat', 250, -0.15, 'p1_b2.0', 'age=0Gyr, '+r'$\beta=2.0$'],
     ['m1.0_p1_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 250, 0.25, 'p1_b3.0', 'age=0Gyr, '+r'$\beta=3.0$'],
@@ -39,11 +40,11 @@ ds = [
     ['m1.0_p16_b3.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0060.dat', 500, 0., 'p16_b3.0', 'age=8.4Gyr, '+r'$\beta=3.0$'],
     ['m1.0_p16_b4.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b4.0', 'age=8.4Gyr, '+r'$\beta=4.0$'],
     ['m1.0_p16_b5.0/b10000_','_bhbound_histogram_multitidal_hdf5_chk_0050.dat', 500, -0.25, 'p16_b5.0', 'age=8.4Gyr, '+r'$\beta=5.0$']
-]  
+]
 
 #els = ['ev','h1', 'he4', 'c12', 'n14', 'o16', 'ne20']
 # monica order
-els = ['h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
+els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
 
 # for dmde's
 def smooth(x,window_len=11,window='hanning'):
@@ -68,7 +69,8 @@ def smooth(x,window_len=11,window='hanning'):
 for d in ds:
     fig, ax = plt.subplots()
     fig2, ax2 = plt.subplots()
-    for el in els:
+    el_lr_mdarray = [[] for i in range(len(els)-2)]
+    for i, el in enumerate(els):
         e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+el+d[1], skiprows=4)
         de = e[1]-e[0]
         dm_de = dm/de
@@ -92,28 +94,33 @@ for d in ds:
             slog_dm_de = smooth(log_dm_de, window_len=d[2])
             slog_mdot_moyr = smooth(log_mdot_moyr, window_len=d[2])
             sel = np.where((log_t_yr<d[3]) & (np.isfinite(slog_mdot_moyr)))[0]
-            tpeak = 10**log_t_yr[sel][np.argmax(slog_mdot_moyr[sel])]
-            if el == 'h1':
+            if el == 'ev':
+                tpeak = 10**log_t_yr[sel][np.argmax(slog_mdot_moyr[sel])]
+                continue
+            elif el == 'h1':
                 h1_mdot = 10**slog_mdot_moyr[sel]
                 continue
-            elif el == 'o16':
-                el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
             elif el == 'he4':
                 el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_he4_ZAMS/f_h1_ZAMS)
+            elif el == 'o16':
+                el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
             elif el == 'c12':
                 el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_c12_ZAMS/f_h1_ZAMS)
+            elif el == 'ne20':
+                el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_ne20_ZAMS/f_h1_ZAMS)
             elif el == 'n14':
                 el_lr = (10**slog_mdot_moyr[sel]/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
 
             if plot_ttpeak:
                 ax2.plot(np.log10(10**log_t_yr[sel]/tpeak), el_lr, lw=lw, label=el)
+                el_lr_mdarray[i-2].append(el_lr)
             else:
                 ax2.plot(log_t_yr[sel], el_lr, lw=lw, label=el)
 
         else:
             ax2.plot(log_t_yr, log_mdot_moyr, lw=lw, rasterized=True, label=el)
 
-    
+
     if plot_ttpeak:
         ax2.set_xlim(-0.5, 1.0)
         ax2.text(-0.48,2.75,d[5])
@@ -130,5 +137,8 @@ for d in ds:
     fig2.tight_layout()
     if plot_ttpeak:
         fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar/mdot_comp_solar_'+d[4]+'_ttpeak.png')
+        ascii.write([np.log10(10**log_t_yr[sel]/tpeak), el_lr_mdarray[0][0],el_lr_mdarray[1][0],el_lr_mdarray[2][0],el_lr_mdarray[3][0],el_lr_mdarray[4][0]],
+                '/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar_data/'+d[4]+'.dat',
+                names=['log_t_tpeak', 'he4', 'o16', 'c12', 'ne20', 'n14'])
     else:
         fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar/mdot_comp_solar_'+d[4]+'.png')
