@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from astropy.io import ascii
 from scipy.interpolate import UnivariateSpline
 #execfile('/nobackup/jlawsmit/jYT/my_settings.py')
 execfile('/pfs/lawsmith/jYT/my_settings.py')
@@ -15,26 +16,29 @@ lw = 1.5
 
 # CHANGE EACH TIME
 beta = '1.000'
-fname = 'p16_sm'
-#text = 'age=0Gyr'
+fname = 'brenna'
+text = 'age=0Gyr'
 #text = 'age=4.8Gyr'
-text = 'age=8.4Gyr'
+#text = 'age=8.4Gyr'
 #text = r'$\beta=1.0$'
 do_smoothing = True
 
+export_brenna = True
+txtnames = ['m1.0_p1_b1.0','m1.0_p1_b2.0','m1.0_p1_b3.0']
+
 ds = [
-	#['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',300,0.],
-	#['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat',r'$\beta=2.0$',250,-0.1],
-	#['m1.0_p1_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',250,0.3],
+	['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',300,0.],
+	['m1.0_p1_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0080.dat',r'$\beta=2.0$',250,-0.1],
+	['m1.0_p1_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',250,0.3],
 	#['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat',r'$\beta=1.0$',400,-0.4],
 	#['m1.0_p10_b1.5/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0090.dat',r'$\beta=1.5$',200,-0.15],
 	#['m1.0_p10_b2.0_128/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',200,0.25],
 	#['m1.0_p10_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',200,0.4],
 	#['m1.0_p10_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',200,0.25],
-	['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
-	['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0],
-	['m1.0_p16_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',300,0.1],
-	['m1.0_p16_b5.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=5.0$',300,0.1],
+	#['m1.0_p16_b2.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0075.dat',r'$\beta=2.0$',300,3],
+	#['m1.0_p16_b3.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0060.dat',r'$\beta=3.0$',500,0],
+	#['m1.0_p16_b4.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=4.0$',300,0.1],
+	#['m1.0_p16_b5.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0050.dat',r'$\beta=5.0$',300,0.1],
 	#['m1.0_p1_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=0Gyr',300,0.],
 	#['m1.0_p10_b1.0/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',400,-0.4],
 	#['m1.0_p10_b1.0_256/b10000_ev_bhbound_histogram_multitidal_hdf5_chk_0100.dat','age=4.8Gyr',300,-0.4],
@@ -76,7 +80,7 @@ def smooth(x,window_len=11,window='hanning'):
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
 
-for d in ds:
+for i,d in enumerate(ds):
     e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0], skiprows=4)
     de = e[1]-e[0]
     dm_de = dm/de
@@ -107,6 +111,11 @@ for d in ds:
         ax.plot(e/1e17, slog_dm_de, lw=lw, label=d[1])
         sel = np.where(log_t_yr<d[3])[0]
         ax2.plot(log_t_yr[sel], slog_mdot_moyr[sel], lw=lw, label=d[1])
+
+        if export_brenna:
+            ascii.write([log_t_yr[sel], slog_mdot_moyr[sel]],
+                    '/pfs/lawsmith/FLASH4.3/runs/results/'+txtnames[i]+'.dat',
+                    names=['log_t_yr','log_mdot_moyr'])
 
     else:
         ax.plot(e/1e17, log_dm_de, lw=lw, rasterized=True, label=d[1])
