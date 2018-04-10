@@ -5,7 +5,7 @@
   "uploadOnSave": true,
   "useAtomicWrites": false,
   "deleteLocal": false,
-  "hostname": "hyades.ucsc.edu",
+  "hostname": "eudora.ucsc.edu",
   "target": "/pfs/lawsmith/jYT",
   "ignore": [
     ".remote-sync.json",
