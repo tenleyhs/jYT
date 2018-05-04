@@ -1,5 +1,6 @@
 """
 trying to combine all files with plot_ having to read in histograms
+TODO in progress
 """
 
 import numpy as np
@@ -32,6 +33,9 @@ def smooth(x,window_len=11,window='hanning'):
 	return y[window_len:-window_len+1]
 
 
+# first time. after running new simulations
+
+
 # for combined plot
 beta = '2.000'
 beta2 = '2.0'
@@ -45,6 +49,11 @@ EXPORT_FILE = False
 LW = 1.5
 LWD = 2.0
 M_bh = 1e6*M_sun
+
+
+# first, save all the dmdts
+
+
 
 ds = [
     # run,                  chk,        label,          wlen,   log_t_cutoff
@@ -75,8 +84,8 @@ ds = [
     # b1.0
     ['m1.0_p1_b1.0',        '0100',     'age=0Gyr',     300,    0.],
     ['m1.0_p10_b1.0',       '0100',     'age=4.8Gyr',   400,    -0.4],
-    ['m1.0_p10_b1.0_256',   '0100',    'age=4.8Gyr',   300,    -0.4],
-    ['m1.0_p16_b1.0_pfe',   '0052',    'age=8.4Gyr',   500,    1],
+    ['m1.0_p10_b1.0_256',   '0100',     'age=4.8Gyr',   300,    -0.4],
+    ['m1.0_p16_b1.0_pfe',   '0052',     'age=8.4Gyr',   500,    1],
     # b2.0
     'm1.0_p1_b2.0',         '0080',     'age=0Gyr',     250,    -0.1],
     'm1.0_p10_b2.0',        '0075',     'age=4.8Gyr',   200,    0.25],
