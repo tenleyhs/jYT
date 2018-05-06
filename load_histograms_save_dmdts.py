@@ -11,7 +11,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from astropy.io import ascii
-#from scipy.interpolate import UnivariateSpline
+from scipy.interpolate import UnivariateSpline
 #from scipy.ndimage.filters import gaussian_filter
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
@@ -51,8 +51,8 @@ TODO a better way to decide on smoothing kernel to use might be to plot a bunch
 at once, and then I just have to decide once, rather than iterate
 """
 
-# TODO put it in a fucking loop and save in directories
-wlens = [10,20,30,40,50,60,70,80,90,100]
+#wlens = [10,20,30,40,50,60,70,80,90,100] # for hanning
+wlens = [0.1,1] # for UnivariateSpline
 
 ds = [
     # run,                  chk,        wlen,   tmin,	tmax
@@ -133,22 +133,35 @@ for d in ds:
 			# plot unsmoothed
 			#ax.plot(e/1e17, log_dm_de, lw=LW, rasterized=True, alpha=0.4)
 			#ax2.plot(log_t_yr, log_mdot_moyr, lw=LW, rasterized=True, alpha=0.4)
-			ax2.scatter(log_t_yr, log_mdot_moyr, lw=LW, rasterized=True, alpha=0.5)
+			ax2.scatter(log_t_yr, log_mdot_moyr, c='C0', lw=LW, rasterized=True,
+				alpha=0.5, s=1, edgecolors='none')
 
-			# smooth hanning dmde
-			# TODO maybe just want to be smoothing dmde
+			# smooth. TODO choose hanning, UnivariateSpline, gaussian_filter
+			# TODO choose if dmde first
 			#slog_dm_de = smooth(log_dm_de, window_len=d[2])
-			slog_mdot_moyr = smooth(log_mdot_moyr, window_len=wlen)
-			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-			x = log_t_yr[sel]
-			y = slog_mdot_moyr[sel]
+			#slog_mdot_moyr = smooth(log_mdot_moyr, window_len=wlen)
+			#sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+			#x = log_t_yr[sel]
+			#y = slog_mdot_moyr[sel]
 			#ax.plot(e/1e17, slog_dm_de, lw=LW)
-			# TODO remove rasterized=True for paper version
-			ax2.plot(x, y, rasterized=True, lw=LW)
+			#ax2.plot(x, y, c='C1', lw=LW)
+
+
+			# spline version
+			# TODO maybe choose k
+			w = np.isinf(log_mdot_moyr)
+			log_mdot_moyr[w] = 0.
+			spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3)#, s=wlen)
+			xs = np.linspace(d[3], d[4], 100)
+			ax2.plot(xs, spl(xs), c='C1', lw=LW)
+
+
+			# gaussian_filter version
+
 
 			# extend dmdt from slope near end
 			# TODO make sure I'm doing this robustly. better slope function
-			ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
+			#ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
 
 			# TODO temp commented out
 			#ascii.write([log_t_yr[sel], slog_mdot_moyr[sel]],
@@ -170,11 +183,12 @@ for d in ds:
 			ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
 			ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 			fig2.tight_layout()
-			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/' + d[0].replace(".","_")
+			#directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/mdot_hanning/' + d[0].replace(".","_")
+			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/mdot_univariatespline/' + d[0].replace(".","_")
 			if not os.path.exists(directory):
 				os.makedirs(directory)
 			fig2.savefig(directory + '/dmdt_'
 				+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-				+ str(wlen) + '.png')
+				+ str(wlen) + '.pdf')
 
 			plt.close('all')
