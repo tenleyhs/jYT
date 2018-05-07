@@ -12,14 +12,14 @@ mpl.rcParams['legend.labelspacing'] = 0.1
 mpl.rcParams['legend.handletextpad'] = 0.1
 
 mpl.rcParams['xtick.top'] = True
-mpl.rcParams['xtick.major.size'] = 5 #3.5
+mpl.rcParams['xtick.major.size'] = 6 #3.5
 mpl.rcParams['xtick.minor.size'] = 3 #2
 mpl.rcParams['xtick.major.width'] = 1.0 #0.8
 mpl.rcParams['xtick.minor.width'] = 1.0 #0.6
 mpl.rcParams['xtick.minor.visible'] = True
 
 mpl.rcParams['ytick.right'] = True
-mpl.rcParams['ytick.major.size'] = 5 #3.5
+mpl.rcParams['ytick.major.size'] = 6 #3.5
 mpl.rcParams['ytick.minor.size'] = 3 #2
 mpl.rcParams['ytick.major.width'] = 1.0 #0.8
 mpl.rcParams['ytick.minor.width'] = 1.0 #0.6
