@@ -52,7 +52,7 @@ at once, and then I just have to decide once, rather than iterate
 """
 
 #wlens = [10,20,30,40,50,60,70,80,90,100] # for hanning
-wlens = [0.1,1] # for UnivariateSpline
+wlens = [100,200,300,400,500,600,700] # for UnivariateSpline
 
 ds = [
     # run,                  chk,        wlen,   tmin,	tmax
@@ -151,7 +151,7 @@ for d in ds:
 			# TODO maybe choose k
 			w = np.isinf(log_mdot_moyr)
 			log_mdot_moyr[w] = 0.
-			spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3)#, s=wlen)
+			spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3, s=wlen)
 			xs = np.linspace(d[3], d[4], 100)
 			ax2.plot(xs, spl(xs), c='C1', lw=LW)
 
