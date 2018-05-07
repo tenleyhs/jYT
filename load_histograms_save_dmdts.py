@@ -113,29 +113,11 @@ for d in ds:
 			ax2.scatter(log_t_yr, log_mdot_moyr, c='C0', lw=LW, rasterized=True,
 				alpha=0.5, s=1, edgecolors='none')
 
-			# smooth. TODO choose hanning, UnivariateSpline, gaussian_filter
-			# TODO choose if dmde first
-			#slog_dm_de = smooth(log_dm_de, window_len=d[2])
-			#slog_mdot_moyr = smooth(log_mdot_moyr, window_len=wlen)
-			#sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-			#x = log_t_yr[sel]
-			#y = slog_mdot_moyr[sel]
-			#ax.plot(e/1e17, slog_dm_de, lw=LW)
-			#ax2.plot(x, y, c='C1', lw=LW)
-
-
-			# spline version
-			# TODO maybe choose k
-			#w = np.isinf(log_mdot_moyr)
-			#log_mdot_moyr[w] = 0.
-			#spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3, s=wlen)
-			#xs = np.linspace(d[3], d[4], 100)
-			#ax2.plot(xs, spl(xs), c='C1', lw=LW)
-
-
-			# gaussian_filter version
+			# smooth with gaussian_filter
+			#slog_dm_de = 
 			slog_mdot_moyr = gaussian_filter(log_mdot_moyr, sigma, mode='wrap')
 			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+			#ax.plot(e/1e17, slog_dm_de, lw=LW)
 			ax2.plot(log_t_yr[sel], slog_mdot_moyr[sel], c='C1', lw=LW)
 
 			# extend dmdt from slope near end
