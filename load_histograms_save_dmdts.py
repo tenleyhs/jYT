@@ -11,12 +11,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from astropy.io import ascii
-from scipy.interpolate import UnivariateSpline
-#from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage.filters import gaussian_filter
+import os
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
-import os
 
 """
 TODO might want to use the gaussian filter smoothing than brenna emailed me
@@ -24,38 +23,16 @@ instead.
 https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.gaussian_filter.html
 """
 
-def smooth(x,window_len=11,window='hanning'):
-	if x.ndim != 1:
-		raise ValueError, "smooth only accepts 1 dimension arrays."
-	if x.size < window_len:
-		raise ValueError, "Input vector needs to be bigger than window size."
-	if window_len<3:
-		return x
-	if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-		raise ValueError, "Window is not one of the above"
-	s=np.r_[2*x[0]-x[window_len-1::-1],x,2*x[-1]-x[-1:-window_len:-1]]
-	if window == 'flat': #moving average
-		w=np.ones(window_len,'d')
-	else:
-		w=eval('np.'+window+'(window_len)')
-	y=np.convolve(w/w.sum(),s,mode='same')
-	return y[window_len:-window_len+1]
-
 PLOT = True
 LW = 1.5
 M_bh = 1e6*M_sun
 
 
-"""
-TODO a better way to decide on smoothing kernel to use might be to plot a bunch
-at once, and then I just have to decide once, rather than iterate
-"""
-
-#wlens = [10,20,30,40,50,60,70,80,90,100] # for hanning
-wlens = [100,200,300,400,500,600,700] # for UnivariateSpline
+# for gaussian_filter
+sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 
 ds = [
-    # run,                  chk,        wlen,   tmin,	tmax
+    # run,                  chk,        sigma,   tmin,	tmax
     # p1
     ['m1.0_p1_b1.0',        '0040',     40,      -1.4,	0.2],
 	['m1.0_p1_b1.5',		'0040',		40,		-1.7,	0.4],
@@ -149,15 +126,17 @@ for d in ds:
 
 			# spline version
 			# TODO maybe choose k
-			w = np.isinf(log_mdot_moyr)
-			log_mdot_moyr[w] = 0.
-			spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3, s=wlen)
-			xs = np.linspace(d[3], d[4], 100)
-			ax2.plot(xs, spl(xs), c='C1', lw=LW)
+			#w = np.isinf(log_mdot_moyr)
+			#log_mdot_moyr[w] = 0.
+			#spl = UnivariateSpline(log_t_yr, log_mdot_moyr, w=~w, k=3, s=wlen)
+			#xs = np.linspace(d[3], d[4], 100)
+			#ax2.plot(xs, spl(xs), c='C1', lw=LW)
 
 
 			# gaussian_filter version
-
+			slog_mdot_moyr = gaussian_filter(log_mdot_moyr, sigma, mode='wrap')
+			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+			ax2.plot(log_t_yr[sel], slog_mdot_moyr[sel], c='C1', lw=LW)
 
 			# extend dmdt from slope near end
 			# TODO make sure I'm doing this robustly. better slope function
@@ -184,7 +163,8 @@ for d in ds:
 			ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 			fig2.tight_layout()
 			#directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/mdot_hanning/' + d[0].replace(".","_")
-			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/mdot_univariatespline/' + d[0].replace(".","_")
+			#directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/mdot_univariatespline/' + d[0].replace(".","_")
+			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/gaussian_filter/' + d[0].replace(".","_")
 			if not os.path.exists(directory):
 				os.makedirs(directory)
 			fig2.savefig(directory + '/dmdt_'
