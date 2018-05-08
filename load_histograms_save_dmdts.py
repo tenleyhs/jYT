@@ -74,73 +74,73 @@ ds = [
 els = ['ev']
 
 if LOOP_THRU_SIGMAS == True:
-	for d in ds:
-	    for el in els:
-			for sigma in sigmas:
-				fig2, ax2 = plt.subplots()
-				e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+
-				    '/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat',
-				    skiprows=4)
-				de = e[1]-e[0]
-				dm_de = dm/de
-				log_dm_de = np.log10(dm_de)
-				# smooth dmde first
-				slog_dm_de = gaussian_filter(log_dm_de, sigma, mode='wrap')
-				e_bound = e[np.where(e<0.)]
-				t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
-				de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
-				dm_de_bound = 10**slog_dm_de[np.where(e<0)]
-				dm_de_bound_orig = dm_de[np.where(e<0)]
-				mdot = dm_de_bound*de_dt
-				mdot_orig = dm_de_bound_orig*de_dt
+    for d in ds:
+        for el in els:
+            for sigma in sigmas:
+                fig2, ax2 = plt.subplots()
+                e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+
+                    '/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat',
+                    skiprows=4)
+                de = e[1]-e[0]
+                dm_de = dm/de
+                log_dm_de = np.log10(dm_de)
+                # smooth dmde first
+                slog_dm_de = gaussian_filter(log_dm_de, sigma, mode='wrap')
+                e_bound = e[np.where(e<0.)]
+                t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
+                de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
+                dm_de_bound = 10**slog_dm_de[np.where(e<0)]
+                dm_de_bound_orig = dm_de[np.where(e<0)]
+                mdot = dm_de_bound*de_dt
+                mdot_orig = dm_de_bound_orig*de_dt
 
-				log_t_yr = np.log10(t/yr)
-				log_mdot_moyr = np.log10(mdot*yr/M_sun)
-				log_mdot_moyr_orig = np.log10(mdot_orig*yr/M_sun)
+                log_t_yr = np.log10(t/yr)
+                log_mdot_moyr = np.log10(mdot*yr/M_sun)
+                log_mdot_moyr_orig = np.log10(mdot_orig*yr/M_sun)
 
-				# plot unsmoothed
-				ax2.scatter(log_t_yr, log_mdot_moyr_orig, c='C0', rasterized=True,
-					alpha=0.5, s=1, edgecolors='none')
+                # plot unsmoothed
+                ax2.scatter(log_t_yr, log_mdot_moyr_orig, c='C0', rasterized=True,
+                	alpha=0.5, s=1, edgecolors='none')
 
-				sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-				x = log_t_yr[sel]
-				y = log_mdot_moyr[sel]
-				ax2.plot(x, y, c='C1', lw=LW)
+                sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+                x = log_t_yr[sel]
+                y = log_mdot_moyr[sel]
+                ax2.plot(x, y, c='C1', lw=LW)
 
-				# extend dmdt from slope near. could maybe improve slope function
-				if x[-1] < 2.0:
-					ninf = (y[-20] - y[-1]) / (x[-20] - x[-1])
-					ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+                # extend dmdt from slope near. could maybe improve slope function
+                if x[-1] < 2.0:
+                    ninf = (y[-20] - y[-1]) / (x[-20] - x[-1])
+                    ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
 
                 if PLOT_DMDES:
                     fig, ax = plt.subplots()
-        			ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
+                    ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
         				alpha=0.5, s=1, edgecolors='none')
                     ax.plot(e/1e17, slog_dm_de, c='C1', lw=LW)
-        			ax.set_xlim(-10, 10)
-        			ax.set_ylim(9, 15)
-        			ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
-        			ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
-        			fig.tight_layout()
-        			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
-        			if not os.path.exists(directory):
-        				os.makedirs(directory)
-        			fig.savefig(directory + '/dmde_'
-        				+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-        				+ str(sigma) + '.pdf')
+                    ax.set_xlim(-10, 10)
+                    ax.set_ylim(9, 15)
+                    ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
+                    ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
+                    fig.tight_layout()
+                    directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
+                    if not os.path.exists(directory):
+                        os.makedirs(directory)
+                    fig.savefig(directory + '/dmde_'
+                        + d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
+                        + str(sigma) + '.pdf')
 
-				ax2.set_xlim(-2, 2)
-				ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
-				ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-				fig2.tight_layout()
-				directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/dmde_first/' + d[0].replace(".","_")
-				if not os.path.exists(directory):
-					os.makedirs(directory)
-				fig2.savefig(directory + '/dmdt_'
-					+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-					+ str(sigma) + '.pdf')
+                ax2.set_xlim(-2, 2)
+                ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
+                ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+                fig2.tight_layout()
+                directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/dmde_first/' + d[0].replace(".","_")
+                if not os.path.exists(directory):
+                	os.makedirs(directory)
+                fig2.savefig(directory + '/dmdt_'
+                	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
+                	+ str(sigma) + '.pdf')
 
-				plt.close('all')
+                plt.close('all')
 
 # plot final versions
 else:
@@ -180,15 +180,15 @@ else:
 
             elif d[0] == 'm1.0_p10_b1.0':
                 # split the smoothing into two
-    			slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
-    			dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
-    			mdot1 = dm_de_bound1*de_dt
-    			log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
+                slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
+                dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
+                mdot1 = dm_de_bound1*de_dt
+                log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
 
-    			slog_dm_de2 = gaussian_filter(log_dm_de, 5, mode='wrap')
-    			dm_de_bound2 = 10**slog_dm_de2[np.where(e<0)]
-    			mdot2 = dm_de_bound2*de_dt
-    			log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
+                slog_dm_de2 = gaussian_filter(log_dm_de, 5, mode='wrap')
+                dm_de_bound2 = 10**slog_dm_de2[np.where(e<0)]
+                mdot2 = dm_de_bound2*de_dt
+                log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
 
                 split = -0.3
 
@@ -197,10 +197,10 @@ else:
                 sel2 = np.where(log_t_yr>-0.3)[0]
                 log_mdot_moyr = np.append(log_mdot_moyr1[sel1], log_mdot_moyr2[sel2])
 
-    			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-    			x = log_t_yr[sel]
-    			y = log_mdot_moyr[sel]
-    			ax2.plot(x, y, c='C1', lw=LW)
+                sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+                x = log_t_yr[sel]
+                y = log_mdot_moyr[sel]
+                ax2.plot(x, y, c='C1', lw=LW)
 
 
             else:
@@ -210,40 +210,40 @@ else:
                 ax2.plot(x, y, c='C1', lw=LW)
 
 			# extend dmdt from slope near end. could maybe improve slope function
-			if x[-1] < 2.0:
+            if x[-1] < 2.0:
 				ninf = (y[-20] - y[-1]) / (x[-20] - x[-1])
 				ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
 				x = np.append(x, 2.0)
 				y = np.append(y, (2.0 - x[-1])*ninf)
 
-			ascii.write([x, y],
-			    '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'+d[0].replace(".","_")+
-			    '_'+d[1]+'_'+el+'.dat', overwrite=True,
-			    names=['log_t_yr','log_mdot_moyr'])
+            ascii.write([x, y],
+                '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'+d[0].replace(".","_")+
+                '_'+d[1]+'_'+el+'.dat', overwrite=True,
+                names=['log_t_yr','log_mdot_moyr'])
 
             if PLOT_DMDES:
                 fig, ax = plt.subplots()
-    			ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
-    				alpha=0.5, s=1, edgecolors='none')
+                ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
+                	alpha=0.5, s=1, edgecolors='none')
                 ax.plot(e/1e17, slog_dm_de, c='C1', lw=LW)
-    			ax.set_xlim(-10, 10)
-    			ax.set_ylim(9, 15)
-    			ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
-    			ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
-    			fig.tight_layout()
-    			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
-    			if not os.path.exists(directory):
-    				os.makedirs(directory)
-    			fig.savefig(directory + '/dmde_'
-    				+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-    				+ str(sigma) + '.pdf')
+                ax.set_xlim(-10, 10)
+                ax.set_ylim(9, 15)
+                ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
+                ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
+                fig.tight_layout()
+                directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
+                if not os.path.exists(directory):
+                	os.makedirs(directory)
+                fig.savefig(directory + '/dmde_'
+                	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
+                    + str(sigma) + '.pdf')
 
-			ax2.set_xlim(-2, 2)
-			ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
-			ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-			fig2.tight_layout()
-			directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/final'
-			fig2.savefig(directory + '/dmdt_'
-				+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
+            ax2.set_xlim(-2, 2)
+            ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
+            ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+            fig2.tight_layout()
+            directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/final'
+            fig2.savefig(directory + '/dmdt_'
+            	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 
-			plt.close('all')
+            plt.close('all')
