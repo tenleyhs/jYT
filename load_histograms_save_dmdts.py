@@ -171,11 +171,6 @@ else:
 			ax2.scatter(log_t_yr, log_mdot_moyr_orig, c='C0', rasterized=True,
 				alpha=0.5, s=1, edgecolors='none')
 
-			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-			x = log_t_yr[sel]
-			y = log_mdot_moyr[sel]
-			ax2.plot(x, y, c='C1', lw=LW)
-
             # hacky thing to fix extended slope for a few dmdts
             if d[0] == 'm1.0_p1_b1.0':
 				ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) # TODO this is the line to edit
@@ -183,7 +178,7 @@ else:
 				x = np.append(x, 2.0)
 				y = np.append(y, (2.0 - x[-1])*ninf)
 
-            if d[0] == 'm1.0_p10_b1.0':
+            elif d[0] == 'm1.0_p10_b1.0':
                 # split the smoothing into two
     			slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
     			dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
@@ -191,14 +186,28 @@ else:
     			log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
 
     			slog_dm_de2 = gaussian_filter(log_dm_de, 5, mode='wrap')
-    			dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
-    			mdot1 = dm_de_bound1*de_dt
-    			log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
+    			dm_de_bound2 = 10**slog_dm_de2[np.where(e<0)]
+    			mdot2 = dm_de_bound2*de_dt
+    			log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
+
+                split = -0.3
+
+                # join them
+                sel1 = np.where(log_t_yr<-0.3)[0]
+                sel2 = np.where(log_t_yr>-0.3)[0]
+                log_mdot_moyr = np.append(log_mdot_moyr1[sel1], log_mdot_moyr2[sel2])
 
     			sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
     			x = log_t_yr[sel]
     			y = log_mdot_moyr[sel]
     			ax2.plot(x, y, c='C1', lw=LW)
+
+
+            else:
+                sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+                x = log_t_yr[sel]
+                y = log_mdot_moyr[sel]
+                ax2.plot(x, y, c='C1', lw=LW)
 
 			# extend dmdt from slope near end. could maybe improve slope function
 			if x[-1] < 2.0:

@@ -103,7 +103,7 @@ for i,d in enumerate(ds):
     eta = 0.1
     mdot_edd = (2.2e-8)*(eta/0.1)*(M_bh/M_sun)*M_sun/yr
     log_mdot_edd = np.log10(mdot_edd)
-    
+
     if do_smoothing:
         # smooth hanning dmde
         slog_dm_de = smooth(log_dm_de, window_len=d[2])
