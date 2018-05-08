@@ -173,13 +173,19 @@ else:
 
             # hacky thing to fix extended slope for a few dmdts
             if d[0] == 'm1.0_p1_b1.0':
-				ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) # TODO this is the line to edit
-				ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
-				x = np.append(x, 2.0)
-				y = np.append(y, (2.0 - x[-1])*ninf)
+                # just adjust slope for this one
+                sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+                x = log_t_yr[sel]
+                y = log_mdot_moyr[sel]
+                ax2.plot(x, y, c='C1', lw=LW)
+
+                ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 1
+                ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+                x = np.append(x, 2.0)
+                y = np.append(y, (2.0 - x[-1])*ninf)
 
             elif d[0] == 'm1.0_p10_b1.0':
-                # split the smoothing into two
+                # for this one, split the smoothing into two
                 slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
                 dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
                 mdot1 = dm_de_bound1*de_dt
@@ -190,7 +196,7 @@ else:
                 mdot2 = dm_de_bound2*de_dt
                 log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
 
-                split = -0.3
+                split = -0.5
 
                 # join them
                 sel1 = np.where(log_t_yr<-0.3)[0]
@@ -211,7 +217,7 @@ else:
 
 			# extend dmdt from slope near end. could maybe improve slope function
             if x[-1] < 2.0:
-				ninf = (y[-20] - y[-1]) / (x[-20] - x[-1])
+				ninf = (y[-10] - y[-1]) / (x[-10] - x[-1])
 				ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
 				x = np.append(x, 2.0)
 				y = np.append(y, (2.0 - x[-1])*ninf)
