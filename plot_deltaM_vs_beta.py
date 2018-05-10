@@ -1,5 +1,6 @@
 """
 first writes, then can load and use .dat files for later plotting
+TODO add fitting function
 """
 import numpy as np
 import matplotlib
@@ -11,7 +12,7 @@ execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
-USE_DAT = False
+USE_DAT = True
 
 s = 30
 lw = 2
@@ -145,7 +146,7 @@ else:
         ax.scatter(b_array, np.log10(np.array(dm_array)/M_sun), s=s)
         ascii.write([b_array, np.log10(np.array(dm_array)/M_sun)],
             '/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
-            names=['beta','log_deltaM_Msun'])
+            names=['beta','log_deltaM_Msun'], overwrite=True)
 
 ax.set_xlim(0.9, 4.1)
 ax.set_ylim(-1.5, 0.05)

@@ -41,7 +41,6 @@ ds = [
 	['m1.0_p16_b4.0',		'0040'],
 	['m1.0_p16_b5.0',		'0040'],
 ]
-els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
 """
 
 ### for total mdot, not split into elements
@@ -134,7 +133,7 @@ ds = [
 	['m1.0_p16_b1.0',       '0040',     'age=8.4Gyr'],
 ]
 text = r'$\beta=1.0$'
-savename = 'mdot_b1.0_allages.pdf'
+savename = 'mdot_b1_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
 	x2=g13_43[:,0], y2=g13_43[:,1], l2='GRR13 4/3',
 	x3=np.log10(m18_43[:,5]/yr), y3=np.log10(m18_43[:,4]*yr/M_sun), l3='analytic 4/3')
@@ -150,20 +149,7 @@ ds = [
 	['m1.0_p16_b2.0',       '0040',     'age=8.4Gyr'],
 ]
 text = r'$\beta=2.0$'
-savename = 'mdot_b2.0_allages.pdf'
-myplot_ev(ds=ds, text=text, savename=savename,
-	x2=g13_43[:,0], y2=g13_43[:,1], l2='GRR13 4/3')
-
-# b2.0
-beta = '2.000'
-g13_43 = np.loadtxt('/pfs/lawsmith/dmdts/4-3/' + beta + '.dat')
-ds = [
-    ['m1.0_p1_b2.0',        '0040',     'age=0Gyr'],
-    ['m1.0_p10_b2.0',       '0040',     'age=4.8Gyr'],
-	['m1.0_p16_b2.0',       '0040',     'age=8.4Gyr'],
-]
-text = r'$\beta=2.0$'
-savename = 'mdot_b2.0_allages.pdf'
+savename = 'mdot_b2_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
 	x2=g13_43[:,0], y2=g13_43[:,1], l2='GRR13 4/3')
 
@@ -174,7 +160,7 @@ ds = [
 	['m1.0_p16_b3.0',       '0040',     'age=8.4Gyr'],
 ]
 text = r'$\beta=3.0$'
-savename = 'mdot_b3.0_allages.pdf'
+savename = 'mdot_b3_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename)
 
 
@@ -183,6 +169,92 @@ myplot_ev(ds=ds, text=text, savename=savename)
 
 
 ### for line ratios (plot_comp_solar)
+f_h1_ZAMS = 0.7153
+f_he4_ZAMS = 0.2704
+f_c12_ZAMS = 2.435e-3
+f_n14_ZAMS = 7.509e-4
+f_o16_ZAMS = 6.072e-3
+f_ne20_ZAMS = 1.232e-3
+def myplot_lr(ds):
+	els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
+	for d in ds:
+		fig, ax = plt.subplots()
+		for el in els:
+			# log_t_yr, log_mdot_moyr
+			x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+					+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
+					skiprows=1, unpack=True)
+			if el == 'ev':
+				tpeak = 10**x[np.argmax(y)]
+				continue
+			elif el == 'h1':
+			    h1_mdot = 10**y
+			    continue
+			elif el == 'he4':
+			    el_lr = (10**y/h1_mdot)/(f_he4_ZAMS/f_h1_ZAMS)
+			elif el == 'o16':
+			    el_lr = (10**y/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
+			elif el == 'c12':
+			    el_lr = (10**y/h1_mdot)/(f_c12_ZAMS/f_h1_ZAMS)
+			elif el == 'ne20':
+			    el_lr = (10**y/h1_mdot)/(f_ne20_ZAMS/f_h1_ZAMS)
+			elif el == 'n14':
+			    el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
+
+			ax.plot(np.log10(10**x/tpeak), el_lr, lw=LW, label=el)
+
+		# for t/tpeak
+		#ax.set_xlim(-0.5, 1.5)
+		#ax.set_ylim(0, 3)
+		#ax.text(-0.48, 2.75, d[2])
+		ax.set_xlim(-0.5, 3)
+		ax.set_ylim(0, 4)
+		ax.text(-0.48, 3.75, d[2])
+
+		ax.set_xlabel(r'$\log\ t/t_{\rm peak}$')
+		ax.set_ylabel(r'$X/X_\odot$')
+		# TODO add t along the top in years
+		# for t
+	    #ax.set_xlim(-1.5, 0.0)
+		#ax.text(-1.45, 2.8, d[2])
+		#ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+		ax.axhline(1, ls=':', lw=1.5, c='k', alpha=0.5)
+		ax.legend(loc=1)
+		fig.tight_layout()
+		fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_' + d[3] + '.pdf')
+		plt.close('all')
+
+ds = [
+    ['m1.0_p1_b1.0',        '0040',		'age=0Gyr, '+r'$\beta=1.0$',		'p1_b1_0'],
+	['m1.0_p1_b1.5',		'0040',		'age=0Gyr, '+r'$\beta=1.5$',		'p1_b1_5'],
+	['m1.0_p1_b1.75',		'0040',		'age=0Gyr, '+r'$\beta=1.75$',		'p1_b1_75'],
+	['m1.0_p1_b2.0',		'0040',		'age=0Gyr, '+r'$\beta=2.0$',		'p1_b2_0'],
+	['m1.0_p1_b3.0',		'0040',		'age=0Gyr, '+r'$\beta=3.0$',		'p1_b3_0'],
+	['m1.0_p10_b1.0',		'0040',		'age=4.8Gyr, '+r'$\beta=1.0$',		'p10_b1_0'],
+	['m1.0_p10_b1.0_256',	'0040',		'age=4.8Gyr, '+r'$\beta=1.0$ (256)',		'p10_b1_0_256'],
+	['m1.0_p10_b1.5',		'0040',		'age=4.8Gyr, '+r'$\beta=1.5$',		'p10_b1_5'],
+	['m1.0_p10_b2.0',		'0040',		'age=4.8Gyr, '+r'$\beta=2.0$',		'p10_b2_0'],
+	['m1.0_p10_b2.0_256',	'0040',		'age=4.8Gyr, '+r'$\beta=2.0$ (256)',		'p10_b2_0_256'],
+	['m1.0_p10_b2.5',		'0040',		'age=4.8Gyr, '+r'$\beta=2.5$',		'p10_b2_5'],
+	['m1.0_p10_b3.0',		'0040',		'age=4.8Gyr, '+r'$\beta=3.0$',		'p10_b3_0'],
+	['m1.0_p10_b4.0',		'0040',		'age=4.8Gyr, '+r'$\beta=4.0$',		'p10_b4_0'],
+	['m1.0_p10_b5.0',		'0040',		'age=4.8Gyr, '+r'$\beta=5.0$',		'p10_b5_0'],
+	['m1.0_p16_b1.0',		'0040',		'age=8.4Gyr, '+r'$\beta=1.0$',		'p16_b1_0'],
+	['m1.0_p16_b1.5',		'0040',		'age=8.4Gyr, '+r'$\beta=1.5$',		'p16_b1_5'],
+	['m1.0_p16_b2.0',		'0040',		'age=8.4Gyr, '+r'$\beta=2.0$',		'p16_b2_0'],
+	['m1.0_p16_b3.0',		'0040',		'age=8.4Gyr, '+r'$\beta=3.0$',		'p16_b3_0'],
+	['m1.0_p16_b4.0',		'0040',		'age=8.4Gyr, '+r'$\beta=4.0$',		'p16_b4_0'],
+	['m1.0_p16_b5.0',		'0040',		'age=8.4Gyr, '+r'$\beta=5.0$',		'p16_b5_0'],
+]
+myplot_lr(ds)
+
+
+
+
+
+
+
+
 
 
 
