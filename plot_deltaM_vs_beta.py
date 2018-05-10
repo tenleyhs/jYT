@@ -1,3 +1,6 @@
+"""
+first writes, then can load and use .dat files for later plotting
+"""
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -5,18 +8,46 @@ import matplotlib.pyplot as plt
 from astropy.io import ascii
 import yt
 execfile('/pfs/lawsmith/jYT/my_settings.py')
-plt.rcParams['legend.fontsize'] = 14
-plt.rcParams['font.size'] = 16
+plt.rcParams['legend.fontsize'] = 16
+plt.rcParams['font.size'] = 18
 
-USE_DAT = True
-
-g = 6.67428e-8
-msun = 1.9889225e33
-rsun = 6.955e10
+USE_DAT = False
 
 s = 30
 lw = 2
 
+# note: have to change a bit if comparing 256
+ages = [
+        [
+    ['m1.0_p1_b1.0',        1.0],
+	['m1.0_p1_b1.5',		1.5],
+	['m1.0_p1_b1.75',		1.75],
+	['m1.0_p1_b2.0',		2.0],
+	['m1.0_p1_b3.0',		3.0]
+        ],
+        [
+	['m1.0_p10_b1.0',		1.0],
+	#['m1.0_p10_b1.0_256',	1.0],
+	['m1.0_p10_b1.5',		1.5],
+	['m1.0_p10_b2.0',		2.0],
+	#['m1.0_p10_b2.0_256',	2.0],
+	['m1.0_p10_b2.5',		2.5],
+	['m1.0_p10_b3.0',		3.0],
+	['m1.0_p10_b4.0',		4.0],
+	['m1.0_p10_b5.0',		5.0]
+        ],
+        [
+	['m1.0_p16_b1.0',		1.0],
+	['m1.0_p16_b1.5',		1.5],
+	['m1.0_p16_b2.0',		2.0],
+	['m1.0_p16_b3.0',		3.0],
+	['m1.0_p16_b4.0',		4.0],
+	['m1.0_p16_b5.0',		5.0]
+        ]
+]
+
+# old. using different chks. maybe compare later.
+"""
 ages = [
         [
     ['m1.0_p1_b1.0',1.0,'multitidal_hdf5_chk_0100'],
@@ -39,6 +70,7 @@ ages = [
     ['m1.0_p16_b5.0',5.0,'multitidal_hdf5_chk_0050']
         ]
        ]
+"""
 
 labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
 names = ['p0', 'p10', 'p16']
@@ -86,9 +118,10 @@ else:
             time = odata_pt[:,1]
 
             edata = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/extras.dat', dtype='float64')
-            gmpt = g*edata[6]
+            gmpt = G*edata[6]
 
-            f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/' + p[2]
+            #f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/' + p[2]
+            f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/multitidal_hdf5_chk_0040'
 
             pf = yt.load(f)
 
@@ -98,6 +131,7 @@ else:
 
             yt.add_field(("gas","sb_mass"), function=myvars.mesh, take_log=False, force_override=True, units="g")
 
+            # todo might want to add density cut later & see if affects results.
             #ad = pf.all_data()
             #dense_ad = ad.cut_region(['obj["dens"] > 1e-11'])
 
@@ -107,9 +141,9 @@ else:
             b_array.append(p[1])
             dm_array.append(dm)
 
-        ax.plot(b_array, np.log10(np.array(dm_array)/msun), lw=lw, label=labels[i], alpha=0.5)
-        ax.scatter(b_array, np.log10(np.array(dm_array)/msun), s=s)
-        ascii.write([b_array, np.log10(np.array(dm_array)/msun)],
+        ax.plot(b_array, np.log10(np.array(dm_array)/M_sun), lw=lw, label=labels[i], alpha=0.75)
+        ax.scatter(b_array, np.log10(np.array(dm_array)/M_sun), s=s)
+        ascii.write([b_array, np.log10(np.array(dm_array)/M_sun)],
             '/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
             names=['beta','log_deltaM_Msun'])
 
@@ -119,4 +153,4 @@ ax.set_xlabel(r'$\beta$')
 ax.set_ylabel(r'$\log\ \Delta M/M_\ast$')
 ax.legend()
 fig.tight_layout()
-fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta.pdf')
+fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/deltaM_vs_beta.pdf')

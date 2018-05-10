@@ -186,7 +186,7 @@ for d in ds:
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.2
             ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
             x = np.append(x, 2.0)
-            y = np.append(y, (2.0 - x[-1])*ninf)
+            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
         elif d[0] == 'm1.0_p10_b1.0':
             # for this one, split the smoothing into two
@@ -216,7 +216,7 @@ for d in ds:
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
             ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
             x = np.append(x, 2.0)
-            y = np.append(y, (2.0 - x[-1])*ninf)
+            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
 
         elif d[0] == 'm1.0_p10_b1.0_256':
@@ -247,7 +247,7 @@ for d in ds:
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.5
             ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
             x = np.append(x, 2.0)
-            y = np.append(y, (2.0 - x[-1])*ninf)
+            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
         elif d[0] == 'm1.0_p10_b2.0':
             # just adjust slope for this one
@@ -259,7 +259,7 @@ for d in ds:
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
             ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
             x = np.append(x, 2.0)
-            y = np.append(y, (2.0 - x[-1])*ninf)
+            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
 
         else:
@@ -269,11 +269,13 @@ for d in ds:
             ax2.plot(x, y, c='C1', lw=LW)
 
 		# extend dmdt from slope near end. could maybe improve slope function
+        # this should just apply to the else statement above. could combine?
         if x[-1] < 2.0:
 			ninf = (y[-10] - y[-1]) / (x[-10] - x[-1])
 			ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
 			x = np.append(x, 2.0)
-			y = np.append(y, (2.0 - x[-1])*ninf)
+            # need -2 because x has changed
+			y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
         # write for later plotting
         ascii.write([x, y],
