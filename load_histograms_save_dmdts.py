@@ -17,7 +17,6 @@ execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
-PLOT = True
 LW = 1.5
 M_bh = 1e6*M_sun
 
