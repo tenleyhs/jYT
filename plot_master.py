@@ -408,6 +408,87 @@ plt.close('all')
 
 
 
+
+# 3rd way of doing it. like Monica's figure
+fig, ax = plt.subplots()
+dss = [
+        [
+    ['m1.0_p1_b1.0',        1.0],
+	['m1.0_p1_b1.5',		1.5],
+	['m1.0_p1_b1.75',		1.75],
+	['m1.0_p1_b2.0',		2.0],
+	['m1.0_p1_b3.0',		3.0]
+        ],
+        [
+	['m1.0_p10_b1.0',		1.0],
+	#['m1.0_p10_b1.0_256',	1.0],
+	['m1.0_p10_b1.5',		1.5],
+	['m1.0_p10_b2.0',		2.0],
+	#['m1.0_p10_b2.0_256',	2.0],
+	['m1.0_p10_b2.5',		2.5],
+	['m1.0_p10_b3.0',		3.0],
+	['m1.0_p10_b4.0',		4.0],
+	#['m1.0_p10_b5.0',		5.0]
+        ],
+        [
+	['m1.0_p16_b1.0',		1.0],
+	['m1.0_p16_b1.5',		1.5],
+	['m1.0_p16_b2.0',		2.0],
+	['m1.0_p16_b3.0',		3.0],
+	['m1.0_p16_b4.0',		4.0],
+	#['m1.0_p16_b5.0',		5.0]
+        ]
+]
+labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
+carr = ['C0', 'C1', 'C2']
+f_h1_ZAMS = 0.7153
+f_he4_ZAMS = 0.2704
+f_c12_ZAMS = 2.435e-3
+f_n14_ZAMS = 7.509e-4
+f_o16_ZAMS = 6.072e-3
+f_ne20_ZAMS = 1.232e-3
+els = ['ev', 'h1', 'n14']
+tpeak_array = []
+mdotpeak_array = []
+g_array = []
+for i, ds in enumerate(dss):
+	for d in ds:
+		for el in els:
+			# log_t_yr, log_mdot_moyr
+			x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+					+ d[0].replace(".","_") + '_0040_' + el + '.dat',
+					skiprows=1, unpack=True)
+			if el == 'ev':
+				tpeak = 10**x[np.argmax(y)]
+				continue
+			elif el == 'h1':
+			    h1_mdot = 10**y
+			    continue
+			elif el == 'n14':
+				el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
+                tpeak_array.append(np.log10(tpeak))
+                mdotpeak_array.append(max(y))
+				g_array.append(el_lr[(np.abs(np.log10(10**x/tpeak) - 1.0)).argmin()])
+
+# one way
+#cbaxes = fig.add_axes([0.4, 0.5, 0.5, 0.03])
+#sc = ax.scatter(beta_array, age_array, c=g_array, cmap='viridis', s=S2)
+#cb = fig.colorbar(sc, cax=cbaxes, orientation='horizontal') #ticks=[0.8,0.9,1]
+# another way
+sc = ax.scatter(tpeak_array, mdotpeak_array, c=g_array, cmap='viridis', s=S2)
+cb = fig.colorbar(sc)
+#cb.set_label(label=r'$(X/X_\odot)_{^{14}{\rm N}}$', fontsize=22)
+cb.set_label(label=r'$g$')#, fontsize=22)
+ax.set_xlabel(r'$\log\ t_{\rm peak}\ {\rm [yr]}$')
+ax.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\sun/yr]}$')
+fig.tight_layout()
+fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_summary3.pdf')
+plt.close('all')
+
+
+
+
+
 """
 ### for power law index
 dss = [
