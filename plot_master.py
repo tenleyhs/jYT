@@ -337,7 +337,6 @@ ax.set_ylabel('age [Gyr]')
 fig.tight_layout()
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_summary1.pdf')
 plt.close('all')
-# TODO working on the above. could do a few different versions.
 mpl.rcParams['figure.figsize'] = (6,5)
 mpl.rcParams['ytick.right'] = True
 
@@ -452,23 +451,28 @@ tpeak_array = []
 mdotpeak_array = []
 g_array = []
 for i, ds in enumerate(dss):
-	for d in ds:
-		for el in els:
-			# log_t_yr, log_mdot_moyr
-			x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
-					+ d[0].replace(".","_") + '_0040_' + el + '.dat',
-					skiprows=1, unpack=True)
-			if el == 'ev':
-				tpeak = 10**x[np.argmax(y)]
-				continue
-			elif el == 'h1':
-			    h1_mdot = 10**y
-			    continue
-			elif el == 'n14':
-				el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
+    tp = []
+    mp = []
+    for d in ds:
+        for el in els:
+            # log_t_yr, log_mdot_moyr
+            x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+                + d[0].replace(".","_") + '_0040_' + el + '.dat',
+                skiprows=1, unpack=True)
+            if el == 'ev':
+                tpeak = 10**x[np.argmax(y)]
+                continue
+            elif el == 'h1':
+                h1_mdot = 10**y
+                continue
+            elif el == 'n14':
+                el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
                 tpeak_array.append(np.log10(tpeak))
                 mdotpeak_array.append(max(y))
-				g_array.append(el_lr[(np.abs(np.log10(10**x/tpeak) - 1.0)).argmin()])
+                g_array.append(el_lr[(np.abs(np.log10(10**x/tpeak) - 1.0)).argmin()])
+                tp.append(np.log10(tpeak))
+                mp.append(max(y))
+    ax.plot(tp, mp, label=labels[i])
 
 # one way
 #cbaxes = fig.add_axes([0.4, 0.5, 0.5, 0.03])
@@ -480,12 +484,11 @@ cb = fig.colorbar(sc)
 #cb.set_label(label=r'$(X/X_\odot)_{^{14}{\rm N}}$', fontsize=22)
 cb.set_label(label=r'$g$')#, fontsize=22)
 ax.set_xlabel(r'$\log\ t_{\rm peak}\ {\rm [yr]}$')
-ax.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\sun/yr]}$')
+ax.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\odot/yr]}$')
+ax.legend(loc=1)
 fig.tight_layout()
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_summary3.pdf')
 plt.close('all')
-
-
 
 
 
