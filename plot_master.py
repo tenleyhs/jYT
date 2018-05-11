@@ -1,7 +1,7 @@
 """
 trying to combine all files with plot_ having to read in histograms
 maybe a faster/better way would be to load all the files first, into some
-dictionary or something
+dictionary or something. because right now repeats.
 """
 import numpy as np
 import matplotlib
@@ -13,8 +13,12 @@ execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
+# option for seaborn style background
+#mpl.style.use('seaborn')
+
 LW = 1.5
 LWD = 2.0
+S = 30
 
 # the complete list, for reference
 """
@@ -218,7 +222,7 @@ def myplot_lr(ds):
 	    #ax.set_xlim(-1.5, 0.0)
 		#ax.text(-1.45, 2.8, d[2])
 		#ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-		ax.axhline(1, ls=':', lw=1.5, c='k', alpha=0.5)
+		ax.axhline(1, ls=':', lw=LWD, c='k', alpha=0.5)
 		ax.legend(loc=1)
 		fig.tight_layout()
 		fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_' + d[3] + '.pdf')
@@ -249,14 +253,85 @@ ds = [
 myplot_lr(ds)
 
 
+### for power law index
+dss = [
+        [
+    ['m1.0_p1_b1.0',        1.0],
+	['m1.0_p1_b1.5',		1.5],
+	['m1.0_p1_b1.75',		1.75],
+	['m1.0_p1_b2.0',		2.0],
+	['m1.0_p1_b3.0',		3.0]
+        ],
+        [
+	['m1.0_p10_b1.0',		1.0],
+	#['m1.0_p10_b1.0_256',	1.0],
+	['m1.0_p10_b1.5',		1.5],
+	['m1.0_p10_b2.0',		2.0],
+	#['m1.0_p10_b2.0_256',	2.0],
+	['m1.0_p10_b2.5',		2.5],
+	['m1.0_p10_b3.0',		3.0],
+	['m1.0_p10_b4.0',		4.0],
+	#['m1.0_p10_b5.0',		5.0]
+        ],
+        [
+	['m1.0_p16_b1.0',		1.0],
+	['m1.0_p16_b1.5',		1.5],
+	['m1.0_p16_b2.0',		2.0],
+	['m1.0_p16_b3.0',		3.0],
+	['m1.0_p16_b4.0',		4.0],
+	#['m1.0_p16_b5.0',		5.0]
+        ]
+]
+labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
+carr = ['C0', 'C1', 'C2']
+fig, ax = plt.subplots()
+fig2, ax2 = plt.subplots()
+for i, ds in enumerate(dss):
+	b_array = []
+	ninf_array = []
+	for k, d in enumerate(ds):
+		x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+				+ d[0].replace(".","_") + '_0040_ev.dat',
+				skiprows=1, unpack=True)
+		# n infinity
+		ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
+		b_array.append(d[1])
+		ninf_array.append(ninf)
+
+		# n instantaneous
+		n = []
+		for j in range(len(x)):
+			if j == 0:
+				continue
+			s = (y[j] - y[j-1])/(x[j] - x[j-1])
+			n.append(s)
+
+		if k == 0:
+			label = labels[i]
+		else:
+			label = None
+		ax.plot(x[:-1], n, lw=LW, c=carr[i], alpha=0.4, label=label)
+
+	ax2.plot(b_array, ninf_array, lw=LW, label=labels[i], alpha=0.5)
+	ax2.scatter(b_array, ninf_array, s=S)
 
 
+ax.set_xlim(-2, 2)
+ax.set_ylim(-4, 4)
+ax.axhline(-5/3., ls=':', lw=LWD, c='k')
+ax.set_ylabel(r'$n$')
+ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+ax.legend()
+fig.tight_layout()
+fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/power_law_index_instantaneous.pdf')
 
-
-
-
-
-
+ax2.set_xlim(0.9, 4.1)
+ax2.axhline(-5/3., ls=':', lw=LWD, c='k')
+ax2.set_ylabel(r'$n_\infty$')
+ax2.set_xlabel(r'$\beta$')
+ax2.legend()
+fig2.tight_layout()
+fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/power_law_index_infinity.pdf')
 
 
 
