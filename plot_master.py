@@ -286,13 +286,21 @@ labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
 carr = ['C0', 'C1', 'C2']
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
+fig3, ax3 = plt.subplots()
+fig4, ax4 = plt.subplots()
 for i, ds in enumerate(dss):
 	b_array = []
 	ninf_array = []
+	mdotpeak_array = []
+	tpeak_array = []
 	for k, d in enumerate(ds):
 		x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
 				+ d[0].replace(".","_") + '_0040_ev.dat',
 				skiprows=1, unpack=True)
+		# mdotpeak, tpeak
+		mdotpeak_array.append(max(y))
+		tpeak_array.append(x[np.argmax(y)])
+
 		# n infinity
 		ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
 		b_array.append(d[1])
@@ -315,6 +323,13 @@ for i, ds in enumerate(dss):
 	ax2.plot(b_array, ninf_array, lw=LW, label=labels[i], alpha=0.5)
 	ax2.scatter(b_array, ninf_array, s=S)
 
+	# TODO add fitting function
+	ax3.plot(b_array, 10**np.array(tpeak_array), lw=LW, label=labels[i], alpha=0.5)
+	ax3.scatter(b_array, 10**np.array(tpeak_array), s=S)
+
+	ax4.plot(b_array, mdotpeak_array, lw=LW, label=labels[i], alpha=0.5)
+	ax4.scatter(b_array, mdotpeak_array, s=S)
+
 
 ax.set_xlim(-2, 2)
 ax.set_ylim(-4, 4)
@@ -333,7 +348,22 @@ ax2.legend()
 fig2.tight_layout()
 fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/power_law_index_infinity.pdf')
 
+ax3.set_xlim(0.9, 4.1)
+ax3.set_ylabel(r'$t_{\rm peak}\ \mathrm{[yr]}$')
+ax3.set_xlabel(r'$\beta$')
+ax3.legend()
+fig3.tight_layout()
+fig3.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/tpeak_vs_beta.pdf')
 
+ax4.set_xlim(0.9, 4.1)
+ax4.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\odot/yr]}$')
+ax4.set_xlabel(r'$\beta$')
+ax4.legend()
+fig4.tight_layout()
+fig4.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdotpeak_vs_beta.pdf')
+
+### for mdotpeak vs tpeak
+# ^ above
 
 
 
