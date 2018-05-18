@@ -89,9 +89,19 @@ class var(object):
             arr[arr < 0.] = 0.
             return arr * data['cell_mass']
 
+def C_43(b):
+    result = np.exp((12.996 - 31.149*b + 12.865*b**2)/(1 - 5.3232*b + 6.4262*b**2))
+    return result
+
 fig, ax = plt.subplots()
 
 if USE_DAT:
+    # plot Guillochon2013
+    # Delta M = C_\gamma M_\star
+    b43 = np.linspace(0.6, 1.85)
+    ax.plot(b43, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
+    ax.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
+
     for i, name in enumerate(names):
         b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
         unpack=True, skiprows=1)
