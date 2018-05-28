@@ -110,6 +110,7 @@ class var(object):
 
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots() # for shifted delta m
+fig3, ax3 = plt.subplots() # for shifted delta m ratio
 
 if USE_DAT:
     # plot Guillochon2013
@@ -120,6 +121,9 @@ if USE_DAT:
 
     ax2.plot(b43, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
     ax2.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
+
+    ax3.plot(b43/1.85, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
+    ax3.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
 
     for i, name in enumerate(names):
         b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
@@ -139,13 +143,21 @@ if USE_DAT:
         #ax.plot(xdata, np.log10(f(xdata, *popt)))
         ax.plot(xdata, f(xdata, *popt), label=labels[i])
 
+        # TODO not real critical beta right now.
         # for shifted delta M
         # second number is critical beta for this profile. 1.85 is for GRR13 4/3
-        if names[i] == 'p0': shift = 1.85 - 2.1
-        if names[i] == 'p10': shift = 1.85 - 3
-        if names[i] == 'p16': shift = 1.85 - 4
+        if names[i] == 'p0':
+            bc = 1.7
+        if names[i] == 'p10':
+            bc = 3
+        if names[i] == 'p16':
+            bc = 4
+        shift = 1.85 - bc
         ax2.scatter(b + shift, log_deltam_m, s=s)
         ax2.plot(xdata + shift, f(xdata, *popt), label=labels[i])
+
+        ax3.scatter(b/bc, log_deltam_m, s=s)
+        ax3.plot(xdata/bc, f(xdata, *popt), label=labels[i])
 
 
 
@@ -210,6 +222,14 @@ ax2.set_xlim(-1.4, 1.9)
 ax2.set_ylim(-1.5, 0.05)
 ax2.set_xlabel(r'$\beta$' + ' (shifted)')
 ax2.set_ylabel(r'$\log\ \Delta M/M_\ast$')
-ax2.legend(loc='upper left99')
+ax2.legend(loc='upper left')
 fig2.tight_layout()
 fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/deltaM_vs_beta_shifted.pdf')
+
+ax3.set_xlim(0, 1.1)
+ax3.set_ylim(-1.5, 0.05)
+ax3.set_xlabel(r'$\beta$' + ' (normalized to ' + r'$\beta_c$' + ')')
+ax3.set_ylabel(r'$\log\ \Delta M/M_\ast$')
+ax3.legend(loc='upper left')
+fig3.tight_layout()
+fig3.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/deltaM_vs_beta_shifted2.pdf')
