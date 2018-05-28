@@ -109,6 +109,7 @@ class var(object):
 
 
 fig, ax = plt.subplots()
+fig2, ax2 = plt.subplots() # for shifted delta m
 
 if USE_DAT:
     # plot Guillochon2013
@@ -116,6 +117,9 @@ if USE_DAT:
     b43 = np.linspace(0.6, 1.85)
     ax.plot(b43, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
     ax.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
+
+    ax2.plot(b43, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
+    ax2.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
 
     for i, name in enumerate(names):
         b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
@@ -134,6 +138,15 @@ if USE_DAT:
         print names[i], popt
         #ax.plot(xdata, np.log10(f(xdata, *popt)))
         ax.plot(xdata, f(xdata, *popt), label=labels[i])
+
+        # for shifted delta M
+        # second number is critical beta for this profile. 1.85 is for GRR13 4/3
+        if names[i] == 'p0': shift = 1.85 - 2.1
+        if names[i] == 'p10': shift = 1.85 - 3
+        if names[i] == 'p16': shift = 1.85 - 4
+        ax2.scatter(b + shift, log_deltam_m, s=s)
+        ax2.plot(xdata + shift, f(xdata, *popt), label=labels[i])
+
 
 
 else:
@@ -192,3 +205,11 @@ ax.set_ylabel(r'$\log\ \Delta M/M_\ast$')
 ax.legend()
 fig.tight_layout()
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/deltaM_vs_beta.pdf')
+
+ax2.set_xlim(-1.4, 1.9)
+ax2.set_ylim(-1.5, 0.05)
+ax2.set_xlabel(r'$\beta$' + ' (shifted)')
+ax2.set_ylabel(r'$\log\ \Delta M/M_\ast$')
+ax2.legend(loc='upper left')
+fig2.tight_layout()
+fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/deltaM_vs_beta_shifted.pdf')
