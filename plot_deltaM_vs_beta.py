@@ -11,6 +11,7 @@ import yt
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
+from scipy.optimize import curve_fit
 
 USE_DAT = True
 
@@ -35,7 +36,7 @@ ages = [
 	['m1.0_p10_b2.5',		2.5],
 	['m1.0_p10_b3.0',		3.0],
 	['m1.0_p10_b4.0',		4.0],
-	['m1.0_p10_b5.0',		5.0]
+	#['m1.0_p10_b5.0',		5.0]
         ],
         [
 	['m1.0_p16_b1.0',		1.0],
@@ -43,7 +44,7 @@ ages = [
 	['m1.0_p16_b2.0',		2.0],
 	['m1.0_p16_b3.0',		3.0],
 	['m1.0_p16_b4.0',		4.0],
-	['m1.0_p16_b5.0',		5.0]
+	#['m1.0_p16_b5.0',		5.0]
         ]
 ]
 
@@ -76,6 +77,23 @@ ages = [
 labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
 names = ['p0', 'p10', 'p16']
 
+# fitting function. same as GRR2013.
+# TODO need at least as many data points as parameters
+#def f(x, a, b, c, d, e, f):
+#    return np.exp((a + b*x + c*x**2)/(d + e*x + f*x**2))
+
+# my temporary function with 5 params
+def f5(x, a, b, c, d, e):
+    return a + b*x**0.25 + c*x**0.5 + d*x**0.75 + e*x**1.0
+
+# my temporary function with 4 params
+def f4(x, a, b, c, d):
+    return a + b*x**0.25 + c*x**0.5 + d*x**0.75
+
+
+def C_43(b):
+    return np.exp((12.996 - 31.149*b + 12.865*b**2)/(1 - 5.3232*b + 6.4262*b**2))
+
 class var(object):
     def __init__(self, name):
         self.name = name
@@ -89,9 +107,6 @@ class var(object):
             arr[arr < 0.] = 0.
             return arr * data['cell_mass']
 
-def C_43(b):
-    result = np.exp((12.996 - 31.149*b + 12.865*b**2)/(1 - 5.3232*b + 6.4262*b**2))
-    return result
 
 fig, ax = plt.subplots()
 
@@ -106,8 +121,20 @@ if USE_DAT:
         b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
         unpack=True, skiprows=1)
 
-        ax.plot(b, log_deltam_m, lw=lw, label=labels[i], alpha=0.75)
+        #ax.plot(b, log_deltam_m, lw=lw, label=labels[i], alpha=0.75)
         ax.scatter(b, log_deltam_m, s=s)
+
+        # fitting
+        #popt, pcov = curve_fit(f, b, 10**log_deltam_m)
+        xdata = np.linspace(min(b), max(b))
+        # to avoid overfitting, wild oscillation
+        if len(b) == 5: f = f4
+        if len(b) >= 6: f = f5
+        popt, pcov = curve_fit(f, b, log_deltam_m)
+        print names[i], popt
+        #ax.plot(xdata, np.log10(f(xdata, *popt)))
+        ax.plot(xdata, f(xdata, *popt), label=labels[i])
+
 
 else:
     for i, age in enumerate(ages):
