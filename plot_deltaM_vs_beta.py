@@ -125,6 +125,9 @@ if USE_DAT:
     ax3.plot(b43/1.85, np.log10(C_43(b43)), lw=lw, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
     ax3.plot([1.86, 5], [0, 0], lw=lw, ls='--', c='k', alpha=0.5)
 
+    # for comparing mdots at fixed delta ms
+    fixed_delta_ms = [-0.5, -0.25, -0.1]
+
     for i, name in enumerate(names):
         b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
         unpack=True, skiprows=1)
@@ -134,14 +137,25 @@ if USE_DAT:
 
         # fitting
         #popt, pcov = curve_fit(f, b, 10**log_deltam_m)
-        xdata = np.linspace(min(b), max(b))
+        xdata = np.linspace(min(b), max(b), num=500)
         # to avoid overfitting, wild oscillation
         if len(b) == 5: f = f4
         if len(b) >= 6: f = f5
         popt, pcov = curve_fit(f, b, log_deltam_m)
-        print names[i], popt
+        #print names[i], popt
         #ax.plot(xdata, np.log10(f(xdata, *popt)))
         ax.plot(xdata, f(xdata, *popt), label=labels[i])
+
+        # for comparing mdots at fixed delta m
+        # choose one or a few delta m at which to compare
+        # maybe log delta m/m -0.5, -0.25, -0.1
+        for dm in fixed_delta_ms:
+            idx = (np.abs(f(xdata, *popt) - dm)).argmin()
+            this_fixed_beta = xdata[idx]
+            print names[i], dm, this_fixed_beta
+            # TODO will want to save this to .dat file later
+
+
 
         # TODO not real critical beta right now.
         # for shifted delta M
