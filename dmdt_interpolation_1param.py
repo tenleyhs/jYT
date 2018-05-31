@@ -13,10 +13,12 @@ import matplotlib.pyplot as plt
 # USER INPUTS
 
 #beta_arr = np.linspace(1.0,3.0)
-beta_arr = np.logspace(np.log10(1.0), np.log10(3.0), num=100)
+# TODO need to manually edit this betas to min and max in this dir.
+beta_arr = np.logspace(np.log10(1.0), np.log10(5.0), num=500)
 
-dmdtdir = 'm1_0_p1_allbeta_0040_ev/'
-savedir = 'test/'
+# TODO need to manually change dir names for different profiles
+dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data_m1_0_p16_allbeta_0040_ev/'
+savedir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_p16_allbeta_0040_ev/'
 
 
 #########################################################
