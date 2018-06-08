@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from astropy.io import ascii
 from scipy.ndimage.filters import gaussian_filter
+from scipy.integrate import simps
 import os
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
@@ -282,6 +283,24 @@ for d in ds:
             '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'+d[0].replace(".","_")+
             '_'+d[1]+'_'+el+'.dat', overwrite=True,
             names=['log_t_yr','log_mdot_moyr'])
+
+        # integrate mdot curves, to compare with delta m, and save for later
+        if el == 'ev':
+            # TODO writing in progress
+            # TODO probably want to sample the extrapolation extension more finely (than 2:)) above
+            int_trapz = np.trapz(10**y, 10**x)
+            int_simps = simps(10*y, 10**x)
+            # TODO the results from these files are super wrong.
+            ascii.write([[int_trapz], [int_simps]],
+                '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'+d[0].replace(".","_")+
+                '_'+d[1]+'_'+el+'.dat', overwrite=True,
+                names=['int_trapz','int_simps'])
+            # TODO also want to make cumulative plots, so that doesn't depend on extrapolation, or can
+            # at least see how much of an effect that is.
+
+            #TODO also probably better to append to array, then save in one file for each age
+
+
 
         if PLOT_DMDES:
             fig, ax = plt.subplots()
