@@ -13,6 +13,7 @@ import matplotlib.cm as cm
 from astropy.io import ascii
 from scipy.ndimage.filters import gaussian_filter
 from scipy.integrate import simps
+from scipy.integrate import cumtrapz
 import os
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
@@ -152,6 +153,7 @@ els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
 for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
+        fig3, ax3 = plt.subplots()
         e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
         de = e[1]-e[0]
         dm_de = dm/de
@@ -183,9 +185,12 @@ for d in ds:
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
             ax2.plot(x, y, c='C1', lw=LW)
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
 
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.2
-            ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
+            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
             x = np.append(x, 2.0)
             y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
@@ -212,10 +217,13 @@ for d in ds:
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
             ax2.plot(x, y, c='C1', lw=LW)
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
 
             # and adjust slope
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
+            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
             x = np.append(x, 2.0)
             y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
@@ -243,10 +251,13 @@ for d in ds:
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
             ax2.plot(x, y, c='C1', lw=LW)
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
 
             # and adjust slope
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.5
-            ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
+            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
             x = np.append(x, 2.0)
             y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
@@ -256,9 +267,12 @@ for d in ds:
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
             ax2.plot(x, y, c='C1', lw=LW)
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
 
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
+            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
             x = np.append(x, 2.0)
             y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
@@ -268,15 +282,18 @@ for d in ds:
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
             ax2.plot(x, y, c='C1', lw=LW)
+            ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C1', lw=LW)
 
 		# extend dmdt from slope near end. could maybe improve slope function
         # this should just apply to the else statement above. could combine?
         if x[-1] < 2.0:
-			ninf = (y[-10] - y[-1]) / (x[-10] - x[-1])
-			ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
-			x = np.append(x, 2.0)
+            ninf = (y[-10] - y[-1]) / (x[-10] - x[-1])
+            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
+            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
+            x = np.append(x, 2.0)
             # need -2 because x has changed
-			y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
 
         # write for later plotting
         ascii.write([x, y],
@@ -286,7 +303,6 @@ for d in ds:
 
         # integrate mdot curves, to compare with delta m, and save for later
         if el == 'ev':
-            # TODO writing in progress
             # TODO probably want to sample the extrapolation extension more finely (than 2:)) above
             int_trapz = np.trapz(10**y, 10**x)
             int_simps = simps(10*y, 10**x)
@@ -295,8 +311,10 @@ for d in ds:
                 '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'+d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True,
                 names=['int_trapz','int_simps'])
-            # TODO also want to make cumulative plots, so that doesn't depend on extrapolation, or can
-            # at least see how much of an effect that is.
+            # cumulative plots
+            int_cumtrapz = cumtrapz(10**y, 10**x, initial=0)
+            ax3.plot(x, int_cumtrapz)
+
 
             #TODO also probably better to append to array, then save in one file for each age
 
@@ -327,5 +345,15 @@ for d in ds:
         directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/final'
         fig2.savefig(directory + '/dmdt_'
         	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
+
+        if el == 'ev':
+            ax3.set_xlim(-2, 2)
+            ax3.set_ylim(0, 1)
+            #ax3.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
+            ax3.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+            fig3.tight_layout()
+            directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals'
+            fig3.savefig(directory + '/'
+            	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 
         plt.close('all')
