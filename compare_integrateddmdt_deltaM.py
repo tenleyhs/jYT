@@ -4,7 +4,7 @@ compared integrated dmdts with delta M's
 import numpy as np
 
 dint = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'
-ddm = '/pfs/lawsmith/FLASH4.3/runs/results/'
+ddm = '/pfs/lawsmith/FLASH4.3/runs/results/deltam_vs_beta/'
 ps = ['p1', 'p10', 'p16']
 
 for p in ps:
