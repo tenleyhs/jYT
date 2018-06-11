@@ -75,7 +75,7 @@ ages = [
 """
 
 labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
-names = ['p0', 'p10', 'p16']
+names = ['p1', 'p10', 'p16']
 
 # fitting function. same as GRR2013.
 # TODO need at least as many data points as parameters
@@ -160,7 +160,7 @@ if USE_DAT:
         # TODO not real critical beta right now.
         # for shifted delta M
         # second number is critical beta for this profile. 1.85 is for GRR13 4/3
-        if names[i] == 'p0':
+        if names[i] == 'p1':
             bc = 1.7
         if names[i] == 'p10':
             bc = 3

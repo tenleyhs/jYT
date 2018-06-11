@@ -14,12 +14,12 @@ from astropy.io import ascii
 from scipy.ndimage.filters import gaussian_filter
 from scipy.integrate import simps
 from scipy.integrate import cumtrapz
+from scipy import interpolate
 import os
 execfile('/pfs/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
-LW = 1.5
 M_bh = 1e6*M_sun
 
 # if choosing what smoothing to use
@@ -106,18 +106,18 @@ if LOOP_THRU_SIGMAS == True:
                 sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
                 x = log_t_yr[sel]
                 y = log_mdot_moyr[sel]
-                ax2.plot(x, y, c='C1', lw=LW)
+                ax2.plot(x, y, c='C1')
 
                 # extend dmdt from slope near. could maybe improve slope function
                 if x[-1] < 2.0:
                     ninf = (y[-20] - y[-1]) / (x[-20] - x[-1])
-                    ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2', lw=LW)
+                    ax2.plot([x[-1], 2.0], [y[-1], y[-1] + (2.0 - x[-1])*ninf], c='C2')
 
                 if PLOT_DMDES:
                     fig, ax = plt.subplots()
                     ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
         				alpha=0.5, s=1, edgecolors='none')
-                    ax.plot(e/1e17, slog_dm_de, c='C1', lw=LW)
+                    ax.plot(e/1e17, slog_dm_de, c='C1')
                     ax.set_xlim(-10, 10)
                     ax.set_ylim(9, 15)
                     ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
@@ -150,6 +150,7 @@ if LOOP_THRU_SIGMAS == True:
 # plot final versions
 #else:
 els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
+lenxs = []
 for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
@@ -184,15 +185,19 @@ for d in ds:
             sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1', lw=LW)
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
+            ax2.plot(x, y, c='C1')
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
 
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.2
-            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
-            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
-            x = np.append(x, 2.0)
-            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            #yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
+            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
+            xext = np.linspace(x[-1], 2.0, num=100)[1:]
+            #ax2.plot([x[-1], 2.0], yext, c='C2')
+            #ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            ax2.plot(xext, yext, c='C2')
+            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            x = np.append(x, xext)
+            y = np.append(y, yext)
 
         elif d[0] == 'm1.0_p10_b1.0':
             # for this one, split the smoothing into two
@@ -216,16 +221,17 @@ for d in ds:
             sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1', lw=LW)
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
+            ax2.plot(x, y, c='C1')
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
 
             # and adjust slope
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
-            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
-            x = np.append(x, 2.0)
-            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
+            xext = np.linspace(x[-1], 2.0, num=100)[1:]
+            ax2.plot(xext, yext, c='C2')
+            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            x = np.append(x, xext)
+            y = np.append(y, yext)
 
 
         elif d[0] == 'm1.0_p10_b1.0_256':
@@ -250,50 +256,60 @@ for d in ds:
             sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1', lw=LW)
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
+            ax2.plot(x, y, c='C1')
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
 
             # and adjust slope
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.5
-            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
-            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
-            x = np.append(x, 2.0)
-            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
+            xext = np.linspace(x[-1], 2.0, num=100)[1:]
+            ax2.plot(xext, yext, c='C2')
+            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            x = np.append(x, xext)
+            y = np.append(y, yext)
 
         elif d[0] == 'm1.0_p10_b2.0':
             # just adjust slope for this one
             sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1', lw=LW)
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1', lw=LW)
+            ax2.plot(x, y, c='C1')
+            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
 
             ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
-            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
-            x = np.append(x, 2.0)
-            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
+            xext = np.linspace(x[-1], 2.0, num=100)[1:]
+            ax2.plot(xext, yext, c='C2')
+            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            x = np.append(x, xext)
+            y = np.append(y, yext)
 
 
         else:
             sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
             x = log_t_yr[sel]
             y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1', lw=LW)
-            ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C1', lw=LW)
+            ax2.plot(x, y, c='C1')
+            ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C1')
 
 		# extend dmdt from slope near end. could maybe improve slope function
         # this should just apply to the else statement above. could combine?
         if x[-1] < 2.0:
             ninf = (y[-10] - y[-1]) / (x[-10] - x[-1])
-            yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            ax2.plot([x[-1], 2.0], yext, c='C2', lw=LW)
-            ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2', lw=LW)
-            x = np.append(x, 2.0)
-            # need -2 because x has changed
-            y = np.append(y, y[-1] + (2.0 - x[-2])*ninf)
+            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
+            xext = np.linspace(x[-1], 2.0, num=100)[1:]
+            ax2.plot(xext, yext, c='C2')
+            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
+            x = np.append(x, xext)
+            y = np.append(y, yext)
+
+        # interpolate for smoother integrating/interpolating
+        # doesn't change integration answer though.
+        f = interpolate.interp1d(x, y)
+        xnew = np.linspace(min(x), max(x), num=10000)
+        ynew = f(xnew)
+        x = xnew
+        y = ynew
 
         # write for later plotting
         ascii.write([x, y],
@@ -303,10 +319,9 @@ for d in ds:
 
         # integrate mdot curves, to compare with delta m, and save for later
         if el == 'ev':
-            # TODO probably want to sample the extrapolation extension more finely (than 2:)) above
+            #lenxs.append(len(x))
             int_trapz = np.trapz(10**y, 10**x)
-            int_simps = simps(10*y, 10**x)
-            # TODO the results from these files are super wrong.
+            int_simps = simps(10**y, 10**x)
             ascii.write([[int_trapz], [int_simps]],
                 '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'+d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True,
@@ -316,15 +331,12 @@ for d in ds:
             ax3.plot(x, int_cumtrapz)
 
 
-            #TODO also probably better to append to array, then save in one file for each age
-
-
 
         if PLOT_DMDES:
             fig, ax = plt.subplots()
             ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
             	alpha=0.5, s=1, edgecolors='none')
-            ax.plot(e/1e17, slog_dm_de, c='C1', lw=LW)
+            ax.plot(e/1e17, slog_dm_de, c='C1')
             ax.set_xlim(-10, 10)
             ax.set_ylim(9, 15)
             ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
