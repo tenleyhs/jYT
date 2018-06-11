@@ -35,4 +35,4 @@ for plot in plots:
     s.hide_colorbar()
     s.set_figure_size(12)
     #s.set_buff_size(2000)
-    s.save('/pfs/lawsmith/FLASH4.3/runs/results/' + plot[0].replace(".","_") + '_' + plot[1] + '.pdf')
+    s.save('/pfs/lawsmith/FLASH4.3/runs/results/slices/' + plot[0].replace(".","_") + '_' + plot[1] + '.pdf')

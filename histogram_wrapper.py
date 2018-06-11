@@ -5,7 +5,7 @@ there are nicer and maybe faster ways to paralellize this from googling
 
 import os
 
-chk = '0040'
+chk = '0057'
 bins = '10000'
 
 os.system('python /pfs/lawsmith/jYT/histogram.py multitidal_hdf5_chk_'+chk+' -v bhbound -n '+bins+' -ev selfbound -et 0. -ey min --silent -fp b'+bins+'_ev >> outputfile &')

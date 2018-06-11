@@ -6,7 +6,7 @@ def congrid(a, newdims, method='linear', centre=False, minusone=False, offset=0.
 	'''Arbitrary resampling of source array to new dimension sizes.
 	Currently only supports maintaining the same number of dimensions.
 	To use 1-D arrays, first promote them to shape (x,1).
-	
+
 	Uses the same parameters and creates the same co-ordinate lookup points
 	as IDL''s congrid routine, which apparently originally came from a VAX/VMS
 	routine of the same name.
@@ -61,7 +61,7 @@ def congrid(a, newdims, method='linear', centre=False, minusone=False, offset=0.
 			newval = (old[i] - m1) / (newdims[i] - m1) \
 							* (base + ofs) - ofs - offset
 			newval = [t for t in newval if t >= olddims[-1][0] and t <= olddims[-1][-1]]
-			dimlist.append( newval ) 
+			dimlist.append( newval )
 
 		# first interpolation - for ndims = any
 		mint = scipy.interpolate.interp1d( olddims[-1], a, kind=method )

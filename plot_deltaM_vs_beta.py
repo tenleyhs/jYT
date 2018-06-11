@@ -13,7 +13,7 @@ plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 from scipy.optimize import curve_fit
 
-USE_DAT = True
+USE_DAT = False
 
 s = 30
 lw = 2
@@ -21,29 +21,32 @@ lw = 2
 # note: have to change a bit if comparing 256
 ages = [
         [
-    ['m1.0_p1_b1.0',        1.0],
-	['m1.0_p1_b1.5',		1.5],
-	['m1.0_p1_b1.75',		1.75],
-	['m1.0_p1_b2.0',		2.0],
-	['m1.0_p1_b3.0',		3.0]
+    ['m1.0_p1_b1.0',        1.0,    ['0040', '0100']],
+    ['m1.0_p1_b1.0_pfe',    1.0,    ['0100']],
+	['m1.0_p1_b1.5',		1.5,    ['0040']],
+	['m1.0_p1_b1.75',		1.75,   ['0040']],
+	['m1.0_p1_b2.0',		2.0,    ['0040', '0080']],
+	['m1.0_p1_b3.0',		3.0,    ['0040', '0060']]
         ],
         [
-	['m1.0_p10_b1.0',		1.0],
-	#['m1.0_p10_b1.0_256',	1.0],
-	['m1.0_p10_b1.5',		1.5],
-	['m1.0_p10_b2.0',		2.0],
-	#['m1.0_p10_b2.0_256',	2.0],
-	['m1.0_p10_b2.5',		2.5],
-	['m1.0_p10_b3.0',		3.0],
-	['m1.0_p10_b4.0',		4.0],
+	['m1.0_p10_b1.0',		1.0,    ['0040', '0100']],
+	['m1.0_p10_b1.0_256',	1.0,    ['0040', '0100']],
+	['m1.0_p10_b1.5',		1.5,    ['0040', '0090']],
+	['m1.0_p10_b2.0',		2.0,    ['0040', '0075']],
+	['m1.0_p10_b2.0_256',	2.0,    ['0040', '0080']],
+	['m1.0_p10_b2.5',		2.5,    ['0040']],
+	['m1.0_p10_b3.0',		3.0,    ['0040', '0060']],
+    ['m1.0_p10_b3.0_256',	3.0,    ['0040', '0057']],
+	['m1.0_p10_b4.0',		4.0,    ['0040', '0050']]
 	#['m1.0_p10_b5.0',		5.0]
         ],
         [
-	['m1.0_p16_b1.0',		1.0],
-	['m1.0_p16_b1.5',		1.5],
-	['m1.0_p16_b2.0',		2.0],
-	['m1.0_p16_b3.0',		3.0],
-	['m1.0_p16_b4.0',		4.0],
+	['m1.0_p16_b1.0',		1.0,    ['0040']],
+    ['m1.0_p16_b1.0_pfe',   1.0,    ['0052']],
+	['m1.0_p16_b1.5',		1.5,    ['0040']],
+	['m1.0_p16_b2.0',		2.0,    ['0040', '0075']],
+	['m1.0_p16_b3.0',		3.0,    ['0040', '0060']],
+	['m1.0_p16_b4.0',		4.0,    ['0040', '0050']],
 	#['m1.0_p16_b5.0',		5.0]
         ]
 ]
@@ -59,7 +62,7 @@ ages = [
         [
     ['m1.0_p10_b1.0',1.0,'multitidal_hdf5_chk_0100'],
     ['m1.0_p10_b1.5',1.5,'multitidal_hdf5_chk_0090'],
-    ['m1.0_p10_b2.0_128',2.0,'multitidal_hdf5_chk_0075'],
+    ['m1.0_p10_b2.0',2.0,'multitidal_hdf5_chk_0075'],
     #['m1.0_p10_b2.5',2.5,'multitidal_hdf5_chk_0080'],
     ['m1.0_p10_b3.0',3.0,'multitidal_hdf5_chk_0060'],
     ['m1.0_p10_b4.0',4.0,'multitidal_hdf5_chk_0050'],
@@ -129,7 +132,7 @@ if USE_DAT:
     fixed_delta_ms = [-0.5, -0.25, -0.1]
 
     for i, name in enumerate(names):
-        b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
+        b, log_deltam_m = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/deltam_vs_beta/deltaM_vs_beta_' + names[i] + '.dat',
         unpack=True, skiprows=1)
 
         #ax.plot(b, log_deltam_m, lw=lw, label=labels[i], alpha=0.75)
@@ -197,31 +200,31 @@ else:
             edata = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/extras.dat', dtype='float64')
             gmpt = G*edata[6]
 
-            #f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/' + p[2]
-            f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/multitidal_hdf5_chk_0040'
+            for chk in p[2]:
+                f = '/pfs/lawsmith/FLASH4.3/runs/' + p[0] + '/multitidal_hdf5_chk_' + chk
 
-            pf = yt.load(f)
+                pf = yt.load(f)
 
-            tindex = abs(time - pf.current_time.v).argmin()
+                tindex = abs(time - pf.current_time.v).argmin()
 
-            myvars = var('sb_mass')
+                myvars = var('sb_mass')
 
-            yt.add_field(("gas","sb_mass"), function=myvars.mesh, take_log=False, force_override=True, units="g")
+                yt.add_field(("gas","sb_mass"), function=myvars.mesh, take_log=False, force_override=True, units="g")
 
-            # todo might want to add density cut later & see if affects results.
-            #ad = pf.all_data()
-            #dense_ad = ad.cut_region(['obj["dens"] > 1e-11'])
+                # todo might want to add density cut later & see if affects results.
+                #ad = pf.all_data()
+                #dense_ad = ad.cut_region(['obj["dens"] > 1e-11'])
 
-            sp = pf.sphere("center", (1.0, "Mpc"))
-            dm = sp.quantities.total_quantity("sb_mass").v
+                sp = pf.sphere("center", (1.0, "Mpc"))
+                dm = sp.quantities.total_quantity("sb_mass").v
 
-            b_array.append(p[1])
-            dm_array.append(dm)
+                b_array.append(p[1])
+                dm_array.append(dm)
 
         ax.plot(b_array, np.log10(np.array(dm_array)/M_sun), lw=lw, label=labels[i], alpha=0.75)
         ax.scatter(b_array, np.log10(np.array(dm_array)/M_sun), s=s)
         ascii.write([b_array, np.log10(np.array(dm_array)/M_sun)],
-            '/pfs/lawsmith/FLASH4.3/runs/results/deltaM_vs_beta_' + names[i] + '.dat',
+            '/pfs/lawsmith/FLASH4.3/runs/results/deltam_vs_beta/deltaM_vs_beta_' + names[i] + '.dat',
             names=['beta','log_deltaM_Msun'], overwrite=True)
 
 ax.set_xlim(0.9, 4.1)
