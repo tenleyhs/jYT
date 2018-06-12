@@ -12,28 +12,28 @@ plt.rcParams['font.size'] = 18
 
 """
 output from plot_deltaM_vs_beta
-p0 -0.5 1.248
-p0 -0.25 1.464
-p0 -0.1 1.713
-p10 -0.5 1.521
-p10 -0.25 1.889
-p10 -0.1 2.298
-p16 -0.5 1.785
-p16 -0.25 2.36
-p16 -0.1 3.004
+p1 -0.5 1.2605
+p1 -0.25 1.4769
+p1 -0.1 1.6933
+p10 -0.5 1.4929
+p10 -0.25 1.8116
+p10 -0.1 2.1603
+p16 -0.5 1.7034
+p16 -0.25 2.1603
+p16 -0.1 2.7074
 """
 
 # TODO should make this automatically from file
 betas = {}
-betas = {'p1': {'-0.5': 1.248,
-                '-0.25': 1.464,
-                '-0.1': 1.713},
-        'p10': {'-0.5': 1.521,
-                '-0.25': 1.889,
-                '-0.1': 2.298},
-        'p16': {'-0.5': 1.785,
-                '-0.25': 2.363,
-                '-0.1': 3.004},
+betas = {'p1': {'-0.5': 1.2605,
+                '-0.25': 1.4769,
+                '-0.1': 1.6933},
+        'p10': {'-0.5': 1.4929,
+                '-0.25': 1.8116,
+                '-0.1': 2.1603},
+        'p16': {'-0.5': 1.7034,
+                '-0.25': 2.1603,
+                '-0.1': 2.7074},
         }
 
 ps = ['p1', 'p10', 'p16']
@@ -47,7 +47,7 @@ for dm in dms:
     for p in ps:
         beta = betas[p][str(dm)]
         #print beta
-        dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_'+p+'_allbeta_0040_ev/'
+        dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_'+p+'_allbeta_lastchk_ev/'
         beta_files = os.listdir(dmdtdir)
         beta_files_floats = [float(b[:-4]) for b in beta_files]
         idx = (np.abs(np.array(beta_files_floats) - beta)).argmin()

@@ -14,11 +14,14 @@ import matplotlib.pyplot as plt
 
 #beta_arr = np.linspace(1.0,3.0)
 # TODO need to manually edit this betas to min and max in this dir.
-beta_arr = np.logspace(np.log10(1.0), np.log10(5.0), num=500)
+beta_arr = np.logspace(np.log10(1.0), np.log10(4.0), num=500)
 
 # TODO need to manually change dir names for different profiles
-dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data_m1_0_p16_allbeta_0040_ev/'
-savedir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_p16_allbeta_0040_ev/'
+dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data_m1_0_p16_allbeta_lastchk_ev/'
+savedir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_p16_allbeta_lastchk_ev/'
+
+#dmdtdir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data_m1_0_p1_allbeta_0040_ev/'
+#savedir = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/interpolated_m1_0_p1_allbeta_0040_ev/'
 
 
 #########################################################
@@ -63,6 +66,10 @@ mapped_time = {}
 # get dmdt and t for the lowest beta value
 # energy & dmde (cgs)
 time['lo'], dmdt['lo'] = np.genfromtxt(dmdtdir + sim_beta_files[0], skip_header=1, unpack=True)
+# remove nans
+time['lo'] = time['lo'][np.isfinite(dmdt['lo'])]
+dmdt['lo'] = dmdt['lo'][np.isfinite(dmdt['lo'])]
+
 ipeak['lo'] = np.argmax(dmdt['lo'])
 
 # split time['lo'] & dmdt['lo'] into pre-peak and post-peak array
@@ -84,6 +91,9 @@ for i in range(1, len(Sim_beta)):
     # BETWEEN each simulation beta
 
     time['hi'], dmdt['hi'] = np.genfromtxt(dmdtdir + sim_beta_files[i], skip_header=1, unpack=True)
+    # remove nans
+    time['hi'] = time['hi'][np.isfinite(dmdt['hi'])]
+    dmdt['hi'] = dmdt['hi'][np.isfinite(dmdt['hi'])]
 
     ipeak['hi'] = np.argmax(dmdt['hi'])
 
@@ -120,6 +130,7 @@ for i in range(1, len(Sim_beta)):
         # map times from more densely sampled curves
         # (both pre & post peak, might be from diff. dmdts)
         # to 0 - 1
+
         mapped_time[nointerp].append(
             1. / (time[nointerp][j][-1] - time[nointerp][j][0]) *
             (time[nointerp][j] - time[nointerp][j][0]))

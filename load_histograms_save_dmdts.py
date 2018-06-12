@@ -154,7 +154,7 @@ if LOOP_THRU_SIGMAS == True:
 
 # plot final versions
 #else:
-#els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
+els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
 for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
