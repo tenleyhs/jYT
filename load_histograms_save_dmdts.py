@@ -38,40 +38,40 @@ ds = [
     ['m1.0_p1_b1.5',		'0090',		25,		-2,	    2,        0,      0,  0],
 	['m1.0_p1_b1.75',		'0040',		15,		-1.75,	-0.35,    0,      0,  0],
     ['m1.0_p1_b1.75',		'0090',		50,		-2,     2,        0,      0,  0],
-	['m1.0_p1_b2.0',		'0040',		25,		-1.8,	-0.65,   0,  0,  0],
-    ['m1.0_p1_b2.0',		'0080',		30,		-2,	    -0.2,    0, 0,  0],
-	['m1.0_p1_b3.0',		'0040',		15,		-1.9,	-0.3,    0,  0,  0],
-    ['m1.0_p1_b3.0',		'0060',		30,		-2,	    2,      0,  0,  0],
+	['m1.0_p1_b2.0',		'0040',		25,		-1.8,	-0.65,    0,   0,  0],
+    ['m1.0_p1_b2.0',		'0080',		30,		-2,	    -0.2,     0, 0,  0],
+	['m1.0_p1_b3.0',		'0040',		15,		-1.9,	-0.3,     0,  0,  0],
+    ['m1.0_p1_b3.0',		'0060',		30,		-2,	    2,        0,  0,  0],
     # p10
 	['m1.0_p10_b1.0',		'0040',     20,     -1.3,	-0.3,     0.3,    -0.5, 5],
     #['m1.0_p10_b1.0',		'0100',     20,     -1.3,	-0.3], # too messy
 	['m1.0_p10_b1.0_256',	'0040',     35,     -1.3,	-0.15,    0.5,    -0.5, 15],
     #['m1.0_p10_b1.0_256',	'0100',     35,     -1.3,	-0.15], # too messy
-	['m1.0_p10_b1.5',		'0040',     20,     -1.65,	-0.3,     0, 0,  0],
-    ['m1.0_p10_b1.5',		'0090',     20,     -2,	    2,       0,  0,  0],
+	['m1.0_p10_b1.5',		'0040',     20,     -1.65,	-0.3,     0.5, 0,  0],
+    ['m1.0_p10_b1.5',		'0090',     20,     -2,	    2,        0,  0,  0],
 	['m1.0_p10_b2.0',		'0040',     25,     -1.8,	-0.1,     0.3,    0,  0],
     ['m1.0_p10_b2.0',		'0075',     25,     -2,	    2,        0, 0,  0],
-	['m1.0_p10_b2.0_256',	'0040',     50,     -1.8,	2,         0,  0,  0],
+	['m1.0_p10_b2.0_256',	'0040',     50,     -1.8,	2,        0,  0,  0],
     ['m1.0_p10_b2.0_256',	'0080',     50,     -2,	    2,        0,  0,  0],
 	['m1.0_p10_b2.5',		'0040',     20,     -1.9,	-0.3,     0,  0,  0],
-    ['m1.0_p10_b2.5',		'0060',     50,     -2,	    2,       0,  0,  0],
-	['m1.0_p10_b3.0',		'0040',     20,     -2,	    -0.4,       0,  0,  0],
-    ['m1.0_p10_b3.0',		'0060',     30,     -2,	    2,       0,  0,  0],
-    ['m1.0_p10_b3.0_256',   '0057',     20,     -2,	    2,      0,  0,  0], # very different shape
-	['m1.0_p10_b4.0',		'0040',     40,     -2,	    2,      0,  0,  0],
-    ['m1.0_p10_b4.0',		'0050',     40,     -2,	    2,       0,  0,  0],
+    ['m1.0_p10_b2.5',		'0060',     50,     -2,	    2,        0,  0,  0],
+	['m1.0_p10_b3.0',		'0040',     20,     -2,	    -0.4,     0,  0,  0],
+    ['m1.0_p10_b3.0',		'0060',     30,     -2,	    2,        0,  0,  0],
+    ['m1.0_p10_b3.0_256',   '0057',     20,     -2,	    2,        0,  0,  0], # very different shape
+	['m1.0_p10_b4.0',		'0040',     40,     -2,	    2,        0,  0,  0],
+    ['m1.0_p10_b4.0',		'0050',     40,     -2,	    2,        0,  0,  0],
     # p16
 	['m1.0_p16_b1.0',		'0040',     50,     -1.1,	2,        0,  0,  0],
     #['m1.0_p16_b1.0',		'0100',     50,     -1.1,	2], # too messy
-    ['m1.0_p16_b1.0_pfe',	'0052',     50,     -1.1,	2,      0,  0,  0], # bit different shape
+    ['m1.0_p16_b1.0_pfe',	'0052',     50,     -1.1,	2,        0,  0,  0], # bit different shape
 	['m1.0_p16_b1.5',		'0040',     50,     -1.5,	2,        0,  0,  0],
-    ['m1.0_p16_b1.5',		'0090',     50,     -2,	    2,       0,  0,  0],
-	['m1.0_p16_b2.0',		'0040',     30,     -1.65,	2,       0,  0,  0],
-    ['m1.0_p16_b2.0',		'0075',     35,     -1.6,   2,       0,  0,  0],
-	['m1.0_p16_b3.0',		'0040',     50,     -1.85,	2,       0,  0,  0],
-    ['m1.0_p16_b3.0',		'0060',     50,     -1.8,   2,       0,  0,  0],
-	['m1.0_p16_b4.0',		'0040',     30,     -2,	    2,      0,  0,  0],
-    ['m1.0_p16_b4.0',		'0050',     50,     -2,	    2,       0,  0,  0],
+    ['m1.0_p16_b1.5',		'0090',     50,     -2,	    2,        0,  0,  0],
+	['m1.0_p16_b2.0',		'0040',     30,     -1.65,	2,        0,  0,  0],
+    ['m1.0_p16_b2.0',		'0075',     35,     -1.6,   2,        0,  0,  0],
+	['m1.0_p16_b3.0',		'0040',     50,     -1.85,	2,        0,  0,  0],
+    ['m1.0_p16_b3.0',		'0060',     50,     -1.8,   2,        0,  0,  0],
+	['m1.0_p16_b4.0',		'0040',     30,     -2,	    2,        0,  0,  0],
+    ['m1.0_p16_b4.0',		'0050',     50,     -2,	    2,        0,  0,  0],
 ]
 
 
@@ -155,7 +155,6 @@ if LOOP_THRU_SIGMAS == True:
 # plot final versions
 #else:
 #els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
-lenxs = []
 for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
@@ -183,130 +182,40 @@ for d in ds:
            alpha=0.5, s=1, edgecolors='none')
 
         # hacky thing to fix extended slope for a few dmdts
-        # TODO this is kind of clunky. not general.
-        # can rewrite if run other chks than 040
-        if d[0] == 'm1.0_p1_b1.0':
-            # just adjust slope for this one
-            sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-            x = log_t_yr[sel]
-            y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1')
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
-
-            ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.2
-            #yext = [y[-1], y[-1] + (2.0 - x[-1])*ninf]
-            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
-            xext = np.linspace(x[-1], 2.0, num=100)[1:]
-            #ax2.plot([x[-1], 2.0], yext, c='C2')
-            #ax3.plot([x[-1], 2.0], (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
-            ax2.plot(xext, yext, c='C2')
-            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
-            x = np.append(x, xext)
-            y = np.append(y, yext)
-
-        elif d[0] == 'm1.0_p10_b1.0':
-            # for this one, split the smoothing into two
+        if d[6] != 0:
             slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
             dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
             mdot1 = dm_de_bound1*de_dt
             log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
 
-            slog_dm_de2 = gaussian_filter(log_dm_de, 5, mode='wrap')
+            slog_dm_de2 = gaussian_filter(log_dm_de, d[7], mode='wrap')
             dm_de_bound2 = 10**slog_dm_de2[np.where(e<0)]
             mdot2 = dm_de_bound2*de_dt
             log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
 
-            split = -0.5
-
             # join them
-            sel1 = np.where(log_t_yr < split)[0]
-            sel2 = np.where(log_t_yr > split)[0]
+            sel1 = np.where(log_t_yr < d[6])[0]
+            sel2 = np.where(log_t_yr > d[6])[0]
             log_mdot_moyr = np.append(log_mdot_moyr1[sel1], log_mdot_moyr2[sel2])
 
-            sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-            x = log_t_yr[sel]
-            y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1')
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
 
-            # and adjust slope
-            ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
-            xext = np.linspace(x[-1], 2.0, num=100)[1:]
-            ax2.plot(xext, yext, c='C2')
-            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
-            x = np.append(x, xext)
-            y = np.append(y, yext)
-
-
-        elif d[0] == 'm1.0_p10_b1.0_256':
-            # for this one, split the smoothing into two
-            slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
-            dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
-            mdot1 = dm_de_bound1*de_dt
-            log_mdot_moyr1 = np.log10(mdot1*yr/M_sun)
-
-            slog_dm_de2 = gaussian_filter(log_dm_de, 15, mode='wrap')
-            dm_de_bound2 = 10**slog_dm_de2[np.where(e<0)]
-            mdot2 = dm_de_bound2*de_dt
-            log_mdot_moyr2 = np.log10(mdot2*yr/M_sun)
-
-            split = -0.5
-
-            # join them
-            sel1 = np.where(log_t_yr < split)[0]
-            sel2 = np.where(log_t_yr > split)[0]
-            log_mdot_moyr = np.append(log_mdot_moyr1[sel1], log_mdot_moyr2[sel2])
-
-            sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-            x = log_t_yr[sel]
-            y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1')
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
-
-            # and adjust slope
-            ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.5
-            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
-            xext = np.linspace(x[-1], 2.0, num=100)[1:]
-            ax2.plot(xext, yext, c='C2')
-            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
-            x = np.append(x, xext)
-            y = np.append(y, yext)
-
-        elif d[0] == 'm1.0_p10_b2.0':
-            # just adjust slope for this one
-            sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-            x = log_t_yr[sel]
-            y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1')
-            ax3.plot(x, (y-np.min(y))/(np.max(y)-np.min(y)), c='C1')
-
-            ninf = (y[-2] - y[-1]) / (x[-2] - x[-1]) + 0.3
-            yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
-            xext = np.linspace(x[-1], 2.0, num=100)[1:]
-            ax2.plot(xext, yext, c='C2')
-            ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
-            x = np.append(x, xext)
-            y = np.append(y, yext)
-
-
-        else:
-            sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
-            x = log_t_yr[sel]
-            y = log_mdot_moyr[sel]
-            ax2.plot(x, y, c='C1')
-            ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C1')
+        sel = np.where((log_t_yr>d[3]) & (log_t_yr<d[4]))[0]
+        x = log_t_yr[sel]
+        y = log_mdot_moyr[sel]
+        ax2.plot(x, y, c='C1')
+        ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C1')
 
 		# extend dmdt from slope near end. could maybe improve slope function
         # this should just apply to the else statement above. could combine?
         if d[4] < 2.0:
-            ninf = (y[-10] - y[-1]) / (x[-10] - x[-1]) + d[5]
+            ninf = ((y[-10] - y[-1]) / (x[-10] - x[-1])) + d[5]
             yext = np.linspace(y[-1], y[-1] + (2.0 - x[-1])*ninf, num=100)[1:]
             xext = np.linspace(x[-1], 2.0, num=100)[1:]
             ax2.plot(xext, yext, c='C2')
             ax3.plot(xext, (yext-np.min(yext))/(np.max(yext)-np.min(yext)), c='C2')
             x = np.append(x, xext)
             y = np.append(y, yext)
+            ax3.plot(x, (y-np.min(y[np.isfinite(y)]))/(np.max(y)-np.min(y)), c='C3')
 
         # interpolate for smoother integrating/interpolating
         # doesn't change integration answer though.
@@ -324,7 +233,6 @@ for d in ds:
 
         # integrate mdot curves, to compare with delta m, and save for later
         if el == 'ev':
-            #lenxs.append(len(x))
             int_trapz = np.trapz(10**y, 10**x)
             int_simps = simps(10**y, 10**x)
             ascii.write([[int_trapz], [int_simps]],
