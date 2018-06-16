@@ -155,68 +155,63 @@ f_n14_ZAMS = 7.509e-4
 f_o16_ZAMS = 6.072e-3
 f_ne20_ZAMS = 1.232e-3
 def myplot_lr(ds):
-    els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
-    for d in ds:
-        fig, ax = plt.subplots()
-        for el in els:
-            # log_t_yr, log_mdot_moyr
-            x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
-                    + d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
-                    skiprows=1, unpack=True)
-            if el == 'ev':
-                tpeak = 10**x[np.argmax(y)]
-                continue
-            elif el == 'h1':
-                h1_mdot = 10**y
-                continue
-            elif el == 'he4':
-                el_lr = (10**y/h1_mdot)/(f_he4_ZAMS/f_h1_ZAMS)
-            elif el == 'o16':
-                if d[0] == 'm1.0_p16_b4.0': continue
-                el_lr = (10**y/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
-            elif el == 'c12':
-			    el_lr = (10**y/h1_mdot)/(f_c12_ZAMS/f_h1_ZAMS)
-            elif el == 'ne20':
-                if d[0] == 'm1.0_p16_b4.0': continue
-                el_lr = (10**y/h1_mdot)/(f_ne20_ZAMS/f_h1_ZAMS)
-            elif el == 'n14':
-                el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
+	els = ['ev', 'h1', 'he4', 'c12', 'n14', 'o16']
+	colors = ['', '', 'C0', 'C1', 'C2', 'C3']
+	for d in ds:
+		fig, ax = plt.subplots()
+		for el, col in zip(els, colors):
+			# log_t_yr, log_mdot_moyr
+			x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+			+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
+			skiprows=1, unpack=True)
+			if el == 'ev':
+				tpeak = 10**x[np.argmax(y)]
+				continue
+			elif el == 'h1':
+				h1_mdot = 10**y
+				continue
+			elif el == 'he4':
+				el_lr = (10**y/h1_mdot)/(f_he4_ZAMS/f_h1_ZAMS)
+			elif el == 'o16':
+				if d[0] == 'm1.0_p16_b4.0': continue
+				el_lr = (10**y/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
+			elif el == 'c12':
+				el_lr = (10**y/h1_mdot)/(f_c12_ZAMS/f_h1_ZAMS)
+			elif el == 'n14':
+				el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
 
-            ax.plot(np.log10(10**x/tpeak), el_lr, lw=LW, label=el)
+			ax.plot(np.log10(10**x/tpeak), el_lr, lw=LW, label=el, color=col)
 
-        if d[0] == 'm1.0_p16_b4.0':
-            # monica analytic data
-            dat = np.genfromtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/Archive/M1.0-p16dmdT.data',
-                skip_header=1, usecols=(0,1,2,6,10,12),
-                dtype=[('dmdt',float), ('t',float), ('dmdt_he4',float),
-                ('dmdt_n14',float), ('dmdt_h1',float), ('dmdt_c12',float)])
-            t_peak = dat['t'][np.argmax(dat['dmdt'])]
-            ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_he4']/dat['dmdt_h1'])/(f_he4_ZAMS/f_h1_ZAMS), ls='--', color='C0')
-            ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_c12']/dat['dmdt_h1'])/(f_c12_ZAMS/f_h1_ZAMS), ls='--', color='C1')
-            ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_n14']/dat['dmdt_h1'])/(f_n14_ZAMS/f_h1_ZAMS), ls='--', color='C2')
-            ax.plot([98,99],[98,99],ls='--',label='analytic',color='C7')
-            ax.plot([98,99],[98,99],label='simulation',color='C7')
+		if d[0] == 'm1.0_p16_b4.0':
+			# monica analytic data
+			dat = np.genfromtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/Archive/M1.0-p16dmdT.data',
+			skip_header=1, usecols=(0,1,2,6,10,12),
+			dtype=[('dmdt',float), ('t',float), ('dmdt_he4',float),
+			('dmdt_n14',float), ('dmdt_h1',float), ('dmdt_c12',float)])
+			t_peak = dat['t'][np.argmax(dat['dmdt'])]
+			ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_he4']/dat['dmdt_h1'])/(f_he4_ZAMS/f_h1_ZAMS), ls='--', color='C0')
+			ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_c12']/dat['dmdt_h1'])/(f_c12_ZAMS/f_h1_ZAMS), ls='--', color='C1')
+			ax.plot(np.log10(dat['t']/t_peak), (dat['dmdt_n14']/dat['dmdt_h1'])/(f_n14_ZAMS/f_h1_ZAMS), ls='--', color='C2')
+			ax.plot([98,99],[98,99],ls='--',label='analytic',color='C7')
+			ax.plot([98,99],[98,99],label='simulation',color='C7')
 
-        # for t/tpeak
-        #ax.set_xlim(-0.5, 1.5)
-        #ax.set_ylim(0, 3)
-        #ax.text(-0.48, 2.75, d[2])
-        ax.set_xlim(-0.4, 3)
-        ax.set_ylim(0, 4)
-        ax.text(-0.48, 3.75, d[2])
+		# for t/tpeak
+		ax.set_xlim(-0.4, 3)
+		ax.set_ylim(0, 4)
+		ax.text(-0.38, 3.72, d[2])
 
-        ax.set_xlabel(r'$\log\ t/t_{\rm peak}$')
-        ax.set_ylabel(r'$X/X_\odot$')
-        # TODO add t along the top in years
-        # for t
-        #ax.set_xlim(-1.5, 0.0)
-        #ax.text(-1.45, 2.8, d[2])
-        #ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
-        ax.axhline(1, ls=':', lw=LWD, c='k', alpha=0.5)
-        ax.legend(loc=1)
-        fig.tight_layout()
-        fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_' + d[3] + '.pdf')
-        plt.close('all')
+		ax.set_xlabel(r'$\log\ t/t_{\rm peak}$')
+		ax.set_ylabel(r'$X/X_\odot$')
+		# TODO add t along the top in years
+		# for t
+		#ax.set_xlim(-1.5, 0.0)
+		#ax.text(-1.45, 2.8, d[2])
+		#ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+		ax.axhline(1, ls=':', lw=LWD, c='k', alpha=0.5)
+		ax.legend(loc=1)
+		fig.tight_layout()
+		fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdot_comp_solar_' + d[3] + '.pdf')
+		plt.close('all')
 
 ds = [
     #['m1.0_p1_b1.0',       '0040',		'age=0Gyr, '+r'$\beta=1.0$',		'p1_b1_0'],
