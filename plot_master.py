@@ -584,7 +584,9 @@ def B_43(b):
     return result
 
 b43 = np.linspace(0.6, 4.0)
-ax3.plot(b43, B_43(b43), lw=1.5, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
+ax3.plot(b43, B_43(b43) * (0.9)**(3./2), lw=1.5, ls='--', label='GRR13 4/3, 0.9'+r'$R_\odot$', c='C0', alpha=0.5)
+#ax3.plot(b43, B_43(b43), lw=1.5, ls='--', label='GRR13 4/3', c='C1', alpha=0.5)
+#ax3.plot(b43, B_43(b43) * (1.29)**(3./2), lw=1.5, ls='--', label='GRR13 4/3', c='C2', alpha=0.5)
 ax3.set_xlim(0.9, 4.1)
 ax3.set_ylim(0.05, 0.19)
 ax3.set_ylabel(r'$t_{\rm peak}\ \mathrm{[yr]}$')
@@ -595,7 +597,9 @@ fig3.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/tpeak_vs_beta.pdf')
 
 ax4.set_xlim(0.9, 4.1)
 ax4.set_ylim(-1.2, 0.75)
-ax4.plot(b43, np.log10(A_43(b43)), lw=1.5, ls='--', label='GRR13 4/3', c='k', alpha=0.5)
+ax4.plot(b43, np.log10(A_43(b43) * (0.9)**(-3./2)), lw=1.5, ls='--', label='GRR13 4/3, 0.9'+r'$R_\odot$', c='C0', alpha=0.5)
+#ax4.plot(b43, np.log10(A_43(b43)), lw=1.5, ls='--', label='GRR13 4/3', c='C1', alpha=0.5)
+#ax4.plot(b43, np.log10(A_43(b43) * (1.29)**(-3./2)), lw=1.5, ls='--', label='GRR13 4/3', c='C2', alpha=0.5)
 ax4.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\odot/yr]}$')
 ax4.set_xlabel(r'$\beta$')
 ax4.legend()
