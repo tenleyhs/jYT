@@ -477,33 +477,45 @@ plt.close('all')
 
 
 
-### for power law index
+### for power law index, tpeak vs beta, mdotpeak vs beta
 dss = [
         [
-    ['m1.0_p1_b1.0',        1.0],
-	['m1.0_p1_b1.5',		1.5],
-	['m1.0_p1_b1.75',		1.75],
-	['m1.0_p1_b2.0',		2.0],
-	['m1.0_p1_b3.0',		3.0]
+    ['m1.0_p1_b1.0',        1.0,	'0100'],
+	['m1.0_p1_b1.5',		1.5,	'0090'],
+	['m1.0_p1_b1.75',		1.75,	'0090'],
+	['m1.0_p1_b2.0',		2.0,	'0080'],
+	['m1.0_p1_b3.0',		3.0,	'0060']
+	#['m1.0_p1_b1.0',        1.0,	'0040'],
+	#['m1.0_p1_b1.5',		1.5,	'0040'],
+	#['m1.0_p1_b1.75',		1.75,	'0040'],
+	#['m1.0_p1_b2.0',		2.0,	'0040'],
+	#['m1.0_p1_b3.0',		3.0,	'0040']
         ],
         [
-	['m1.0_p10_b1.0',		1.0],
-	#['m1.0_p10_b1.0_256',	1.0],
-	['m1.0_p10_b1.5',		1.5],
-	['m1.0_p10_b2.0',		2.0],
-	#['m1.0_p10_b2.0_256',	2.0],
-	['m1.0_p10_b2.5',		2.5],
-	['m1.0_p10_b3.0',		3.0],
-	['m1.0_p10_b4.0',		4.0],
-	#['m1.0_p10_b5.0',		5.0]
+	['m1.0_p10_b1.0_256',	1.0,	'0040'],
+	['m1.0_p10_b1.5',		1.5,	'0090'],
+	['m1.0_p10_b2.0_256',	2.0,	'0080'],
+	['m1.0_p10_b2.5',		2.5,	'0060'],
+	['m1.0_p10_b3.0_256',	3.0,	'0057'],
+	['m1.0_p10_b4.0',		4.0,	'0050'],
+	#['m1.0_p10_b1.0',		1.0,	'0040'],
+	#['m1.0_p10_b1.5',		1.5,	'0040'],
+	#['m1.0_p10_b2.0',		2.0,	'0040'],
+	#['m1.0_p10_b2.5',		2.5,	'0040'],
+	#['m1.0_p10_b3.0',		3.0,	'0040'],
+	#['m1.0_p10_b4.0',		4.0,	'0040'],
         ],
         [
-	['m1.0_p16_b1.0',		1.0],
-	['m1.0_p16_b1.5',		1.5],
-	['m1.0_p16_b2.0',		2.0],
-	['m1.0_p16_b3.0',		3.0],
-	['m1.0_p16_b4.0',		4.0],
-	#['m1.0_p16_b5.0',		5.0]
+	['m1.0_p16_b1.0',		1.0,	'0040'],
+	['m1.0_p16_b1.5',		1.5,	'0090'],
+	['m1.0_p16_b2.0',		2.0,	'0075'],
+	['m1.0_p16_b3.0',		3.0,	'0060'],
+	['m1.0_p16_b4.0',		4.0,	'0050'],
+	#['m1.0_p16_b1.0',		1.0,	'0040'],
+	#['m1.0_p16_b1.5',		1.5,	'0040'],
+	#['m1.0_p16_b2.0',		2.0,	'0040'],
+	#['m1.0_p16_b3.0',		3.0,	'0040'],
+	#['m1.0_p16_b4.0',		4.0,	'0040'],
         ]
 ]
 labels = ['age=0Gyr', 'age=4.8Gyr', 'age=8.4Gyr']
@@ -512,50 +524,55 @@ fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
 fig3, ax3 = plt.subplots()
 fig4, ax4 = plt.subplots()
+fig5, ax5 = plt.subplots()
 for i, ds in enumerate(dss):
-    b_array = []
-    ninf_array = []
-    mdotpeak_array = []
-    tpeak_array = []
-    for k, d in enumerate(ds):
-    	x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
-    			+ d[0].replace(".","_") + '_0040_ev.dat',
-    			skiprows=1, unpack=True)
-    	# mdotpeak, tpeak
-    	mdotpeak_array.append(max(y))
-    	tpeak_array.append(x[np.argmax(y)])
+	b_array = []
+	ninf_array = []
+	mdotpeak_array = []
+	tpeak_array = []
+	for k, d in enumerate(ds):
+		x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'
+					+ d[0].replace(".","_") + '_' + d[2] + '_ev.dat',
+					skiprows=1, unpack=True)
+		# mdotpeak, tpeak
+		sel_y = np.isfinite(y)
+		mdotpeak_array.append(max(y[sel_y]))
+		tpeak_array.append(x[sel_y][np.argmax(y[sel_y])])
 
-        # n infinity
-        # take this at 1 yr. TODO can change this
-        ix = (np.abs(x)).argmin() # log t = 0
-        ninf = (y[ix-1] - y[ix]) / (x[ix-1] - x[ix])
-        #ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
-        b_array.append(d[1])
-        ninf_array.append(ninf)
+		# n infinity
+		# take this at 1 yr. TODO can change this
+		ix = (np.abs(x)).argmin() # log t = 0
+		ninf = (y[ix-1] - y[ix]) / (x[ix-1] - x[ix])
+		#ninf = (y[-2] - y[-1]) / (x[-2] - x[-1])
+		b_array.append(d[1])
+		ninf_array.append(ninf)
 
-    	# n instantaneous
-        n = []
-        for j in range(len(x)):
-            if j == 0:
-                continue
-            s = (y[j] - y[j-1])/(x[j] - x[j-1])
-            n.append(s)
+		# n instantaneous
+		n = []
+		for j in range(len(x)):
+			if j == 0:
+				continue
+			s = (y[j] - y[j-1])/(x[j] - x[j-1])
+			n.append(s)
 
-        if k == 0:
-            label = labels[i]
-        else:
-            label = None
-        ax.plot(x[:-1], n, lw=LW, c=carr[i], alpha=0.4, label=label)
+		if k == 0:
+			label = labels[i]
+		else:
+			label = None
+		ax.plot(x[:-1], n, lw=LW, c=carr[i], alpha=0.4, label=label)
 
-    ax2.plot(b_array, ninf_array, lw=LW, label=labels[i], alpha=0.5)
-    ax2.scatter(b_array, ninf_array, s=S)
+	ax2.plot(b_array, ninf_array, lw=LW, label=labels[i], alpha=0.5)
+	ax2.scatter(b_array, ninf_array, s=S)
 
-    # TODO add fitting function
-    ax3.plot(b_array, 10**np.array(tpeak_array), lw=LW, label=labels[i], alpha=0.5)
-    ax3.scatter(b_array, 10**np.array(tpeak_array), s=S)
+	# TODO add fitting function
+	ax3.plot(b_array, 10**np.array(tpeak_array), lw=LW, label=labels[i], alpha=0.5)
+	ax3.scatter(b_array, 10**np.array(tpeak_array), s=S)
 
-    ax4.plot(b_array, mdotpeak_array, lw=LW, label=labels[i], alpha=0.5)
-    ax4.scatter(b_array, mdotpeak_array, s=S)
+	ax4.plot(b_array, mdotpeak_array, lw=LW, label=labels[i], alpha=0.5)
+	ax4.scatter(b_array, mdotpeak_array, s=S)
+
+	ax5.plot(10**np.array(tpeak_array), mdotpeak_array, label=labels[i], alpha=0.5)
+	ax5.scatter(10**np.array(tpeak_array), mdotpeak_array, s=S)
 
 
 ax.set_xlim(-2, 2)
@@ -606,8 +623,12 @@ ax4.legend()
 fig4.tight_layout()
 fig4.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdotpeak_vs_beta.pdf')
 
-### for mdotpeak vs tpeak
-# ^ above
+
+ax5.set_xlabel(r'$t_{\rm peak}\ \mathrm{[yr]}$')
+ax5.set_ylabel(r'$\log\ \dot M_{\rm peak}\ {\rm [M_\odot/yr]}$')
+ax5.legend()
+fig5.tight_layout()
+fig5.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/mdotpeak_vs_tpeak.pdf')
 
 
 
