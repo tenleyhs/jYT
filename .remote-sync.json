@@ -5,8 +5,8 @@
   "uploadOnSave": true,
   "useAtomicWrites": false,
   "deleteLocal": false,
-  "hostname": "eudora.ucsc.edu",
-  "target": "/pfs/lawsmith/jYT",
+  "hostname": "fend01.hpc.ku.dk",
+  "target": "/groups/dark/lawsmith/jYT",
   "ignore": [
     ".remote-sync.json",
     ".git/**"
