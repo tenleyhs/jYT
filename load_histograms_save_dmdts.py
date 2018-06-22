@@ -4,7 +4,6 @@ optionally make plots. plot raw with alpha to compare. go through these plots to
 decide what window lens, tmin, tmax to choose
 comment out some ds if just ran a few new simulations and don't want to do everything
 """
-
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -16,7 +15,8 @@ from scipy.integrate import simps
 from scipy.integrate import cumtrapz
 from scipy import interpolate
 import os
-execfile('/pfs/lawsmith/jYT/my_settings.py')
+#execfile('/pfs/lawsmith/jYT/my_settings.py')
+execfile('/groups/dark/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
@@ -27,6 +27,11 @@ LOOP_THRU_SIGMAS = True
 sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 
 PLOT_DMDES = False
+
+ds = [
+    ['43_b2.0_24k',		'0073',     20,     -2,	2,        0,  0,  0],
+    ['43_b2.0_48k',		'0043',     20,     -2,	2,        0,  0,  0],
+    ]
 
 '''
 ds = [
@@ -76,9 +81,6 @@ ds = [
     ['m1.0_p16_b4.0',		'0050',     50,     -2,	    2,        0,  0,  0],
 ]
 '''
-
-ds = [['m1.0_p16_b3.0_48k',		'0048',     20,     -2,	2,        0,  0,  0]]
-
 
 
 #els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
@@ -166,7 +168,8 @@ for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
         fig3, ax3 = plt.subplots()
-        e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
+        #e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
+        e, dm = np.loadtxt('/groups/dark/lawsmith/FLASH4.3_copy/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
         de = e[1]-e[0]
         dm_de = dm/de
         log_dm_de = np.log10(dm_de)
@@ -234,7 +237,8 @@ for d in ds:
 
         # write for later plotting
         ascii.write([x, y],
-            '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'+d[0].replace(".","_")+
+        #    '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/'+d[0].replace(".","_")+
+            '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+
             '_'+d[1]+'_'+el+'.dat', overwrite=True,
             names=['log_t_yr','log_mdot_moyr'])
 
@@ -243,7 +247,8 @@ for d in ds:
             int_trapz = np.trapz(10**y, 10**x)
             int_simps = simps(10**y, 10**x)
             ascii.write([[int_trapz], [int_simps]],
-                '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'+d[0].replace(".","_")+
+                #'/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'+d[0].replace(".","_")+
+                '/groups/dark/lawsmith/results/ints_'+d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True,
                 names=['int_trapz','int_simps'])
             # cumulative plots
@@ -254,8 +259,9 @@ for d in ds:
             #ax3.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
             ax3.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
             fig3.tight_layout()
-            directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals'
-            fig3.savefig(directory + '/'
+            #directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/integrals/'
+            directory = '/groups/dark/lawsmith/results/ints_'
+            fig3.savefig(directory \
             	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 
 
@@ -269,7 +275,8 @@ for d in ds:
             ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
             ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
             fig.tight_layout()
-            directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
+            #directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
+            directory = '/groups/dark/lawsmith/results/' + d[0].replace(".","_")
             if not os.path.exists(directory):
             	os.makedirs(directory)
             fig.savefig(directory + '/dmde_'
@@ -281,7 +288,8 @@ for d in ds:
         ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
         ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
         fig2.tight_layout()
-        directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/final'
+        #directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/final'
+        directory = '/groups/dark/lawsmith/results/'
         fig2.savefig(directory + '/dmdt_'
         	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 

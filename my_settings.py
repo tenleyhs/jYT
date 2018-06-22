@@ -3,7 +3,6 @@ some plotting settings, and some constants
 '''
 
 import matplotlib as mpl
-
 mpl.rcParams['figure.figsize'] = (6,5)
 
 mpl.rcParams['legend.frameon'] = False
@@ -29,7 +28,6 @@ mpl.rcParams['ytick.minor.visible'] = True
 #mpl.rcParams['font.size'] = 16
 #mpl.rcParams['text.usetex'] = True
 #mpl.rcParams['font.family'] = 'stixgeneral'
-
 
 # CONSTANTS [cgs]
 # todo should just use astropy probably

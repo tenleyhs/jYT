@@ -150,7 +150,7 @@ nghost = 1
 
 if (len(args.excludevars) > 0):
 	if len(args.excludevars) != len(args.excludethr) or len(args.excludevars) != len(args.excludetype):
-		print 'ERROR: Exclude variable names, threshold values, and types must all be the same length.'
+		print('ERROR: Exclude variable names, threshold values, and types must all be the same length.')
 		sys.exit()
 
 if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
@@ -202,7 +202,7 @@ for f in args.filename:
 		tindex = abs(time - pf.current_time.v).argmin()
 
 	if args.subsample >= 0 and pf.h.max_level - args.undersample < args.subsample:
-		print 'ERROR: Subsample must be less than max refine level - undersample.'
+		print('ERROR: Subsample must be less than max refine level - undersample.')
 		sys.exit()
 
 	maxval = np.empty(len(args.vars))
@@ -266,8 +266,8 @@ for f in args.filename:
 	histdims.fill(args.nbins)
 	hist = np.zeros(int(histdims))
 
-	print minval
-	print maxval
+	print(minval)
+	print(maxval)
 
 #Oversampling needs to account for multiple variables
 	if args.oversample == 0:
@@ -280,7 +280,7 @@ for f in args.filename:
 				pbar.update(cnt+1)
 			pbar.finish()
 		else:
-			print 'No cells satisfy cuts in initial pass!'
+			print('No cells satisfy cuts in initial pass!')
 
 	pbar = ProgressBar(widgets=['Secondary pass of data with sub-sampling: ', Percentage(), Bar(), ' ', ETA()], maxval=len(pf.index.grids)).start()
 	for cnt, g in enumerate(pf.index.grids):

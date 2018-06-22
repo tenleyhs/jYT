@@ -24,7 +24,7 @@ for i, t in enumerate(df['[00]part_tag']):
 				break
 			j += 1
 			if j==100000:
-				print 'Error: found restart but no matching time'
+				print('Error: found restart but no matching time')
 
 		# j+2 because we want to delete back to row j and j-1,
 		# because there are two particle tags.
