@@ -4,9 +4,10 @@ there are nicer and maybe faster ways to paralellize this from googling
 """
 import os
 
-chk = '0043'
+chk = '0080'
 bins = '10000'
-
+os.system('python /groups/dark/lawsmith/jYT/histogram.py multitidal_hdf5_chk_'+chk+' -v bhbound -n '+bins+' -ev selfbound -et 0. -ey min --silent -fp b'+bins+'_ev >> outputfile &')
+chk = '0090'
 os.system('python /groups/dark/lawsmith/jYT/histogram.py multitidal_hdf5_chk_'+chk+' -v bhbound -n '+bins+' -ev selfbound -et 0. -ey min --silent -fp b'+bins+'_ev >> outputfile &')
 
 #os.system('python /pfs/lawsmith/jYT/histogram.py multitidal_hdf5_chk_'+chk+' -v bhbound -n '+bins+' -ev selfbound -et 0. -ey min --silent -fp b'+bins+'_ev >> outputfile &')

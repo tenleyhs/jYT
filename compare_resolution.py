@@ -11,8 +11,11 @@ fig, ax = plt.subplots()
 x, y = np.loadtxt('/groups/dark/lawsmith/results/43_b2_0_24k_0073_ev.dat', skiprows=1, unpack=True)
 ax.plot(x, y, c='C0', label='4/3, 24k, chk73')
 
-x, y = np.loadtxt('/groups/dark/lawsmith/results/43_b2_0_48k_0043_ev.dat', skiprows=1, unpack=True)
-ax.plot(x, y, c='C1', label='4/3, 48k, chk43')
+x, y = np.loadtxt('/groups/dark/lawsmith/results/43_b2_0_48k_0080_ev.dat', skiprows=1, unpack=True)
+ax.plot(x, y, c='C1', label='4/3, 48k, chk80')
+
+x, y = np.loadtxt('/groups/dark/lawsmith/results/43_b2_0_48k_0090_ev.dat', skiprows=1, unpack=True)
+ax.plot(x, y, c='C1', label='4/3, 48k, chk90')
 
 x, y = np.loadtxt('/groups/dark/lawsmith/Guillochon2013_dmdts/4-3/2.000.dat', unpack=True)
 ax.plot(x, y, c='C2', label='4/3, GRR2013')
