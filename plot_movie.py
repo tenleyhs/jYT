@@ -1,6 +1,7 @@
 '''
 run like:
-mpirun -np 32 python ~/jYT/plot_movie.py m1.0_p16_b3.0 dens 1000 SAVE_PATH
+mpirun -np 32 python ~/jYT/plot_movie.py fend m1.0_p16_b3.0 dens 1000 SAVE_PATH
+
 makes a bunch of slices in parallel in prep for a movie
 then can run:
 ffmpeg -r 24 -i multitidal_hdf5_chk_%04d_Slice_z_dens.png -b:v 4M movie.mp4
@@ -10,25 +11,33 @@ or can use quicktime 7 like James suggested
 import yt
 import sys
 
-cluster = '/groups/dark/lawsmith/FLASH4.3_copy/runs/'
-#cluster = '/pfs/lawsmith/FLASH4.3/runs/'
+cluster = sys.argv[1]
+if cluster == 'hyades':
+	cluster = '/pfs/lawsmith/FLASH4.3/runs/'
+elif cluster == 'fend':
+	clusterdir = '/groups/dark/lawsmith/FLASH4.3_copy/runs/'
+elif cluster == 'pfe':
+	clusterdir = '/nobackup/jlawsmit/'
+else:
+	print("ERROR")
+	exit()
 
 #dir = 'm1.0_p16_b3.0'
-dir = sys.argv[1]
+dir = sys.argv[2]
 
 #var = 'dens'
-var = sys.argv[2]
+var = sys.argv[3]
 log_tf = True
 #width = (3, 'rsun')
-width = (int(sys.argv[3]), 'rsun')
+width = (int(sys.argv[4]), 'rsun')
 
 set_zlim_tf = False
-zmax = 169.88   # p1:80.78, p10:169.88, p16:500
+zmax = 500   # p1:80.78, p10:169.88, p16:500
 zmin = 1e-5 * zmax
 
-LOAD_FILES = cluster + dir + '/multitidal_hdf5_chk_*'
+LOAD_FILES = clusterdir + dir + '/multitidal_hdf5_chk_*'
 #SAVE_PATH = cluster + dir + '/' + var + '_' + str(width[0]) + 'rsun/'
-SAVE_PATH = sys.argv[4]
+SAVE_PATH = sys.argv[5]
 #if not os.path.exists(SAVE_PATH): os.makedirs(SAVE_PATH)
 
 yt.enable_parallelism()
