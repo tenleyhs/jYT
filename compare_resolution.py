@@ -2,11 +2,12 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-#execfile('/pfs/lawsmith/jYT/my_settings.py')
-execfile('/groups/dark/lawsmith/jYT/my_settings.py')
+execfile('/pfs/lawsmith/jYT/my_settings.py')
+#execfile('/groups/dark/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
+"""
 fig, ax = plt.subplots()
 x, y = np.loadtxt('/groups/dark/lawsmith/results/43_b2_0_24k_0073_ev.dat', skiprows=1, unpack=True)
 ax.plot(x, y, c='C0', label='4/3, 24k, chk73')
@@ -24,7 +25,19 @@ ax.set_xlim(-2, 2)
 ax.legend()
 fig.tight_layout()
 fig.savefig('/groups/dark/lawsmith/results/compare_resolution_43_b2_0.pdf')
+"""
 
+fig, ax = plt.subplots()
+x, y = np.loadtxt('/pfs/lawsmith/results/dmdts/data/43_b2_0_24k_0026_ev.dat', skiprows=1, unpack=True)
+ax.plot(x, y, c='C0', ls='--', label='24k, chk26')
+x, y = np.loadtxt('/pfs/lawsmith/results/dmdts/data/43_b2_0_48k_0026_ev.dat', skiprows=1, unpack=True)
+ax.plot(x, y, c='C1', ls='--', label='48k, chk26')
+x, y = np.loadtxt('/pfs/lawsmith/dmdts/4-3/2.000.dat', unpack=True)
+ax.plot(x, y, c='C2', label='4/3, GRR2013')
+ax.set_xlim(-2, 2)
+ax.legend()
+fig.tight_layout()
+fig.savefig('/pfs/lawsmith/results/temp/compare_resolution_43_b2_0.pdf')
 
 """
 fig, ax = plt.subplots()

@@ -2,11 +2,11 @@
   "logger": {
     "title": "Remote Sync"
   },
-  "uploadOnSave": false,
+  "uploadOnSave": true,
   "useAtomicWrites": false,
   "deleteLocal": false,
-  "hostname": "fend01.hpc.ku.dk",
-  "target": "/groups/dark/lawsmith/jYT",
+  "hostname": "hyades.ucsc.edu",
+  "target": "/pfs/lawsmith/jYT",
   "ignore": [
     ".remote-sync.json",
     ".git/**"
