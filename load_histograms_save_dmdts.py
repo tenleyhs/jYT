@@ -40,8 +40,8 @@ sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 PLOT_DMDES = False
 
 ds = [
-    ['43_b2.0_24k',		'0026',     1,     -2,	2,        0,  0,  0],
-    ['43_b2.0_48k',		'0026',     1,     -2,	2,        0,  0,  0],
+    ['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
+    ['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
     ]
 '''
 ds = [
@@ -259,7 +259,7 @@ for d in ds:
             ascii.write([x, y],
                 '/pfs/lawsmith/results/dmdts/data/'+d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
-        elif args.clsuter == 'fend':
+        elif args.cluster == 'fend':
             ascii.write([x, y],
                 '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
@@ -287,7 +287,7 @@ for d in ds:
             fig3.tight_layout()
             if args.cluster == 'hyades':
                 directory = '/pfs/lawsmith/results/dmdts/integrals/'
-            elif args.clsuter == 'fend':
+            elif args.cluster == 'fend':
                 directory = '/groups/dark/lawsmith/results/ints_'
             fig3.savefig(directory \
             	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')

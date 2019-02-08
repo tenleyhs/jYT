@@ -1,7 +1,8 @@
 '''
 cleans sinks_evol.dat of restarts and saves it as pruned_sinks_evol.dat
 
-run this script inside each run directory
+run this script inside each run directory like:
+python ../../../jYT/make_pruned_sinks_evol.py
 '''
 
 import pandas as pd
