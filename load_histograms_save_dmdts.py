@@ -5,7 +5,7 @@ decide what window lens, tmin, tmax to choose
 comment out some ds if just ran a few new simulations and don't want to do everything
 
 run like:
-python load_histograms_save_dmdts.py --cluster=hyades
+python load_histograms_save_dmdts.py --cluster=fend
 """
 import numpy as np
 import matplotlib
@@ -40,7 +40,21 @@ sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 PLOT_DMDES = False
 
 ds = [
-    ['duplicate_m1.0_p10_b2.0',		'0075',     25,     -2,	2,        0,  0,  0]
+    #['m1.0_p10_b3.0',		'0043',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p10_b3.0',		'0030',     1,     -2,	2,        0,  0,  0],
+    #['43_b2.0_6k',		'0040',     5,     -2,	2,        0,  0,  0],
+    #['43_b2.0_6k',		'0060',     10,     -2,	2,        0,  0,  0],
+    #['43_b2.0_6k',		'0080',     20,     -2,	2,        0,  0,  0],
+    #['43_b2.0_12k',		'0041',     1,     -2,	2,        0,  0,  0],
+    #['43_b2.0_12k',		'0080',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p10_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p10_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p16_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p16_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
+    #['m1.0_p16_b3.0_12k',		'0060',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b3.0_12k',		'0040',     5,     -2,	2,        0,  0,  0],
+    #['43_b2.0_12k_flash',		'0040',     5,     -2,	2,        0,  0,  0],
+    #['43_b2.0_12k_flash',		'0080',     20,     -2,	2,        0,  0,  0]
     ]
 
 '''
@@ -259,7 +273,8 @@ for d in ds:
                 '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
         elif args.cluster == 'fend':
             ascii.write([x, y],
-                '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+
+                '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+
+                d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
 
         # integrate mdot curves, to compare with delta m, and save for later
@@ -272,7 +287,8 @@ for d in ds:
                     '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['int_trapz','int_simps'])
             elif args.cluster == 'fend':
                 ascii.write([[int_trapz], [int_simps]],
-                    '/groups/dark/lawsmith/results/ints_'+d[0].replace(".","_")+
+                    '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+
+                    'ints_'+d[0].replace(".","_")+
                     '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['int_trapz','int_simps'])
 
             # cumulative plots
@@ -286,7 +302,7 @@ for d in ds:
             if args.cluster == 'hyades':
                 directory = '/pfs/lawsmith/results/dmdts/integrals/'
             elif args.cluster == 'fend':
-                directory = '/groups/dark/lawsmith/results/ints_'
+                directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+'ints_'
             fig3.savefig(directory \
             	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 
@@ -304,7 +320,7 @@ for d in ds:
             if args.cluster == 'hyades':
                 directory = '/pfs/lawsmith/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
             elif args.cluster == 'fend':
-                directory = '/groups/dark/lawsmith/results/' + d[0].replace(".","_")
+                directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
             if not os.path.exists(directory):
             	os.makedirs(directory)
             fig.savefig(directory + '/dmde_'
@@ -319,7 +335,7 @@ for d in ds:
         if args.cluster == 'hyades':
             directory = '/pfs/lawsmith/results/dmdts/final'
         elif args.cluster == 'fend':
-            directory = '/groups/dark/lawsmith/results'
+            directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
         fig2.savefig(directory + '/dmdt_'
         	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
 

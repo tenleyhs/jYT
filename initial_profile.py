@@ -1,48 +1,66 @@
 '''
 plots a 1D profile from FLASH and compares to the MESA input profile sm.dat
-'''
 
-import numpy as np
+run like:
+python jYT/initial_profile.py --cluster=fend --run=m1.0_p16_b3.0
+'''
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 import yt
+import os
+import argparse, sys
 
-execfile('my_settings.py')
+parser = argparse.ArgumentParser()
+parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='hyades')
+parser.add_argument('--run', help='run to plot, e.g., m1.0_p16_b3.0', type=str)
+args = parser.parse_args()
 
-PROF_PATH = '/pfs/lawsmith/FLASH4.3/runs_loadprofile/test/sm.dat'
-CHK_PATH = '/pfs/lawsmith/FLASH4.3/runs/test/multitidal_hdf5_chk_0000'
-SAVE_PNG_PATH = '/pfs/lawsmith/FLASH4.3/runs/test/'
-lw = 1.5
+if args.cluster == 'hyades':
+	execfile('/pfs/lawsmith/jYT/my_settings.py')
+	clusterdir = '/pfs/lawsmith/FLASH4.3/runs/'
+	savepath = '/pfs/lawsmith/results/initial_profile/'
+elif args.cluster == 'fend':
+	execfile('/groups/dark/lawsmith/jYT/my_settings.py')
+	clusterdir = '/groups/dark/lawsmith/FLASH4.3_copy/runs/'
+	savepath = '/groups/dark/lawsmith/results/initial_profile/'
+elif args.cluster == 'pfe':
+	clusterdir = '/nobackup/jlawsmit/'
+	savepath = '/nobackup/jlawsmit/results/initial_profile/'
 
-f = np.loadtxt(PROF_PATH, skiprows=1)
+plt.rcParams['legend.fontsize'] = 16
+plt.rcParams['font.size'] = 18
+
+f = np.loadtxt(clusterdir + args.run + '/sm.dat', skiprows=1)
 R = f[:,0]
 rho = f[:,1]
 T = f[:,2]
 P = f[:,3]
 
-ds = yt.load(CHK_PATH)
-sp = ds.sphere("c", (1.1*max(R), "cm"))
+chks = ['0000', '0005']
 
-plot = yt.ProfilePlot(sp, "radius", ["density"],
-	weight_field="cell_mass", n_bins=2000, accumulation=False, x_log=False, y_log={'density':False})
+for chk in chks:
+	ds = yt.load(clusterdir + args.run + '/multitidal_hdf5_chk_' + chk)
+	sp = ds.sphere("c", (1.1*max(R), "cm"))
 
-profile = plot.profiles[0]
-R_FLASH =  profile.x
-rho_FLASH = profile["density"]
+	plot = yt.ProfilePlot(sp, "radius", ["density"],
+		weight_field="cell_mass", n_bins=2000, accumulation=False, x_log=False, y_log={'density':False})
 
-# account for zeros in FLASH array due to binning
-R_FLASH = R_FLASH[np.where(rho_FLASH > 0.)[0]]
-rho_FLASH = rho_FLASH[np.where(rho_FLASH > 0.)[0]]
+	profile = plot.profiles[0]
+	R_FLASH =  profile.x
+	rho_FLASH = profile["density"]
 
-fig, ax = plt.subplots()
-ax.plot(R_FLASH/R_sun, np.log10(rho_FLASH), color=red, lw=lw, label='FLASH')
-ax.plot(R/R_sun, np.log10(rho), color=blue, lw=lw, label='MESA')
-ax.set_xlabel(r'$R/R_\odot$')
-ax.set_ylabel(r'$\log\ \rho$')
+	# account for zeros in FLASH array due to binning
+	R_FLASH = R_FLASH[np.where(rho_FLASH > 0.)[0]]
+	rho_FLASH = rho_FLASH[np.where(rho_FLASH > 0.)[0]]
 
-ax.set_ylim(-8, -2)
+	fig, ax = plt.subplots()
+	ax.plot(R_FLASH/R_sun, np.log10(rho_FLASH), color='C0', label='FLASH')
+	ax.plot(R/R_sun, np.log10(rho), color='C1', label='MESA')
+	ax.set_xlabel(r'$R/R_\odot$')
+	ax.set_ylabel(r'$\log\ \rho$')
 
-ax.legend()
-fig.tight_layout()
-plt.savefig(SAVE_PNG_PATH + 'initial_profile.png')
+	ax.legend()
+	fig.tight_layout()
+	plt.savefig(savepath + args.run.replace(".","_") + '_' + chk + '.pdf')
