@@ -1,6 +1,6 @@
 '''
 run like:
-mpirun -np 32 python jYT/plot_movie.py --cluster=fend --run=m1.0_p16_b3.0 --var=dens --width=1000
+mpirun -np 8 python jYT/plot_movie.py --cluster=fend --run=m1.0_p16_b3.0 --var=dens --width=1000
 
 makes a bunch of slices in parallel in prep for a movie
 then can run:
@@ -24,7 +24,7 @@ if args.cluster == 'hyades':
 	clusterdir = '/pfs/lawsmith/FLASH4.3/runs/'
 	savepath = '/pfs/lawsmith/hyades_slices/'
 elif args.cluster == 'fend':
-	clusterdir = '/groups/dark/lawsmith/FLASH4.3_copy/runs/'
+	clusterdir = '/storage/dark/lawsmith/FLASH4.3/runs/'
 	savepath = '/groups/dark/lawsmith/fend_slices/'
 elif args.cluster == 'pfe':
 	clusterdir = '/nobackup/jlawsmit/'
