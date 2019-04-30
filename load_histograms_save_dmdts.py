@@ -37,8 +37,31 @@ M_bh = 1e6*M_sun
 LOOP_THRU_SIGMAS = True
 sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 
-PLOT_DMDES = False
+PLOT_DMDES = True
 
+ds = [
+    ['m1.0_p1_b1.0',		'0100',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p1_b1.5',		'0090',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p1_b2.0',		'0080',     20,     -2,	2,        0,  0,  0],
+
+    ['m1.0_p10_b1.0',		'0100',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p10_b2.0',		'0075',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p10_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p10_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
+
+    ['m1.0_p16_b1.0',		'0100',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b2.0',		'0075',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b4.0',		'0050',     20,     -2,	2,        0,  0,  0],
+
+    ['43_b1.0_48k',		'0100',     20,     -2,	2,        0,  0,  0],
+    ['43_b1.5_48k',		'0090',     20,     -2,	2,        0,  0,  0],
+    ['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
+    ['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
+]
+
+"""
 ds = [
     #['m1.0_p10_b3.0',		'0043',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b3.0',		'0030',     1,     -2,	2,        0,  0,  0],
@@ -47,17 +70,17 @@ ds = [
     #['43_b2.0_6k',		'0080',     20,     -2,	2,        0,  0,  0],
     #['43_b2.0_12k',		'0041',     1,     -2,	2,        0,  0,  0],
     #['43_b2.0_12k',		'0080',     20,     -2,	2,        0,  0,  0],
+    ['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b3.0_12k',		'0060',     20,     -2,	2,        0,  0,  0],
-    ['m1.0_p16_b3.0_12k',		'0040',     5,     -2,	2,        0,  0,  0],
+    #['m1.0_p16_b3.0_12k',		'0040',     5,     -2,	2,        0,  0,  0],
     #['43_b2.0_12k_flash',		'0040',     5,     -2,	2,        0,  0,  0],
     #['43_b2.0_12k_flash',		'0080',     20,     -2,	2,        0,  0,  0]
     ]
 
-'''
 ds = [
     ['43_b2.0_24k_intel',		'0080',     20,     -2,	2,        0,  0,  0],
     ['43_b2.0_48k_intel',		'0080',     20,     -2,	2,        0,  0,  0],
@@ -109,7 +132,7 @@ ds = [
 	['m1.0_p16_b4.0',		'0040',     30,     -2,	    2,        0,  0,  0],
     ['m1.0_p16_b4.0',		'0050',     50,     -2,	    2,        0,  0,  0],
 ]
-'''
+"""
 
 
 #els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
@@ -166,8 +189,7 @@ if LOOP_THRU_SIGMAS == True:
                     ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
                     fig.tight_layout()
                     directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
-                    if not os.path.exists(directory):
-                        os.makedirs(directory)
+                    if not os.path.exists(directory): os.makedirs(directory)
                     fig.savefig(directory + '/dmde_'
                         + d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
                         + str(sigma) + '.pdf')
@@ -177,8 +199,7 @@ if LOOP_THRU_SIGMAS == True:
                 ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
                 fig2.tight_layout()
                 directory = '/pfs/lawsmith/FLASH4.3/runs/results/dmdts/dmde_first/' + d[0].replace(".","_")
-                if not os.path.exists(directory):
-                	os.makedirs(directory)
+                if not os.path.exists(directory): os.makedirs(directory)
                 fig2.savefig(directory + '/dmdt_'
                 	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
                 	+ str(sigma) + '.pdf')
@@ -200,12 +221,14 @@ for d in ds:
         if args.cluster == 'hyades':
             e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
         elif args.cluster == 'fend':
-            e, dm = np.loadtxt('/groups/dark/lawsmith/FLASH4.3_copy/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
+            e, dm = np.loadtxt('/storage/dark/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
         de = e[1]-e[0]
         dm_de = dm/de
         log_dm_de = np.log10(dm_de)
-        # smooth dmde first
-        slog_dm_de = gaussian_filter(log_dm_de, d[2], mode='wrap')
+        # smooth linear value of dmde first
+        s_dm_de = gaussian_filter(dm_de, d[2], mode='wrap')
+        slog_dm_de = np.log10(s_dm_de)
+
         e_bound = e[np.where(e<0.)]
         t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
         de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
@@ -223,6 +246,7 @@ for d in ds:
            alpha=0.5, s=1, edgecolors='none')
 
         # hacky thing to fix extended slope for a few dmdts
+        # TODO change this
         if d[6] != 0:
             slog_dm_de1 = gaussian_filter(log_dm_de, d[2], mode='wrap')
             dm_de_bound1 = 10**slog_dm_de1[np.where(e<0)]
@@ -267,6 +291,7 @@ for d in ds:
         y = ynew
 
         # write for later plotting
+
         if args.cluster == 'hyades':
             ascii.write([x, y],
                 '/pfs/lawsmith/results/dmdts/data/'+d[0].replace(".","_")+
@@ -277,6 +302,7 @@ for d in ds:
                 d[0].replace(".","_")+
                 '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
 
+        """
         # integrate mdot curves, to compare with delta m, and save for later
         if el == 'ev':
             int_trapz = np.trapz(10**y, 10**x)
@@ -303,9 +329,10 @@ for d in ds:
                 directory = '/pfs/lawsmith/results/dmdts/integrals/'
             elif args.cluster == 'fend':
                 directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+'ints_'
+            if not os.path.exists(directory): os.makedirs(directory)
             fig3.savefig(directory \
             	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
-
+        """
 
         if PLOT_DMDES:
             fig, ax = plt.subplots()
@@ -313,19 +340,19 @@ for d in ds:
             	alpha=0.5, s=1, edgecolors='none')
             ax.plot(e/1e17, slog_dm_de, c='C1')
             ax.set_xlim(-10, 10)
-            ax.set_ylim(9, 15)
+            ax.set_ylim(9, 18)
             ax.set_xlabel(r'$E\ \mathrm{[10^{17}\ erg\ g^{-1}]}$')
             ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
+            ax.grid()
             fig.tight_layout()
             if args.cluster == 'hyades':
                 directory = '/pfs/lawsmith/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
             elif args.cluster == 'fend':
                 directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
-            if not os.path.exists(directory):
-            	os.makedirs(directory)
+            if not os.path.exists(directory): os.makedirs(directory)
             fig.savefig(directory + '/dmde_'
             	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-                + str(sigma) + '.pdf')
+                + str(d[2]) + '.pdf')
 
         #ax2.set_ylim(-6, 1)
         ax2.set_xlim(-2, 2)
