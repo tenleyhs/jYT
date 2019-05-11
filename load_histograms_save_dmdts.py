@@ -21,7 +21,7 @@ import os
 import argparse, sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='hyades')
+parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='fend')
 args = parser.parse_args()
 
 if args.cluster == 'hyades':
@@ -39,6 +39,7 @@ sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 
 PLOT_DMDES = True
 
+"""
 ds = [
     # run,                  chk,        sigma,  tmin,	tmax,     slope, split, sigma2
     ['m1.0_p1_b1.0',        '0100',     20,     -2,	    2,        0,      0,  0],
@@ -81,12 +82,12 @@ ds = [
     #['m1.0_p16_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b4.0',		'0050',     20,     -2,	2,        0,  0,  0],
 
-    ['43_b1.0_48k',		'0100',     20,     -2,	2,        0,  0,  0],
+    ['43_b1.0_48k',		'0100',     40,     -2,	2,        0,  0,  0],
     ['43_b1.5_48k',		'0090',     20,     -2,	2,        0,  0,  0],
-    ['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
-    ['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
+    #['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
+    #['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
 ]
-
+"""
 ds = [
     #['m1.0_p10_b3.0',		'0043',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b3.0',		'0030',     1,     -2,	2,        0,  0,  0],
@@ -244,10 +245,9 @@ for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
         fig3, ax3 = plt.subplots()
-        if args.cluster == 'hyades':
-            e, dm = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
-        elif args.cluster == 'fend':
-            e, dm = np.loadtxt('/storage/dark/lawsmith/FLASH4.3/runs/'+d[0]+'/b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
+        if args.cluster == 'hyades': directory = '/pfs/lawsmith/FLASH4.3/runs/'
+        elif args.cluster == 'fend': directory = '/storage/dark/lawsmith/FLASH4.3/runs/'
+        e, dm = np.loadtxt(directory+d[0]+'/test2_b10000_'+el+'_bhbound_histogram_multitidal_hdf5_chk_'+d[1]+'.dat', skiprows=4)
         de = e[1]-e[0]
         dm_de = dm/de
         log_dm_de = np.log10(dm_de)
@@ -317,16 +317,9 @@ for d in ds:
         y = ynew
 
         # write for later plotting
-
-        if args.cluster == 'hyades':
-            ascii.write([x, y],
-                '/pfs/lawsmith/results/dmdts/data/'+d[0].replace(".","_")+
-                '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
-        elif args.cluster == 'fend':
-            ascii.write([x, y],
-                '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+
-                d[0].replace(".","_")+
-                '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
+        if args.cluster == 'hyades': directory = '/pfs/lawsmith/results/dmdts/data/'
+        elif args.cluster == 'fend': directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'
+        ascii.write([x, y], directory+d[0].replace(".","_")+'_'+d[1]+'_'+el+'_'+str(d[2])+'_test2.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr']) 
 
         """
         # integrate mdot curves, to compare with delta m, and save for later
@@ -336,12 +329,12 @@ for d in ds:
             if args.cluster == 'hyades':
                 ascii.write([[int_trapz], [int_simps]],
                     '/pfs/lawsmith/results/dmdts/integrals/'+d[0].replace(".","_")+
-                    '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['int_trapz','int_simps'])
+                    '_'+d[1]+'_'+el+'_'+str(d[2])+'.dat', overwrite=True, names=['int_trapz','int_simps'])
             elif args.cluster == 'fend':
                 ascii.write([[int_trapz], [int_simps]],
                     '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+
                     'ints_'+d[0].replace(".","_")+
-                    '_'+d[1]+'_'+el+'.dat', overwrite=True, names=['int_trapz','int_simps'])
+                    '_'+d[1]+'_'+el+'_'+str(d[2])+'.dat', overwrite=True, names=['int_trapz','int_simps'])
 
             # cumulative plots
             int_cumtrapz = cumtrapz(10**y, 10**x, initial=0)
@@ -357,7 +350,7 @@ for d in ds:
                 directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'+'ints_'
             if not os.path.exists(directory): os.makedirs(directory)
             fig3.savefig(directory \
-            	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
+            	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_' + str(d[2]) + '.pdf')
         """
 
         if PLOT_DMDES:
@@ -371,25 +364,18 @@ for d in ds:
             ax.set_ylabel(r'$\log\ dM/dE\ \mathrm{[g^2\ erg^{-1}]}$')
             ax.grid()
             fig.tight_layout()
-            if args.cluster == 'hyades':
-                directory = '/pfs/lawsmith/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
-            elif args.cluster == 'fend':
-                directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
+            if args.cluster == 'hyades': directory = '/pfs/lawsmith/results/dmdes/gaussian_wrap/' + d[0].replace(".","_")
+            elif args.cluster == 'fend': directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
             if not os.path.exists(directory): os.makedirs(directory)
-            fig.savefig(directory + '/dmde_'
-            	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '_'
-                + str(d[2]) + '.pdf')
+            fig.savefig(directory+'/dmde_'+d[0].replace(".","_")+'_'+d[1]+'_'+el+'_'+str(d[2])+'_test2.pdf')
 
         #ax2.set_ylim(-6, 1)
         ax2.set_xlim(-2, 2)
         ax2.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
         ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
         fig2.tight_layout()
-        if args.cluster == 'hyades':
-            directory = '/pfs/lawsmith/results/dmdts/final'
-        elif args.cluster == 'fend':
-            directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
-        fig2.savefig(directory + '/dmdt_'
-        	+ d[0].replace(".","_") + '_' + d[1] + '_' + el + '.pdf')
+        if args.cluster == 'hyades': directory = '/pfs/lawsmith/results/dmdts/final'
+        elif args.cluster == 'fend': directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")
+        fig2.savefig(directory+'/dmdt_'+d[0].replace(".","_")+'_'+d[1]+'_'+el+'_'+str(d[2])+'_test2.pdf')
 
         plt.close('all')
