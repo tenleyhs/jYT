@@ -172,7 +172,7 @@ if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 	boundvec = obvec
 	time = odata_pt[:,1]
 
-	# fyi this isnt used but seems wrong. doesnt include beta = edata[0]. 
+	# fyi peridist isnt used but seems wrong. doesnt include beta = edata[0]. 
 	# also edata[6] and edata[4] are already both in cgs.
 	import os.path
 	if os.path.isfile('extras.dat') :
@@ -184,7 +184,8 @@ if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 		gmpt = g*msun*extras[1]
 		peridist = extras[0]*rsun*np.power(extras[1]/extras[2], 1./3.)
 
-	# attempt at doing it not hardcoded
+	# attempt at plopping COM onto parabolic orbit
+	# used mathematica nb and COM.ipynb as reference
 	pf = load(args.filename[0])
 	tindex = abs(time - pf.current_time.v).argmin()
 
@@ -196,13 +197,8 @@ if (set(['bhbound','selfbound','angmom']) & set(args.vars + args.excludevars)):
 	semimajor_axis = pericenter_radius / (1. - edata[5])
 	x = semimajor_axis * np.cos(E) - semimajor_axis * edata[5]
 	y = semimajor_axis * np.sqrt(1. - edata[5]**2.) * np.sin(E)
-	ptvec[tindex][0:2] = [-y + edata[8]/2., x + edata[8]/2.]
-	
-	# TODO inserting new HARDCODED temp code. plopping COM onto parabolic orbit
-	# I'm inputting this from COM.ipynb and mathematica nb calculation.
-	#ptvec[-1][0:2] = [ -3.87069526e+13,  -1.55171502e+14]
-	#obvec[-1][0:2] = [3.4775e13, 3.4775e13]
-	#boundvec[-1][0:2] = [3.4775e13, 3.4775e13]
+	#ptvec[tindex][0:2] = [-y + edata[8]/2., x + edata[8]/2.]  # adding to center of box
+	ptvec[tindex][0:2] = [-y + obvec[tindex][0], x + obvec[tindex][1]]   # adding to obvec
 
 
 
