@@ -4,8 +4,8 @@ mpirun -np 8 python jYT/plot_movie.py --cluster=fend --run=m1.0_p16_b3.0 --var=d
 
 makes a bunch of slices in parallel in prep for a movie
 then can run:
-ffmpeg -r 24 -i multitidal_hdf5_chk_%04d_Slice_z_dens.png -b:v 4M movie.mp4
-ffmpeg -r 24 -i multitidal_hdf5_plt_cnt_0%02d0_Slice_z_dens.png -b:v 4M movie.mp4
+ffmpeg -f image2 -framerate 24 -i multitidal_hdf5_chk_%04d_Slice_z_dens.png -b:v 4M movie.mpg
+ffmpeg -f image2 -framerate 24 -i multitidal_hdf5_plt_cnt_0%02d0_Slice_z_dens.png -b:v 4M movie.mpg
 or can use quicktime 7 like James suggested
 '''
 import yt
@@ -13,7 +13,7 @@ import os
 import argparse, sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='hyades')
+parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='fend')
 parser.add_argument('--run', help='run to plot, e.g., m1.0_p16_b3.0', type=str)
 parser.add_argument('--var', help='variable to plot, e.g., dens', type=str, default='dens')
 parser.add_argument('--width', help='width of plot in rsun, e.g., 1000', type=int, default=1000)
@@ -40,10 +40,12 @@ LOAD_FILES = clusterdir + args.run + '/multitidal_hdf5_chk_*'
 yt.enable_parallelism()
 ts = yt.DatasetSeries(LOAD_FILES)
 
+factor = 1e-5
+
 for ds in ts.piter():
 	s = yt.SlicePlot(ds, 'z', args.var, width=(args.width, 'rsun'))
 	s.set_log(args.var, True)
-	#s.set_zlim(args.var, 1e-5 * args.zmax, args.zmax)
+	s.set_zlim(args.var, factor * args.zmax, args.zmax)
 	#s.set_cmap(var, cmaps.viridis)
 	s.annotate_timestamp(time_unit='s')
 	s.annotate_scale(unit='rsun')
@@ -53,6 +55,6 @@ for ds in ts.piter():
 	#s.hide_colorbar()
 	#s.set_figure_size(12)
 	#s.set_buff_size(2000)
-	s.annotate_velocity()
+	#s.annotate_velocity()
 	#s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
-	s.save(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/')
+	s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(factor)+'/')

@@ -7,6 +7,9 @@ comment out some ds if just ran a few new simulations and don't want to do every
 run like:
 python load_histograms_save_dmdts.py --cluster=fend
 """
+## TODO need to shift dmdes
+
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -24,10 +27,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='fend')
 args = parser.parse_args()
 
-if args.cluster == 'hyades':
-    execfile('/pfs/lawsmith/jYT/my_settings.py')
-elif args.cluster == 'fend':
-    execfile('/groups/dark/lawsmith/jYT/my_settings.py')
+if args.cluster == 'hyades': execfile('/pfs/lawsmith/jYT/my_settings.py')
+elif args.cluster == 'fend': execfile('/groups/dark/lawsmith/jYT/my_settings.py')
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 18
 
@@ -73,18 +74,24 @@ ds = [
 
     #['m1.0_p10_b1.0',		'0100',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b2.0',		'0075',     20,     -2,	2,        0,  0,  0],
-    #['m1.0_p10_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
+#    ['m1.0_p10_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p10_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
 
     #['m1.0_p16_b1.0',		'0100',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b2.0',		'0075',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b3.0',		'0060',     20,     -2,	2,        0,  0,  0],
     #['m1.0_p16_b3.0_24k',		'0060',     20,     -2,	2,        0,  0,  0],
-    #['m1.0_p16_b4.0',		'0050',     20,     -2,	2,        0,  0,  0],
+    ['m1.0_p16_b4.0',		'0050',     20,     -2,	2,        0,  0,  0],
+
+    ['m3.0_p16_b4.0_48k',       '0050',     20,     -2, 2,        0,  0,  0],
 
     #['43_b1.0_48k',		'0100',     40,     -2,	2,        0,  0,  0],
     #['43_b1.5_48k',		'0090',     20,     -2,	2,        0,  0,  0],
-    ['43_b1.5_300k',     '0090',     20,     -2, 2,        0,  0,  0],
+    #['43_b1.5_48k',		'0157',     20,     -2,	2,        0,  0,  0],
+    #['43_b1.5_48k',		'0200',     20,     -2,	2,        0,  0,  0],
+    #['43_b1.5_300k',     '0090',     20,     -2, 2,        0,  0,  0],
+    #['43_b1.5_300k',     '0200',     20,     -2, 2,        0,  0,  0],
+    #['43_b1.5_300k',     '0200',     20,     -2, 2,        0,  0,  0],
     #['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
     #['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
 ]
@@ -162,9 +169,8 @@ ds = [
 """
 
 
-#els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
-els = ['ev']
-
+els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
+#els = ['ev']
 """
 if LOOP_THRU_SIGMAS == True:
     for d in ds:
@@ -240,8 +246,6 @@ if LOOP_THRU_SIGMAS == True:
 
 # plot final versions
 #else:
-els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
-els = ['ev']
 for d in ds:
     for i, el in enumerate(els):
         fig2, ax2 = plt.subplots()
@@ -255,6 +259,12 @@ for d in ds:
         # smooth linear value of dmde first
         s_dm_de = gaussian_filter(dm_de, d[2], mode='wrap')
         slog_dm_de = np.log10(s_dm_de)
+
+        # shift dmde histogram to be centered at 0
+        if d[0] == 'm1.0_p16_b4.0':
+            e = e - e[(0<e/1e17) & (e/1e17<0.3)][np.argmin(slog_dm_de[(0<e/1e17) & (e/1e17<0.3)])]
+        if d[0] == 'm3.0_p16_b4.0_48k':
+            e = e - e[np.argmax(slog_dm_de)]
 
         e_bound = e[np.where(e<0.)]
         t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
@@ -320,7 +330,7 @@ for d in ds:
         # write for later plotting
         if args.cluster == 'hyades': directory = '/pfs/lawsmith/results/dmdts/data/'
         elif args.cluster == 'fend': directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'
-        ascii.write([x, y], directory+d[0].replace(".","_")+'_'+d[1]+'_'+el+'_'+str(d[2])+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr']) 
+        ascii.write([x, y], directory+d[0].replace(".","_")+'_'+d[1]+'_'+el+'_'+str(d[2])+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
 
         """
         # integrate mdot curves, to compare with delta m, and save for later
