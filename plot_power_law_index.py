@@ -112,5 +112,5 @@ for i, age in enumerate(ages):
 ax.set_ylabel(r'$n_\infty$')
 ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/'+fname+'.png')

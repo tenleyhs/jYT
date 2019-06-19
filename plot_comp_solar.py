@@ -134,7 +134,7 @@ for d in ds:
     ax2.axhline(1, ls=':', lw=1.5, c='k', alpha=0.5)
     ax2.set_ylabel(r'$X/X_\odot$')
     ax2.legend(loc=1)
-    fig2.tight_layout()
+    fig2.tight_layout(pad=0.3)
     if plot_ttpeak:
         fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_solar/mdot_comp_solar_'+d[4]+'_ttpeak.png')
         ascii.write([np.log10(10**log_t_yr[sel]/tpeak), el_lr_mdarray[0][0],el_lr_mdarray[1][0],el_lr_mdarray[2][0],el_lr_mdarray[3][0],el_lr_mdarray[4][0]],

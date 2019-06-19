@@ -60,7 +60,7 @@ for dm in dms:
     ax.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
     ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
     ax.legend(loc=1)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.3)
     fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/paper/compare_mdot_at_fixed_deltam_'
                 + str(dm).replace(".","_") + '.pdf')
     plt.close('all')

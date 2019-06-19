@@ -17,6 +17,7 @@ parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str
 parser.add_argument('--run', help='run to plot, e.g., m1.0_p16_b3.0', type=str)
 parser.add_argument('--var', help='variable to plot, e.g., dens', type=str, default='dens')
 parser.add_argument('--width', help='width of plot in rsun, e.g., 1000', type=int, default=1000)
+parser.add_argument('--zlim', help='whether to impose zlim, e.g. True/False', type=bool, default=False)
 parser.add_argument('--zmax', help='maximum of variable to plot, e.g., 80.78/169.88/500', type=float, default=500)
 args = parser.parse_args()
 
@@ -45,7 +46,8 @@ factor = 1e-5
 for ds in ts.piter():
 	s = yt.SlicePlot(ds, 'z', args.var, width=(args.width, 'rsun'))
 	s.set_log(args.var, True)
-	s.set_zlim(args.var, factor * args.zmax, args.zmax)
+	if args.zlim:
+		s.set_zlim(args.var, factor * args.zmax, args.zmax)
 	#s.set_cmap(var, cmaps.viridis)
 	s.annotate_timestamp(time_unit='s')
 	s.annotate_scale(unit='rsun')
@@ -57,4 +59,7 @@ for ds in ts.piter():
 	#s.set_buff_size(2000)
 	#s.annotate_velocity()
 	#s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
-	s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(factor)+'/')
+	if args.zlim:
+		s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(factor)+'/')
+	else:
+		s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim/')

@@ -101,7 +101,7 @@ for d in ds:
     ax2.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
     ax2.legend()
     ax2.text(-2.2,0.5, d[5])
-    fig2.tight_layout()
+    fig2.tight_layout(pad=0.3)
     fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp/mdot_comp_'+ d[4] +'.png')
     plt.close()
 

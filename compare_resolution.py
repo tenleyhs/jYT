@@ -26,7 +26,7 @@ x, y = np.loadtxt('/pfs/lawsmith/results/dmdts/data/duplicate_m1_0_p10_b2_0_0075
 ax.plot(x, y, c='C1', ls='--', label='24k, chk75 (duplicate)')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/results/temp/compare_resolution_p10_b2_0_duplicate.pdf')
 """
 """
@@ -35,7 +35,7 @@ x, y = np.loadtxt('/groups/dark/lawsmith/results/m1_0_p10_b3_0_0043_ev.dat', ski
 ax.plot(x, y, c='C1', ls='--', label='m1.0_p10_b3.0, chk43')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/groups/dark/lawsmith/results/compare_resolution_m1_0_p10_b3_0.pdf')
 """
 
@@ -48,7 +48,7 @@ x, y = np.loadtxt('/groups/dark/lawsmith/Guillochon2013_dmdts/4-3/2.000.dat', un
 ax.plot(x, y, c='C3', label='4/3, GRR2013')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/groups/dark/lawsmith/results/compare_resolution_43_b2_0_12k.pdf')
 """
 fig, ax = plt.subplots()
@@ -60,7 +60,7 @@ x, y = np.loadtxt('/pfs/lawsmith/dmdts/4-3/2.000.dat', unpack=True)
 ax.plot(x, y, c='C2', label='4/3, GRR2013')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/results/temp/compare_resolution_43_b2_0.pdf')
 """
 """
@@ -75,7 +75,7 @@ x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/m1_0_p10_b3_0_
 ax.plot(x, y, c='C1', label='256, chk57')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/temp/compare_resolution_p10_b3_0.pdf')
 plt.close('all')
 
@@ -90,7 +90,7 @@ x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/m1_0_p10_b2_0_
 ax.plot(x, y, c='C1', label='256, chk80')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/temp/compare_resolution_p10_b2_0.pdf')
 """
 """
@@ -107,7 +107,7 @@ x, y = np.loadtxt('/pfs/lawsmith/FLASH4.3/runs/results/dmdts/data/m1_0_p16_b3_0_
 ax.plot(x, y, c='C1', ls=':', label='48k, chk48')
 ax.set_xlim(-2, 2)
 ax.legend()
-fig.tight_layout()
+fig.tight_layout(pad=0.3)
 fig.savefig('/pfs/lawsmith/FLASH4.3/runs/results/temp/compare_resolution_p16_b3_0.pdf')
 """
 """

@@ -17,7 +17,7 @@ args = parser.parse_args()
 if args.cluster == 'hyades': path = '/pfs/lawsmith/jYT/'
 elif args.cluster == 'fend': path = '/groups/dark/lawsmith/jYT/'
 
-#os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
+os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
 
 os.system('python '+path+'histogram_h1.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_h1 >> outputfile &')
 os.system('python '+path+'histogram_he4.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he4 >> outputfile &')

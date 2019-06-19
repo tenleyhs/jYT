@@ -123,7 +123,7 @@ for d in ds:
         ax2.text(-1.45,-0.2, d[5])
         ax2.set_xlim(-1.5, 0)
     ax2.legend()
-    fig2.tight_layout()
+    fig2.tight_layout(pad=0.3)
     if plot_ttpeak:
         fig2.savefig('/pfs/lawsmith/FLASH4.3/runs/results/mdot_comp_stack/mdot_comp_stack_'+ d[4] +'_ttpeak.png')
     else:

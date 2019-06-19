@@ -4,6 +4,8 @@ some plotting settings, and some constants
 
 import matplotlib as mpl
 mpl.rcParams['figure.figsize'] = (6,5)
+plt.rcParams['legend.fontsize'] = 16
+plt.rcParams['font.size'] = 20
 
 mpl.rcParams['legend.frameon'] = False
 mpl.rcParams['legend.borderpad'] = 0.1

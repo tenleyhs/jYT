@@ -62,5 +62,5 @@ for chk in chks:
 	ax.set_ylabel(r'$\log\ \rho$')
 
 	ax.legend()
-	fig.tight_layout()
+	fig.tight_layout(pad=0.3)
 	plt.savefig(savepath + args.run.replace(".","_") + '_' + chk + '.pdf')
