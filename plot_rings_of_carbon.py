@@ -2,8 +2,10 @@
 plot elements in slices, following Enrico meeting.
 """
 
-dir = 'm3.0_p16_b4.0_48k'
-width = (30, 'rsun')
+#dir = 'm3.0_p16_b4.0_48k'
+#width = (30, 'rsun')
+dir = 'm1.0_p16_b3.0_96k_1000'
+width = (10, 'rsun')
 zmax = 1
 zmin = 0
 
@@ -11,7 +13,7 @@ var = 'he4 '
 dens_cut_tf = True
 
 #var = 'c12 '
-#dens_cut_tf = False
+#dens_cut_tf = True
 
 #var = 'n14 '
 #dens_cut_tf = False

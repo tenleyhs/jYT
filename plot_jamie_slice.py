@@ -5,9 +5,9 @@ import yt
 import colormaps as cmaps
 
 plots = [
-    ['m1.0_p1_b2.0', '0023', 0.8*80.78, 1e-5*80.78, 'age = 0Gyr'],
-    ['m1.0_p10_b2.0', '0023', 0.8*169.88, 1e-5*169.88, 'age = 4.8Gyr'],
-    ['m1.0_p16_b2.0', '0023', 0.8*500, 1e-5*500, 'age = 8.4Gyr'],
+    #['m1.0_p1_b2.0_96k_1000', '0023', 0.8*80.78, 1e-5*80.78, 'age = 0Gyr'],
+    #['m1.0_p10_b2.0_96k_1000', '0023', 0.8*169.88, 1e-5*169.88, 'age = 4.8Gyr'],
+    ['m1.0_p16_b2.0_300k_1000', '0023', 0.8*500, 1e-5*500, 'age = 8.4Gyr'],
 ]
 
 var = 'dens'
@@ -17,7 +17,6 @@ set_zlim_tf = True
 contour_tf = True
 sz = 48
 
-LOAD_FILES = []
 for plot in plots:
     ds = yt.load('/storage/dark/lawsmith/FLASH4.3/runs/'+plot[0]+'/multitidal_hdf5_chk_'+plot[1])
     s = yt.SlicePlot(ds, 'z', var, width=width)

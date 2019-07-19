@@ -17,11 +17,19 @@ args = parser.parse_args()
 if args.cluster == 'hyades': path = '/pfs/lawsmith/jYT/'
 elif args.cluster == 'fend': path = '/groups/dark/lawsmith/jYT/'
 
-os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
+#os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
 
-os.system('python '+path+'histogram_h1.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_h1 >> outputfile &')
-os.system('python '+path+'histogram_he4.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he4 >> outputfile &')
-os.system('python '+path+'histogram_o16.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_o16 >> outputfile &')
-os.system('python '+path+'histogram_c12.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c12 >> outputfile &')
-os.system('python '+path+'histogram_ne20.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ne20 >> outputfile &')
-os.system('python '+path+'histogram_n14.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_n14 >> outputfile &')
+#os.system('python '+path+'histogram_h1.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_h1 >> outputfile &')
+#os.system('python '+path+'histogram_he4.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he4 >> outputfile &')
+#os.system('python '+path+'histogram_o16.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_o16 >> outputfile &')
+#os.system('python '+path+'histogram_c12.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c12 >> outputfile &')
+#os.system('python '+path+'histogram_ne20.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ne20 >> outputfile &')
+#os.system('python '+path+'histogram_n14.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_n14 >> outputfile &')
+
+os.system('python '+path+'histogram_he3.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he3 >> outputfile &')
+os.system('python '+path+'histogram_c13.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c13 >> outputfile &')
+#os.system('python '+path+'histogram_na23.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_na23 >> outputfile &')
+#os.system('python '+path+'histogram_mg24.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_mg24 >> outputfile &')
+#os.system('python '+path+'histogram_al27.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_al27 >> outputfile &')
+#os.system('python '+path+'histogram_si28.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_si28 >> outputfile &')
+#os.system('python '+path+'histogram_s34.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_s34 >> outputfile &')

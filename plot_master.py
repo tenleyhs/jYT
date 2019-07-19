@@ -40,13 +40,18 @@ def myplot_ev(ds=None, text=None, savename=None,
                 x3=None, y3=None, l3=None):
     el = 'ev'
     fig, ax = plt.subplots()
+    #cols = ['C0', 'C0', 'C1', 'C1']
+    #lss = ['-', '--', '-', '--']
+    #for d, col, ls in zip(ds, cols, lss):
     for d in ds:
         # log_t_yr, log_mdot_moyr
         x, y = np.loadtxt(path + d[0].replace(".","_") + '/'
                 + d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
                 skiprows=1, unpack=True)
         ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
+        #ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2], color=col, ls=ls)
 
+        print d[0], round(365*10**(x[np.argmax(y)]), 2), round(10**max(y), 2)
     	#if beta == '1.000':
         #	print x[np.argmax(y)], max(y)
 
@@ -58,11 +63,12 @@ def myplot_ev(ds=None, text=None, savename=None,
     ax.set_xlim(-2, 0.25)
     ax.set_ylim(-2, 1)
     if savename == 'mdot_1Msun_vs_3Msun.pdf':
-        ax.set_ylim(-2, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+    else:
+        ax.text(-1.95,0.75,text)
     ax.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
     ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
     ax.legend(loc=1)
-    ax.text(-1.95,0.75,text)
     ax.grid()
     fig.tight_layout(pad=0.3)
     fig.savefig(path + 'paper/' + savename)
@@ -126,7 +132,7 @@ ds = [
     ['m1.0_p10_b1.0',       '0060',     'age=4.8Gyr',   -1.5],
 	['m1.0_p16_b1.0',       '0060',     'age=8.4Gyr',   -4],
 ]
-text = r'$\beta=1.0$'
+text = r'$1M_\odot, \beta=1.0$'
 savename = 'mdot_b1_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
     # scale GRR2013 to ZAMS sun
@@ -143,7 +149,7 @@ ds = [
     ['m1.0_p10_b2.0',       '0075',     'age=4.8Gyr',   -1.82],
 	['m1.0_p16_b2.0',       '0075',     'age=8.4Gyr',   -1.72],
 ]
-text = r'$\beta=2.0$'
+text = r'$1M_\odot, \beta=2.0$'
 savename = 'mdot_b2_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
     # scale GRR2013 to ZAMS sun
@@ -158,44 +164,61 @@ ds = [
 	#['m1.0_p16_b3.0',       '0060',     'age=8.4Gyr',   -1.85],
     ['m1.0_p16_b3.0_96k_1000',       '0060',     'age=8.4Gyr',   -1.85],
 ]
-text = r'$\beta=3.0$'
+text = r'$1M_\odot, \beta=3.0$'
 savename = 'mdot_b3_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
     # scale GRR2013 to ZAMS sun
     x2=g13_43[:,0] + 1.5*np.log10(0.9012), y2=g13_43[:,1] - 1.5*np.log10(0.9012), l2='GRR13 4/3')
 
-
+"""
 # comparing 1Msun and 3Msun
 ds = [
     ['m1.0_p1_b2.0',        '0080',     'ZAMS '+ r'$1M_\odot, \beta=2$',     -4],
     #['m1.0_p10_b3.0',       '0060',    'middle-age '+ r'$1M_\odot, \beta=3$',   -1.9],
-    ['m1.0_p16_b4.0',       '0050',     'TAMS '+ r'$1M_\odot, \beta=4$',   -4],
-    ['m3.0_p1_b2.0_48k',       '0070',     'ZAMS '+ r'$3M_\odot, \beta=2$',   -4],
-    ['m3.0_p16_b4.0_48k',       '0050',     'TAMS '+ r'$3M_\odot, \beta=4$',   -4],
+    ['m1.0_p16_b4.0',       '0050',     'TAMS '+ r'$1M_\odot, \beta=4$',   -1.84],
+    ['m3.0_p1_b2.0_48k',       '0070',     'ZAMS '+ r'$3M_\odot, \beta=2$',   -1.83],
+    ['m3.0_p16_b4.0_48k',       '0050',     'TAMS '+ r'$3M_\odot, \beta=4$',   -1.76],
 ]
 text = ''
 savename = 'mdot_1Msun_vs_3Msun.pdf'
 myplot_ev(ds=ds, text=text, savename=savename)
-
+"""
 
 ### for delta_m vs beta
 # in plot_deltaM_vs_beta for now
 
 
-
+"""
 ### for line ratios (plot_comp_solar)
+# todo should check where these come from
 f_h1_ZAMS = 0.7153
 f_he4_ZAMS = 0.2704
 f_c12_ZAMS = 2.435e-3
 f_n14_ZAMS = 7.509e-4
 f_o16_ZAMS = 6.072e-3
 f_ne20_ZAMS = 1.232e-3
+
+# getting these from jupyter notebook script to sum(el*dm) from MESA profile.
+# only differences at the 1e-2 level, so OK
+f_he3_ZAMS = 6.9963e-5
+f_c13_ZAMS = 6.4497e-5
+f_na23_ZAMS = 3.1043e-5
+f_mg24_ZAMS = 0.00058606
+f_al27_ZAMS = 5.9086e-5
+f_si28_ZAMS = 0.00064877
+f_s34_ZAMS = 0.0016613
+
+
 def myplot_lr(ds):
     els = ['ev', 'h1', 'he4', 'c12', 'n14', 'o16']
-    colors = ['', '', 'C0', 'C1', 'C2', 'C3']
+    el_ZAMSs = [0, 0, f_he4_ZAMS, f_c12_ZAMS, f_n14_ZAMS, f_o16_ZAMS]
+    #els = ['ev', 'h1', 'he3', 'c13', 'ne20', 'na23', 'mg24', 'al27', 'si28', 's34']
+    #el_ZAMSs = [0, 0, f_he3_ZAMS, f_c13_ZAMS, f_ne20_ZAMS, f_na23_ZAMS, f_mg24_ZAMS, f_al27_ZAMS, f_si28_ZAMS, f_s34_ZAMS]
+    #els = ['ev', 'h1', 'he3', 'c13', 'ne20', 'na23']
+    #el_ZAMSs = [0, 0, f_he3_ZAMS, f_c13_ZAMS, f_ne20_ZAMS, f_na23_ZAMS]
     for d in ds:
         fig, ax = plt.subplots()
-        for el, col in zip(els, colors):
+        for el, el_ZAMS in zip(els, el_ZAMSs):
             # log_t_yr, log_mdot_moyr
             x, y = np.loadtxt(path + d[0].replace(".","_") + '/'
             + d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
@@ -206,17 +229,10 @@ def myplot_lr(ds):
             elif el == 'h1':
                 h1_mdot = 10**y
                 continue
-            elif el == 'he4':
-                el_lr = (10**y/h1_mdot)/(f_he4_ZAMS/f_h1_ZAMS)
-            elif el == 'o16':
-                #if d[0] == 'm1.0_p16_b4.0': continue
-                el_lr = (10**y/h1_mdot)/(f_o16_ZAMS/f_h1_ZAMS)
-            elif el == 'c12':
-                el_lr = (10**y/h1_mdot)/(f_c12_ZAMS/f_h1_ZAMS)
-            elif el == 'n14':
-                el_lr = (10**y/h1_mdot)/(f_n14_ZAMS/f_h1_ZAMS)
+            else:
+                el_lr = (10**y/h1_mdot)/(el_ZAMS/f_h1_ZAMS)
 
-            ax.plot(10**x/tpeak, el_lr, lw=LW, label=el, color=col)
+            ax.plot(10**x/tpeak, el_lr, lw=LW, label=el)
             #ax.plot(np.log10(10**x/tpeak), el_lr, lw=LW, label=el, color=col)
 
         if d[0] == 'm1.0_p10_b2.0':
@@ -261,12 +277,12 @@ def myplot_lr(ds):
             dtype=[('dmdt',float), ('t',float), ('dmdt_he4',float), ('dmdt_o16',float),
             ('dmdt_n14',float), ('dmdt_h1',float), ('dmdt_c12',float)])
         t_peak = dat['t'][np.argmax(dat['dmdt'])]
-        ax.plot(dat['t']/t_peak, (dat['dmdt_he4']/dat['dmdt_h1'])/(f_he4_ZAMS/f_h1_ZAMS), ls='--', color='C0')
-        ax.plot(dat['t']/t_peak, (dat['dmdt_c12']/dat['dmdt_h1'])/(f_c12_ZAMS/f_h1_ZAMS), ls='--', color='C1')
-        ax.plot(dat['t']/t_peak, (dat['dmdt_n14']/dat['dmdt_h1'])/(f_n14_ZAMS/f_h1_ZAMS), ls='--', color='C2')
-        ax.plot(dat['t']/t_peak, (dat['dmdt_o16']/dat['dmdt_h1'])/(f_o16_ZAMS/f_h1_ZAMS), ls='--', color='C3')
-        ax.plot([98,99],[98,99],ls='--',label='analytic',color='C7')
-        ax.plot([98,99],[98,99],label='simulation',color='C7')
+        #ax.plot(dat['t']/t_peak, (dat['dmdt_he4']/dat['dmdt_h1'])/(f_he4_ZAMS/f_h1_ZAMS), ls='--', color='C0')
+        #ax.plot(dat['t']/t_peak, (dat['dmdt_c12']/dat['dmdt_h1'])/(f_c12_ZAMS/f_h1_ZAMS), ls='--', color='C1')
+        #ax.plot(dat['t']/t_peak, (dat['dmdt_n14']/dat['dmdt_h1'])/(f_n14_ZAMS/f_h1_ZAMS), ls='--', color='C2')
+        #ax.plot(dat['t']/t_peak, (dat['dmdt_o16']/dat['dmdt_h1'])/(f_o16_ZAMS/f_h1_ZAMS), ls='--', color='C3')
+        #ax.plot([98,99],[98,99],ls='--',label='analytic',color='C7')
+        #ax.plot([98,99],[98,99],label='simulation',color='C7')
 
         ax.set_xlim(0, 5)
 
@@ -277,7 +293,7 @@ def myplot_lr(ds):
 
         ax.legend(loc=1)
         fig.tight_layout(pad=0.3)
-        fig.savefig(path + 'paper/mdot_comp_solar_' + d[0].replace(".","_") + '_' + d[1] + '.pdf')
+        fig.savefig(path + 'paper/mdot_comp_solar_' + d[0].replace(".","_") + '_' + d[1] + '_otherels.pdf')
         plt.close('all')
 
 ds = [
@@ -289,26 +305,26 @@ ds = [
 	#['m1.0_p10_b1.0',		'0040',		'age=4.8Gyr, '+r'$\beta=1.0$'],
 	#['m1.0_p10_b1.0_256',	'0040',		'age=4.8Gyr, '+r'$\beta=1.0$'],
 	#['m1.0_p10_b1.5',		'0040',		'age=4.8Gyr, '+r'$\beta=1.5$'],
-	['m1.0_p10_b2.0',		'0075',		r'$1M_\odot$'+', age=4.8Gyr, '+r'$\beta=2.0$'],
+#	['m1.0_p10_b2.0',		'0075',		r'$1M_\odot$'+', age=4.8Gyr, '+r'$\beta=2.0$'],
 	#['m1.0_p10_b2.5',		'0040',		'age=4.8Gyr, '+r'$\beta=2.5$'],
 	#['m1.0_p10_b3.0',		'0040',		'age=4.8Gyr, '+r'$\beta=3.0$'],
-    ['m1.0_p10_b3.0',		'0060',		r'$1M_\odot$'+', age=4.8Gyr, '+r'$\beta=3.0$'],
+#    ['m1.0_p10_b3.0',		'0060',		r'$1M_\odot$'+', age=4.8Gyr, '+r'$\beta=3.0$'],
 	#['m1.0_p10_b4.0',		'0040',		'age=4.8Gyr, '+r'$\beta=4.0$'],
 	#['m1.0_p10_b5.0',		'0040',		'age=4.8Gyr, '+r'$\beta=5.0$'],
-	['m1.0_p16_b1.0',		'0060',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=1.0$'],
+#	['m1.0_p16_b1.0',		'0060',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=1.0$'],
 	#['m1.0_p16_b1.5',		'0040',		'age=8.4Gyr, '+r'$\beta=1.5$'],
-	['m1.0_p16_b2.0',		'0075',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=2.0$'],
+#	['m1.0_p16_b2.0',		'0075',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=2.0$'],
     #['m1.0_p16_b2.0',		'0075',		'age=8.4Gyr, '+r'$\beta=2.0$'],
-    ['m1.0_p16_b3.0',		'0060',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=3.0$'],
+#    ['m1.0_p16_b3.0',		'0060',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=3.0$'],
     ['m1.0_p16_b3.0_96k_1000',       '0060',     r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=3.0$'],
     ['m1.0_p16_b4.0',		'0050',		r'$1M_\odot$'+', age=8.4Gyr, '+r'$\beta=4.0$'],
 	#['m1.0_p16_b5.0',		'0040',		'age=8.4Gyr, '+r'$\beta=5.0$'],
 
-	['m3.0_p1_b2.0_48k',		'0070',		r'$3M_\odot$'+', age=0Gyr, '+r'$\beta=2.0$'],
-	['m3.0_p16_b4.0_48k',		'0050',		r'$3M_\odot$'+', age=0.3Gyr, '+r'$\beta=4.0$'],
+#	['m3.0_p1_b2.0_48k',		'0070',		r'$3M_\odot$'+', age=0Gyr, '+r'$\beta=2.0$'],
+#	['m3.0_p16_b4.0_48k',		'0050',		r'$3M_\odot$'+', age=0.3Gyr, '+r'$\beta=4.0$'],
 ]
 myplot_lr(ds)
-
+"""
 
 """
 ### for summary figure
