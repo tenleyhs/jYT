@@ -40,20 +40,27 @@ def myplot_ev(ds=None, text=None, savename=None,
                 x3=None, y3=None, l3=None):
     el = 'ev'
     fig, ax = plt.subplots()
-    #cols = ['C0', 'C0', 'C1', 'C1']
-    #lss = ['-', '--', '-', '--']
+
+    # plot Eddington limit for 1e6 Msun BH, same as Gafton&Rosswof 2019
+    ax.plot([-2, 1], [np.log10(0.026), np.log10(0.026)], c='k', ls='-.', lw=1.2)
+
+    cols = ['C0', 'C0', 'C1', 'C1']
+    lss = ['-', '--', '-', '--']
+    #if ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
     #for d, col, ls in zip(ds, cols, lss):
     for d in ds:
         # log_t_yr, log_mdot_moyr
         x, y = np.loadtxt(path + d[0].replace(".","_") + '/'
                 + d[0].replace(".","_") + '_' + d[1] + '_' + el + '.dat',
                 skiprows=1, unpack=True)
-        ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
-        #ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2], color=col, ls=ls)
+        if savename == 'mdot_1Msun_vs_3Msun.pdf':
+           ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2], color=col, ls=ls)
+        else:
+           ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
 
         print d[0], round(365*10**(x[np.argmax(y)]), 2), round(10**max(y), 2)
-    	#if beta == '1.000':
-        #	print x[np.argmax(y)], max(y)
+        #if beta == '1.000':
+        #   print x[np.argmax(y)], max(y)
 
     if x2 is not None:
         ax.plot(x2, y2, lw=LWD, label=l2, ls=':', c='k')

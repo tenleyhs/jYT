@@ -6,6 +6,8 @@ import matplotlib as mpl
 mpl.rcParams['figure.figsize'] = (6,5)
 plt.rcParams['legend.fontsize'] = 16
 plt.rcParams['font.size'] = 20
+#mpl.rcParams['text.usetex'] = True
+#mpl.rcParams['font.family'] = 'stixgeneral'
 
 mpl.rcParams['legend.frameon'] = False
 mpl.rcParams['legend.borderpad'] = 0.1
@@ -13,23 +15,18 @@ mpl.rcParams['legend.labelspacing'] = 0.1
 mpl.rcParams['legend.handletextpad'] = 0.1
 
 mpl.rcParams['xtick.top'] = True
-mpl.rcParams['xtick.major.size'] = 6 #3.5
-mpl.rcParams['xtick.minor.size'] = 3 #2
-mpl.rcParams['xtick.major.width'] = 1.0 #0.8
-mpl.rcParams['xtick.minor.width'] = 1.0 #0.6
+mpl.rcParams['xtick.major.size'] = 10
+mpl.rcParams['xtick.minor.size'] = 5
+mpl.rcParams['xtick.major.width'] = 1.3
+mpl.rcParams['xtick.minor.width'] = 1.3
 mpl.rcParams['xtick.minor.visible'] = True
 
 mpl.rcParams['ytick.right'] = True
-mpl.rcParams['ytick.major.size'] = 6 #3.5
-mpl.rcParams['ytick.minor.size'] = 3 #2
-mpl.rcParams['ytick.major.width'] = 1.0 #0.8
-mpl.rcParams['ytick.minor.width'] = 1.0 #0.6
+mpl.rcParams['ytick.major.size'] = 10
+mpl.rcParams['ytick.minor.size'] = 5
+mpl.rcParams['ytick.major.width'] = 1.3
+mpl.rcParams['ytick.minor.width'] = 1.3
 mpl.rcParams['ytick.minor.visible'] = True
-
-#mpl.rcParams['legend.fontsize'] = 14
-#mpl.rcParams['font.size'] = 16
-#mpl.rcParams['text.usetex'] = True
-#mpl.rcParams['font.family'] = 'stixgeneral'
 
 # CONSTANTS [cgs]
 # todo should just use astropy probably
