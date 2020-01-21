@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=plot1
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=32
+#SBATCH --ntasks-per-core=1
+#SBATCH --mem-per-cpu=2900
+#SBATCH --time=24:00:00
+#SBATCH -p dark
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=lawsmith@ucsc.edu
+
+module purge
+. /groups/dark/lawsmith/anaconda3/etc/profile.d/conda.sh
+conda activate myenv
+
+mpirun -np 64 python ~/jYT/plot_movie.py --run=1e3_m1.0_p16_b5.0_300k

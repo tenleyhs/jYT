@@ -1,3 +1,7 @@
+"""
+idea is to find last checkpoint at which all the debris is in the box
+"""
+
 import yt
 import numpy as np
 execfile('/groups/dark/lawsmith/jYT/my_settings.py')
