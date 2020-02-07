@@ -36,7 +36,7 @@ ax.plot(x, y, c='C1', ls='--', label='m1.0_p10_b3.0, chk43')
 ax.set_xlim(-2, 2)
 ax.legend()
 fig.tight_layout(pad=0.3)
-fig.savefig('/groups/dark/lawsmith/results/compare_resolution_m1_0_p10_b3_0.pdf')
+fig.savefig('/groups/dark/lawsmith/results/compare_resolution/compare_resolution_m1_0_p10_b3_0.pdf')
 """
 
 fig, ax = plt.subplots()
@@ -49,7 +49,7 @@ ax.plot(x, y, c='C3', label='4/3, GRR2013')
 ax.set_xlim(-2, 2)
 ax.legend()
 fig.tight_layout(pad=0.3)
-fig.savefig('/groups/dark/lawsmith/results/compare_resolution_43_b2_0_12k.pdf')
+fig.savefig('/groups/dark/lawsmith/results/compare_resolution/compare_resolution_43_b2_0_12k.pdf')
 """
 fig, ax = plt.subplots()
 x, y = np.loadtxt('/pfs/lawsmith/results/dmdts/data/43_b2_0_24k_0080_ev.dat', skiprows=1, unpack=True)

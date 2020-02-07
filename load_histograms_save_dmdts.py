@@ -40,6 +40,18 @@ sigmas = [1,5,10,15,20,25,30,35,40,45,50]
 
 PLOT_DMDES = True
 
+ds = [
+    # e1 and e2 are for the simple minimum-shifting-to-0 of dmde
+    # todo not sure if to use M*, R* from multitidal.log or what, or if this makes a difference at all
+    # run,                  chk,        sigma,  tmin,   tmax,   slope,  split,  sigma2, e1,     e2,     M*,     R*,     beta
+    # d[0],                 d[1],       d[2],   d[3],   d[4],   d[5],   d[6],   d[7],   d[8],   d[9],   d[10],  d[11],  d[12]
+    ['m0.3_p1_b0.6_300k',   '0100',     20,     -2,     2,      0,      0,      0,      -1,     1,      0.3,    0.2814, '0.600'],
+    ['m0.3_p1_b0.7_300k',   '0100',     20,     -2,     2,      0,      0,      0,      -1,     1,      0.3,    0.2814, '0.700'],
+    ['m0.3_p1_b0.8_300k',   '0100',     20,     -2,     2,      0,      0,      0,      -1,     1,      0.3,    0.2814, '0.800'],
+    ['m0.3_p1_b0.9_300k',   '0100',     20,     -2,     2,      0,      0,      0,      -1,     1,      0.3,    0.2814, '0.900'],
+    ['m0.3_p1_b1.0_300k',   '0100',     20,     -2,     2,      0,      0,      0,      -1,     1,      0.3,    0.2814, '1.000'],
+]
+
 """
 ds = [
     # run,                  chk,        sigma,  tmin,	tmax,     slope, split, sigma2
@@ -65,7 +77,7 @@ ds = [
     ['m1.0_p16_b3.0',		'0060',     50,     -2,   2,        0,  0,  0],
     ['m1.0_p16_b4.0',		'0050',     50,     -2,	    2,        0,  0,  0],
 ]
-
+"""
 """
 ds = [
     #['m1.0_p1_b1.0',		'0100',     140,     -2,	2,        0,  0,  0],
@@ -101,6 +113,7 @@ ds = [
     #['43_b2.0_48k',		'0080',     20,     -2,	2,        0,  0,  0],
     #['43_b2.0_24k',		'0080',     20,     -2,	2,        0,  0,  0],
 ]
+"""
 """
 ds = [
     #['m1.0_p10_b3.0',		'0043',     20,     -2,	2,        0,  0,  0],
@@ -176,8 +189,8 @@ ds = [
 
 
 #els = ['ev', 'h1', 'he4', 'o16', 'c12', 'ne20', 'n14']
-els = ['ev', 'h1', 'he3', 'he4', 'c12', 'c13', 'n14', 'o16', 'ne20', 'na23', 'mg24', 'al27', 'si28', 's34']
-#els = ['ev']
+#els = ['ev', 'h1', 'he3', 'he4', 'c12', 'c13', 'n14', 'o16', 'ne20', 'na23', 'mg24', 'al27', 'si28', 's34']
+els = ['ev']
 """
 if LOOP_THRU_SIGMAS == True:
     for d in ds:
@@ -296,6 +309,17 @@ for d in ds:
         if d[0] == 'm3.0_p16_b4.0_48k':
             e = e - e[np.argmax(slog_dm_de)]
 
+        # todo fast shift dmde for m0.3, all minimums. this isn't correct for the strange double-minimums for some
+        e = e - e[(d[8]<e/1e17) & (e/1e17<d[9])][np.argmin(slog_dm_de[(d[8]<e/1e17) & (e/1e17<d[9])])]
+
+        # todo fast overplot of GRR2013 5/3.
+        g13_53 = np.loadtxt('/groups/dark/lawsmith/Guillochon2013_dmdts/5-3/' + d[12] + '.dat')
+        # adjust to M~0.3 msun, R~0.28 rsun
+        # M* = d[10],     R* = d[11]
+        ax2.plot(g13_53[:,0] - np.log10(d[10]) + 1.5*np.log10(d[11]), g13_53[:,1] + 2.0*np.log10(d[10]) - 1.5*np.log10(d[11]), c='k')
+        # todo hmm gives wrong lines shifted low
+
+
         e_bound = e[np.where(e<0.)]
         t = 2.*np.pi*G*M_bh/((2*np.abs(e_bound))**(3./2))
         de_dt = (1./3)*((2*np.pi*G*M_bh)**(2./3))*t**(-5./3)
@@ -360,6 +384,7 @@ for d in ds:
         # write for later plotting
         if args.cluster == 'hyades': directory = '/pfs/lawsmith/results/dmdts/data/'
         elif args.cluster == 'fend': directory = '/groups/dark/lawsmith/results/'+d[0].replace(".","_")+'/'
+        if not os.path.exists(directory): os.makedirs(directory)
         ascii.write([x, y], directory+d[0].replace(".","_")+'_'+d[1]+'_'+el+'.dat', overwrite=True, names=['log_t_yr','log_mdot_moyr'])
 
         """
@@ -397,7 +422,7 @@ for d in ds:
         if PLOT_DMDES:
             fig, ax = plt.subplots()
             ax.scatter(e/1e17, log_dm_de, c='C0', rasterized=True,
-            	alpha=0.5, s=1, edgecolors='none')
+                alpha=0.5, s=1, edgecolors='none')
             ax.plot(e/1e17, slog_dm_de, c='C1')
             ax.set_xlim(-10, 10)
             ax.set_ylim(9, 18)
