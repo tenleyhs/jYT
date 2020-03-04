@@ -5,7 +5,7 @@
   "uploadOnSave": true,
   "useAtomicWrites": false,
   "deleteLocal": false,
-  "hostname": "fend01.hpc.ku.dk",
+  "hostname": "fend01-travel",
   "target": "/groups/dark/lawsmith/jYT",
   "ignore": [
     ".remote-sync.json",

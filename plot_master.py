@@ -42,7 +42,7 @@ def myplot_ev(ds=None, text=None, savename=None,
     fig, ax = plt.subplots()
 
     # plot Eddington limit for 1e6 Msun BH, same as Gafton&Rosswof 2019
-    ax.plot([-2, 1], [np.log10(0.026), np.log10(0.026)], c='k', ls='-.', lw=1.2)
+    ax.plot([-10, 10], [np.log10(0.026), np.log10(0.026)], c='k', ls='-.', lw=1.2)
 
     cols = ['C0', 'C0', 'C1', 'C1']
     lss = ['-', '--', '-', '--']
@@ -56,7 +56,9 @@ def myplot_ev(ds=None, text=None, savename=None,
         if savename == 'mdot_1Msun_vs_3Msun.pdf':
            ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2], color=col, ls=ls)
         else:
-           ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
+            # todo temp for ISSI
+            #ax.plot(x[x>d[3]], y[x>d[3]], lw=LW, label=d[2])
+            ax.plot(np.log10(10**(x[x>d[3]])*yr/day), y[x>d[3]], lw=LW, label=d[2])
 
         print d[0], round(365*10**(x[np.argmax(y)]), 2), round(10**max(y), 2)
         #if beta == '1.000':
@@ -67,14 +69,22 @@ def myplot_ev(ds=None, text=None, savename=None,
     if x3 is not None:
         ax.plot(x3, y3, lw=LWD, label=l3, ls=':', c='gray')
 
-    ax.set_xlim(-2, 0.25)
-    ax.set_ylim(-2, 1)
+    # todo temp for ISSI
+    #ax.set_xlim(-2, 0.25) 
+    #ax.set_ylim(-2, 1)
+    ax.set_xlim(1, 2.25)
+    ax.set_ylim(-2, 0)
+
     if savename == 'mdot_1Msun_vs_3Msun.pdf':
         ax.set_ylim(-1.5, 1.5)
     else:
-        ax.text(-1.95,0.75,text)
+        # todo temp for ISSI
+        #ax.text(-1.95,0.75,text)
+        ax.text(1.05,-0.18,text)
     ax.set_ylabel(r'$\log\ \dot M\ {\rm [M_\odot/yr]}$')
-    ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+    # todo temp for ISSI
+    #ax.set_xlabel(r'$\log\ t\ \mathrm{[yr]}$')
+    ax.set_xlabel(r'$\log\ t\ \mathrm{[day]}$')
     ax.legend(loc=1)
     ax.grid()
     fig.tight_layout(pad=0.3)
@@ -143,7 +153,9 @@ text = r'$1M_\odot, \beta=1.0$'
 savename = 'mdot_b1_0_allages.pdf'
 myplot_ev(ds=ds, text=text, savename=savename,
     # scale GRR2013 to ZAMS sun
-	x2=g13_43[:,0] + 1.5*np.log10(0.9012), y2=g13_43[:,1] - 1.5*np.log10(0.9012), l2='GRR13 4/3')
+	# todo temp for ISSI
+    #x2=g13_43[:,0] + 1.5*np.log10(0.9012), y2=g13_43[:,1] - 1.5*np.log10(0.9012), l2='GRR13 4/3')
+    x2=np.log10(10**(g13_43[:,0] + 1.5*np.log10(0.9012))*yr/day), y2=g13_43[:,1] - 1.5*np.log10(0.9012), l2='GRR13 4/3')
 	#x3=np.log10(m18_43[:,5]/yr), y3=np.log10(m18_43[:,4]*yr/M_sun), l3='analytic 4/3')
 #ax.plot(g13_53[:,0], g13_53[:,1], lw=lw, label='GRR13 5/3', ls='-.', c='k')
 #ax2.plot(np.log10(m18_53[:,1]/yr), np.log10(m18_53[:,0]*yr/M_sun), lw=lw, label='analytic 5/3', color='gray')

@@ -54,6 +54,8 @@ else:
 #if not os.path.exists(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/'):
 #	os.makedirs(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/')
 
+args.log=False
+
 if args.chkplt == 'chk':
 	LOAD_FILES = clusterdir + args.run + '/multitidal_hdf5_chk_' + args.files
 elif args.chkplt == 'plt':
@@ -72,7 +74,8 @@ for ds in ts.piter():
 		else:
 			s = yt.SlicePlot(ds, 'z', args.var, data_source=dense_ad, width=(args.width, 'rsun'))
 		# for some reason the log swtich doesn't seem to work here. have to hard code it
-		s.set_log(args.var, False)
+		#s.set_log(args.var, False)
+		s.set_log(args.var, args.log)
 	else:
 		if args.width == 99999:
 			if args.proj:
@@ -82,6 +85,8 @@ for ds in ts.piter():
 
 		else:
 			s = yt.SlicePlot(ds, 'z', args.var, width=(args.width, 'rsun'))
+		# todo for some reason the log swtich doesn't seem to work here. have to hard code it
+		#s.set_log(args.var, False)
 		s.set_log(args.var, args.log)
 
 	if args.vel:
@@ -94,7 +99,8 @@ for ds in ts.piter():
 
 	#s.set_log(args.var, False)    # TODO jamie temp
 	#s.set_cmap(var, cmaps.viridis)
-	s.annotate_timestamp(time_unit='day')
+	#s.annotate_timestamp(time_unit='day')
+	s.annotate_timestamp()
 	s.annotate_scale(unit='rsun')
 	#s.set_axes_unit('rsun')
 	#s.set_font({'size':24})
@@ -106,14 +112,14 @@ for ds in ts.piter():
 	#s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
 	if args.zlim:
 		if args.denscut:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_denscut'+str(args.denscutval)+'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log) +'/')
 		else:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_' + 'Log'+str(args.log) +'/')
 	else:
 		if args.denscut:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim'+'_denscut'+str(args.denscutval)+'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim'  +'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log)+'/')
 		else:
 			if args.proj:
-				s.save(savepath +args.run+'/'+'proj_'+args.var+'_'+str(args.width)+'rsun'+'_nozlim/')
+				s.save(savepath +args.run+'/'+'proj_'+args.var+'_'+str(args.width)+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')
 			else:
-				s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim/')
+				s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')
