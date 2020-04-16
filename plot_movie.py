@@ -54,8 +54,6 @@ else:
 #if not os.path.exists(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/'):
 #	os.makedirs(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/')
 
-args.log=False
-
 if args.chkplt == 'chk':
 	LOAD_FILES = clusterdir + args.run + '/multitidal_hdf5_chk_' + args.files
 elif args.chkplt == 'plt':
@@ -74,8 +72,8 @@ for ds in ts.piter():
 		else:
 			s = yt.SlicePlot(ds, 'z', args.var, data_source=dense_ad, width=(args.width, 'rsun'))
 		# for some reason the log swtich doesn't seem to work here. have to hard code it
-		#s.set_log(args.var, False)
-		s.set_log(args.var, args.log)
+		s.set_log(args.var, True)
+		#s.set_log(args.var, args.log)
 	else:
 		if args.width == 99999:
 			if args.proj:

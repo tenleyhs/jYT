@@ -1,11 +1,8 @@
 """
 idea is to find last checkpoint at which all the debris is in the box. use like:
 
-python ~/jYT/temp_test_deltam.py --runs m0.3_p1_b0.6_300k m0.3_p1_b0.7_300k m0.3_p1_b0.8_300k m0.3_p1_b0.9_300k m0.3_p1_b1.0_300k
-
-actually it looks like I switched to using this for testing whether delta m changes from chk 40, 60, 80, 100, etc.
-
-TODO I stopped editing this file b/c I was able to just look at slices for m0.3_p1..., should go through it line by line if picking up again.
+edit deltaM_fend.par or deltaM_lux.par
+python ~/jYT/temp_test_deltam.py --cluster=lux
 """
 
 import yt
@@ -53,6 +50,7 @@ class var(object):
 
 outputfile = open(savedir + 'sb.dat', 'a')
 
+# todo doesn't work when there's just one line in deltaM_fend.par
 runs, chks = np.loadtxt(parfile, unpack=True, dtype='str')
 
 #for (run, chk) in zip(args.runs, args.chks):
@@ -82,6 +80,6 @@ for (run, chk) in zip(runs, chks):
     sb = sp.quantities.total_quantity("sb_mass").in_units('Msun').v
 
     print run, chk, sb
-    outputfile.write(run + '\t\t' + chk + '\t\t' + str(sb) + '\n')
+    outputfile.write(run + '\t\t\t' + chk + '\t\t' + str(sb) + '\n')
 
 outputfile.close()

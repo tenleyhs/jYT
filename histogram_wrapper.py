@@ -9,13 +9,15 @@ import os
 import argparse, sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='fend')
+parser.add_argument('--cluster', help='cluster, e.g., fend/pfe', type=str, default='fend')
 parser.add_argument('--chk', help='checkpoint to plot, e.g., 0080', type=str)
 parser.add_argument('--bins', help='number of bins in histogram, e.g., 10000', type=str, default='10000')
 args = parser.parse_args()
 
-if args.cluster == 'hyades': path = '/pfs/lawsmith/jYT/'
-elif args.cluster == 'fend': path = '/groups/dark/lawsmith/jYT/'
+if args.cluster == 'fend': 
+    path = '/groups/dark/lawsmith/jYT/'
+elif args.cluster == 'lux':
+    path = '/home/lawsmith/jYT/'
 
 # TODO should probably just submit these to cluster. Or have a switch to do on head nodes or cluster.
 
