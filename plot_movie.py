@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str, default='fend')
 parser.add_argument('--run', help='run to plot, e.g., m1.0_p16_b3.0', type=str)
 parser.add_argument('--var', help='variable to plot, e.g., dens or he4 ', type=str, default='dens')
-parser.add_argument('--width', help='width of plot in rsun, e.g., 1000', type=int, default=99999)
+parser.add_argument('--width', help='width of plot in rsun, e.g., 1000', type=float, default=99999)
 parser.add_argument('--zlim', help='whether to impose zlim, e.g. True/False', type=bool, default=False)
 parser.add_argument('--zmax', help='maximum of variable to plot, e.g., 80.78/169.88/500', type=float, default=500)
 parser.add_argument('--zmin', help='minimum of variable to plot, e.g., 80.78/169.88/500', type=float, default=500)
@@ -31,6 +31,9 @@ parser.add_argument('--denscutval', help='value of density cut', type=float, def
 parser.add_argument('--log', help='log scale?', type=bool, default=True)
 parser.add_argument('--files', help='which files to plot, e.g. [0-9][0-9][0-9]0 or *', type=str, default='*')
 parser.add_argument('--proj', help='projection plot?', type=bool, default=False)
+parser.add_argument('--cell_edges', help='overplot cell edges?', type=bool, default=False)
+parser.add_argument('--grids', help='overplot grid?', type=bool, default=False)
+parser.add_argument('--fp', help='save file prefix', type=str, default='')
 args = parser.parse_args()
 
 if args.cluster == 'hyades':
@@ -51,8 +54,8 @@ else:
 	print("haven't set up this cluster in script yet")
 	exit()
 
-#if not os.path.exists(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/'):
-#	os.makedirs(savepath + args.run + '/' + args.var + '_' + str(args.width) + 'rsun/')
+#if not os.path.exists(savepath + args.run + '/' + args.var + '_' + str(args.width).replace('.','_') + 'rsun/'):
+#	os.makedirs(savepath + args.run + '/' + args.var + '_' + str(args.width).replace('.','_') + 'rsun/')
 
 if args.chkplt == 'chk':
 	LOAD_FILES = clusterdir + args.run + '/multitidal_hdf5_chk_' + args.files
@@ -94,7 +97,10 @@ for ds in ts.piter():
 		#s.set_zlim(args.var, args.factor * args.zmax, args.zmax)
 		s.set_zlim(args.var, args.zmin, args.zmax)
 
-
+	if args.cell_edges:
+		s.annotate_cell_edges()
+	if args.grids:
+		s.annotate_grids()
 	#s.set_log(args.var, False)    # TODO jamie temp
 	#s.set_cmap(var, cmaps.viridis)
 	#s.annotate_timestamp(time_unit='day')
@@ -108,16 +114,18 @@ for ds in ts.piter():
 	#s.set_buff_size(2000)
 
 	#s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
+
+    # todo add args.fp to beginning of filename while still preseving automatic file naming
 	if args.zlim:
 		if args.denscut:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log) +'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log) +'/')
 		else:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_' + 'Log'+str(args.log) +'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_' + 'Log'+str(args.log) +'/')
 	else:
 		if args.denscut:
-			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim'  +'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log)+'/')
+			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_nozlim'  +'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log)+'/')
 		else:
 			if args.proj:
-				s.save(savepath +args.run+'/'+'proj_'+args.var+'_'+str(args.width)+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')
+				s.save(savepath +args.run+'/'+'proj_'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')
 			else:
-				s.save(savepath +args.run+'/'+args.var+'_'+str(args.width)+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')
+				s.save(savepath +args.run+'/'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_nozlim_' + 'Log'+str(args.log) +'/')

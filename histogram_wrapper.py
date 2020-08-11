@@ -22,14 +22,14 @@ elif args.cluster == 'lux':
 # TODO should probably just submit these to cluster. Or have a switch to do on head nodes or cluster.
 
 # not sure about > vs >>. Both > and >> output the progress to the terminal, not outputfile. But then print bounds of histogram in outputfile.
-os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
+#os.system('python '+path+'histogram.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ev >> outputfile &')
 
-#os.system('python '+path+'histogram_h1.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_h1 >> outputfile &')
-#os.system('python '+path+'histogram_he4.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he4 >> outputfile &')
-#os.system('python '+path+'histogram_o16.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_o16 >> outputfile &')
-#os.system('python '+path+'histogram_c12.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c12 >> outputfile &')
-#os.system('python '+path+'histogram_ne20.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ne20 >> outputfile &')
-#os.system('python '+path+'histogram_n14.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_n14 >> outputfile &')
+os.system('python '+path+'histogram_h1.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_h1 >> outputfile &')
+os.system('python '+path+'histogram_he4.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he4 >> outputfile &')
+os.system('python '+path+'histogram_o16.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_o16 >> outputfile &')
+os.system('python '+path+'histogram_c12.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c12 >> outputfile &')
+os.system('python '+path+'histogram_ne20.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_ne20 >> outputfile &')
+os.system('python '+path+'histogram_n14.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_n14 >> outputfile &')
 
 #os.system('python '+path+'histogram_he3.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_he3 >> outputfile &')
 #os.system('python '+path+'histogram_c13.py multitidal_hdf5_chk_'+args.chk+' -v bhbound -n '+args.bins+' -ev selfbound -et 0. -ey min --silent -fp b'+args.bins+'_c13 >> outputfile &')
