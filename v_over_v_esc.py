@@ -24,7 +24,9 @@ parser.add_argument('--cluster', help='cluster, e.g., hyades/fend/pfe', type=str
 parser.add_argument('--run', help='run to plot, e.g., m1.0_p16_b3.0', type=str)
 parser.add_argument('--chkplt', help='plot from chks or plts', type=str, default='chk')
 parser.add_argument('--files', help='which files to plot, e.g. [0-9][0-9][0-9]0 or *', type=str, default='*')
-parser.add_argument('--vel', help='annotate velocity?', type=bool, default=False)
+parser.add_argument('--vel', help='annotate_velocity?', type=bool, default=False)
+parser.add_argument('--streamlines', help='annotate_streamlines?', type=bool, default=False)
+parser.add_argument('--line_integral', help='annotate_line_integral_convolution?', type=bool, default=False)
 parser.add_argument('--cell_edges', help='overplot cell edges?', type=bool, default=False)
 parser.add_argument('--grids', help='overplot grid?', type=bool, default=False)
 
@@ -95,7 +97,7 @@ for ds in ts.piter():
         s.annotate_velocity()
         s.save(savepath + args.run + '/v_over_v_esc_vel/')
 
-    elif argsr.streamlines:
+    elif args.streamlines:
         s.annotate_streamlines('velx', 'vely')
         s.save(savepath + args.run + '/v_over_v_esc_streamlines/')
 
