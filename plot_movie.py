@@ -7,9 +7,9 @@ the runfile in this directory, in e.g. the plot1/ run.
 
 makes a bunch of slices in parallel in prep for a movie
 then can run:
-ffmpeg -f image2 -framerate 24 -i multitidal_hdf5_chk_%04d_Slice_z_dens.png -b:v 4M movie.mpg
-ffmpeg -f image2 -framerate 24 -i multitidal_hdf5_plt_cnt_%04d_Slice_z_dens.png -b:v 4M movie.mpg
-ffmpeg -pattern_type glob -i "multitidal_hdf5_plt_cnt_*_Slice_z_dens.png" -b:v 4M movie.mpg
+ffmpeg -y -f image2 -framerate 24 -i multitidal_hdf5_chk_%04d_Slice_z_dens.png -b:v 4M movie.mpg
+ffmpeg -y -f image2 -framerate 24 -i multitidal_hdf5_plt_cnt_%04d_Slice_z_dens.png -b:v 4M movie.mpg
+ffmpeg -y -pattern_type glob -i "multitidal_hdf5_plt_cnt_*_Slice_z_dens.png" -b:v 4M movie.mpg
 '''
 import yt
 import os
@@ -25,7 +25,8 @@ parser.add_argument('--zmax', help='maximum of variable to plot, e.g., 80.78/169
 parser.add_argument('--zmin', help='minimum of variable to plot, e.g., 80.78/169.88/500', type=float, default=500)
 parser.add_argument('--factor', help='sets minimum of variable to plot', type=float, default=1e-5)
 parser.add_argument('--chkplt', help='plot from chks or plts', type=str, default='chk')
-parser.add_argument('--vel', help='annotate velocity?', type=bool, default=False)
+parser.add_argument('--vel', help='annotate_velocity?', type=bool, default=False)
+parser.add_argument('--streamlines', help='annotate_streamlines?', type=bool, default=False)
 parser.add_argument('--denscut', help='do density cut?', type=bool, default=False)
 parser.add_argument('--denscutval', help='value of density cut', type=float, default=1e-5)
 parser.add_argument('--log', help='log scale?', type=bool, default=True)
@@ -113,9 +114,12 @@ for ds in ts.piter():
 	#s.set_figure_size(12)
 	#s.set_buff_size(2000)
 
+	if args.streamlines:
+		s.annotate_streamlines('velx', 'vely', plot_args={"color":"white"})
+
 	#s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
 
-    # todo add args.fp to beginning of filename while still preseving automatic file naming
+	# todo add args.fp to beginning of filename while still preseving automatic file naming
 	if args.zlim:
 		if args.denscut:
 			s.save(savepath +args.run+'/'+args.var+'_'+str(args.width).replace('.','_')+'rsun'+'_'+str(args.zmax)+'_'+str(args.factor)+'_denscut'+str(args.denscutval)+'_'+ 'Log'+str(args.log) +'/')

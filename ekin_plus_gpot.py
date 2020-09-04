@@ -1,12 +1,6 @@
 """
-plot velocity magnitude over escape velocity
+plot v^2/2 + gpot
 """
-
-# start with escape velocity of core. did this in jupyter notebook
-#for G17p55, core is 0.31 Rsun, 3.44 Msun. vesc=205728746 cm/s
-#for G18p201, core is 0.8 Rsun, 4.36 Msun. vesc=144240990 cm/s
-
-# todo --chkplt=plt doesn't work yet bc not saving gpot to plt files. could change this.
 
 # todo add x at position of secondary. just need to read in sinks_evol.dat and take nearest time
 
@@ -43,12 +37,11 @@ elif args.cluster == 'lux':
     savepath = '/data/groups/ramirez-ruiz/lawsmith/FLASH4.3/lux_slices/'
 
 
-def _v_over_v_esc(field, data):
-    v_esc = np.sqrt(2.*np.abs(data['gpot'].d))
-    return data['velocity_magnitude'].d/v_esc
-    
+def _ekin_plus_gpot(field, data):
+    return 0.5*(data['velocity_magnitude'].d)**2 + data['gpot'].d
 
-yt.add_field(("gas","v_over_v_esc"), display_name='|v|/v_{esc,local}', function=_v_over_v_esc, take_log=False, units=None, force_override=True)
+yt.add_field(("gas","ekin_plus_gpot"), display_name='v^2/2 + gpot', function=_ekin_plus_gpot, take_log=False, units=None, force_override=True)
+
 
 if args.chkplt == 'chk':
     LOAD_FILES = clusterdir + args.run + '/multitidal_hdf5_chk_' + args.files
@@ -60,18 +53,17 @@ ts = yt.DatasetSeries(LOAD_FILES)
 
 for ds in ts.piter():
 
-    #ad = ds.all_data()
-    #cut_ad = ad.cut_region(["obj['v_over_v_esc'] >= 1."])
-    #s = yt.SlicePlot(ds, 'z', 'v_over_v_esc', data_source=cut_ad)
+    s = yt.SlicePlot(ds, 'z', 'ekin_plus_gpot')
+    s.annotate_contour("ekin_plus_gpot", ncont=10, clim=(-4e16,4e16), label=False,
+                        plot_args={"colors":"white","linewidths":2,"linestyles":"-"},
+                        text_args={"size":48})
 
-    s = yt.SlicePlot(ds, 'z', 'v_over_v_esc')
+    s.annotate_contour("ekin_plus_gpot", ncont=1, clim=(0,0), label=False,
+                        plot_args={"colors":"red","linewidths":2,"linestyles":"-"},
+                        text_args={"size":48})
 
     # doesn't work
     #s.set_background_color('v_over_v_esc', 'white')
-
-    s.annotate_contour("v_over_v_esc", ncont=1, clim=(1,1), label=False,
-                        plot_args={"colors":"red","linewidths":2,"linestyles":"-"},
-                        text_args={"size":48})
 
     s.annotate_timestamp()
     s.annotate_scale(unit='rsun')
@@ -84,15 +76,15 @@ for ds in ts.piter():
 
     if args.vel:
         s.annotate_velocity()
-        s.save(savepath + args.run + '/v_over_v_esc_vel/')
+        s.save(savepath + args.run + '/ekin_plus_gpot_vel/')
 
     elif args.streamlines:
-        s.annotate_streamlines('velx', 'vely', plot_args={"color":"white"})
-        s.save(savepath + args.run + '/v_over_v_esc_streamlines/')
+        s.annotate_streamlines('velx', 'vely')
+        s.save(savepath + args.run + '/ekin_plus_gpot_streamlines/')
 
     elif args.line_integral:
         s.annotate_line_integral_convolution('velx', 'vely')#, lim=(0.5,0.65))
-        s.save(savepath + args.run + '/v_over_v_esc_line_integral/')
+        s.save(savepath + args.run + '/ekin_plus_gpot_line_integral/')
 
     else:
-        s.save(savepath + args.run + '/v_over_v_esc/')
+        s.save(savepath + args.run + '/ekin_plus_gpot/')

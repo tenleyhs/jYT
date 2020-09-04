@@ -1,7 +1,6 @@
 """
 plot separation a of two sinks vs time
 """
-
 import matplotlib
 matplotlib.use('Agg')
 import argparse
@@ -28,27 +27,31 @@ elif args.cluster == 'lux':
     savepath = '/data/groups/ramirez-ruiz/lawsmith/FLASH4.3/lux_slices/'
 
 
-f = ascii.read(clusterdir + args.run + '/' + args.input)
 
-dist = np.sqrt((f['[02]posx'][::2] - f['[02]posx'][1::2])**2 \
-               + (f['[03]posy'][::2] - f['[03]posy'][1::2])**2 \
-               + (f['[04]posz'][::2] - f['[04]posz'][1::2])**2)
+f = ascii.read(clusterdir + args.run + '/' + args.input)
 
 
 fig,ax=plt.subplots()
 
-ax.plot(f['[01]time'][::2]/3600., dist/R_SUN_CGS, lw=3, c='k')
+#ax.plot(f['[02]posx'][::2], f['[03]posy'][::2], rasterized=True)
+#ax.plot(f['[02]posx'][1::2], f['[03]posy'][1::2], rasterized=True)
 
-ax.set_ylim(bottom=0)
-ax.set_xlabel(r'$t\ [h]$')
-ax.set_ylabel(r'$a\ [R_\odot]$')
-ax.grid()
-fig.tight_layout(pad=0.3)
-plt.savefig(savepath +args.run+'/a_vs_t.pdf')
+# TODO for some reason this doesn't work with ::2, somethign to do with first column.
+# A: aha! has to do with restarts probably
+posx1 = np.array([float(x) for x in f['[02]posx'][::2]])/R_SUN_CGS
+posx2 = np.array([float(x) for x in f['[02]posx'][1::2]])/R_SUN_CGS
 
-ax.set_yscale('log')
-ax.set_ylim(1e-1, 10)
+posy1 = np.array([float(x) for x in f['[03]posy'][::2]])/R_SUN_CGS
+posy2 = np.array([float(x) for x in f['[03]posy'][1::2]])/R_SUN_CGS
+
+xcenter = np.mean(posx1)
+ycenter = np.mean(posy1)
+
+ax.plot(posx1 - xcenter, posy1 - ycenter, c='r', lw=3)
+ax.plot(posx2 - xcenter, posy2 - ycenter, c='k', lw=3)
+
+ax.set_xlabel(r'$x\ {\rm [R_\odot]}$')
+ax.set_ylabel(r'$y\ {\rm [R_\odot]}$')
 ax.grid()
-fig.tight_layout(pad=0.3)
-plt.savefig(savepath +args.run+'/a_vs_t_log.pdf')
+plt.savefig(savepath +args.run+'/trajectory.pdf', bbox_inches='tight')
 

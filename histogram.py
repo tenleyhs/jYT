@@ -100,6 +100,8 @@ class var(object):
 			vel2 = np.zeros(data['x'].shape, dtype='float64')
 			for i, ax in enumerate(['velx', 'vely', 'velz']) :
 				vel2 += (data[ax].v - boundvec[tindex,i+3])**2.
+
+			# todo is this 0.5*gpot a typo?? appears below for selbound too.
 			arr = 0.5*data['gpot'].v + 0.5*vel2
 			return arr
 		elif (self.name == 'bhbound') :
